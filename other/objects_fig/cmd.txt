@@ -1,0 +1,3 @@
+Create PNG with white background: inkscape -y 255 -z polygons.pdf -e polygons.png
+ 
+Resize to A4 format: pdfjam --outfile out.pdf --paper a4paper polygons.pdf

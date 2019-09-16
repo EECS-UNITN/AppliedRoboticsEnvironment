@@ -1,0 +1,3 @@
+/home/valerio/workspace/AppliedRobotics/exercitation/calibration/build/CMakeFiles/edit_cache.dir
+/home/valerio/workspace/AppliedRobotics/exercitation/calibration/build/CMakeFiles/rebuild_cache.dir
+/home/valerio/workspace/AppliedRobotics/exercitation/calibration/build/CMakeFiles/camera_calibration.dir
