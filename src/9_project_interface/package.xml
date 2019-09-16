@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>student</name>
+  <name>project_interface</name>
   <version>0.0.0</version>
   <description>The transform package</description>
 

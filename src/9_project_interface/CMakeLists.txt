@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(student)
+project(project_interface)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -9,7 +9,7 @@ find_package(catkin REQUIRED)
 
 catkin_package(
    INCLUDE_DIRS include
-   LIBRARIES ${PROJECT_NAME}
+   LIBRARIES student professor
    CATKIN_DEPENDS 
    DEPENDS opencv
 )
@@ -26,5 +26,13 @@ add_library(student SHARED
 )
 
 target_link_libraries(student
+  ${catkin_LIBRARIES}  
+)
+
+add_library(professor SHARED
+   src/professor_interface.cpp
+)
+
+target_link_libraries(professor
   ${catkin_LIBRARIES}  
 )

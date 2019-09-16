@@ -1,5 +1,6 @@
 #include "rectify_handle.hpp"
 #include "student_interface.hpp"
+#include "professor_interface.hpp"
 
 #include <assert.h>
 #include <cv_bridge/cv_bridge.h>
@@ -122,7 +123,7 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
         out_img->encoding = cv_ptr->encoding; 
         if(default_implementation_){
             ROS_INFO_NAMED(kPringName, "Call default function");
-            undistort(cv_ptr->image, out_img->image, 
+            professor::imageUndistort(cv_ptr->image, out_img->image, 
                             camera_matrix_, dist_coeffs_);
         }else{
             // CALL STUDENT FUNCTION    

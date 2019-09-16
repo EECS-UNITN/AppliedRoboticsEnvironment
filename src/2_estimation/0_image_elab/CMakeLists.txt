@@ -8,7 +8,7 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED 
-  student
+  project_interface
   cv_bridge
   dynamic_reconfigure
   image_geometry
@@ -60,6 +60,7 @@ find_package(Boost REQUIRED COMPONENTS thread)
 add_message_files(
   FILES
   ExtrinsicParams.msg
+  PlaneTransform.msg
 #   Message2.msg
 )
 
@@ -142,6 +143,9 @@ add_library(img_clbk_LIBRARY
    src/libs/generic_handle.cpp
 )
 
+add_library(unwarp_LIBRARY
+   src/libs/unwarp_handle.cpp
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -150,6 +154,11 @@ add_library(img_clbk_LIBRARY
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+
+add_executable(unwarp_node 
+          src/unwarp_node.cpp
+          )
+
 add_executable(rectify_node 
 					src/rectify_node.cpp
 					)
@@ -172,6 +181,9 @@ add_executable(extrinsic_calib_node
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+target_link_libraries(unwarp_LIBRARY
+  ${catkin_LIBRARIES}
+)
 target_link_libraries(rectify_LIBRARY
   ${catkin_LIBRARIES}
 )
@@ -179,7 +191,7 @@ target_link_libraries(img_clbk_LIBRARY
   ${catkin_LIBRARIES}
 )
 target_link_libraries(extrinsic_LIBRARY
-  ${catkin_LIBRARIES}
+  ${catkin_LIBRARIES}  
 )
 
 target_link_libraries(rectify_node
@@ -195,6 +207,12 @@ target_link_libraries(extrinsic_calib_node
   extrinsic_LIBRARY 
   ${catkin_LIBRARIES} 
 )
+
+target_link_libraries(unwarp_node
+  unwarp_LIBRARY
+  ${catkin_LIBRARIES} 
+)
+
 #############
 ## Install ##
 #############
