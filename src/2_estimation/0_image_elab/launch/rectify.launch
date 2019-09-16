@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  
+  <node name="rectify_image" pkg="image_elab" type="rectify_node" respawn="true" output="screen"/>
+
+
+</launch>
+

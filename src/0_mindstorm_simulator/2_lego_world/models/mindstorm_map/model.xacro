@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model>
+  <name>mindstorm_map</name>
+  <version>1.0</version>
+  <sdf version="1.4">$(arg map_name)</sdf>
+  <description>random mindstorm_map</description>
+</model>

@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='victim_4'>
+    <static>true</static>
+    <link name='link_0'>
+      <pose frame=''>-0 -0 -0 0 -0 0</pose>      
+      <visual name='visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.2 0.2 0.001</size>
+          </box>
+        </geometry>
+
+        <material>
+          <script>
+            <uri>model://victim_4/materials/scripts</uri>
+            <uri>model://victim_4/materials/textures</uri>
+            <name>TexturedShape/Victim</name>
+          </script>
+        </material>
+
+        <cast_shadows>0</cast_shadows>
+        <transparency>0</transparency>
+      </visual>
+    </link>
+    <static>0</static>
+    <allow_auto_disable>1</allow_auto_disable>
+  </model>
+</sdf>

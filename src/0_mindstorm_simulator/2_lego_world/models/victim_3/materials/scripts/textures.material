@@ -1,0 +1,14 @@
+material TexturedShape/Victim
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture ../textures/victim.png
+        scale 1 1
+      }
+    }
+  }
+}

@@ -1,0 +1,256 @@
+<?xml version='1.0'?>
+
+<robot name="my_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find mindstorm_simulator)/urdf/my_robot.gazebo" />
+
+  <xacro:property name="wheel_radius" value="0.0275" />
+  <xacro:property name="wheel_width" value="0.025" />
+  <xacro:property name="footprint_width"  value="0.09" />
+  <xacro:property name="footprint_height"  value="0.02" />
+  <xacro:property name="footprint_length" value="0.19" />
+  <xacro:property name="axel_dx" value="0.05" />
+  <xacro:property name="triangle_b" value="0.08" />
+  <xacro:property name="triangle_h" value="0.16" />
+  <xacro:property name="triangle_z" value="0.16" />
+  <xacro:property name="triangle_dx" value="0.005" />
+
+  <link name="robot_footprint"></link>
+
+  <joint name="robot_footprint_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="robot_footprint"/>
+    <child link="chassis" />
+  </joint>
+
+  <joint name="robot_top_triangle_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="chassis"/>
+    <child link="top_triangle" />
+  </joint>
+
+  <joint name="robot_top_layer_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="chassis"/>
+    <child link="top_layer" />
+  </joint>
+
+  <joint name="robot_NXT20_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="chassis"/>
+    <child link="NXT20" />
+  </joint>
+
+  <link name='chassis'>
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="${footprint_length/2 - axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <inertia
+          ixx="0.01" ixy="0" ixz="0"
+          iyy="0.01" iyz="0"
+          izz="0.01"
+      />
+    </inertial>
+
+    <collision name='chassis_collision'>
+      <origin xyz="${footprint_length/2 - axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <geometry>
+        <box size="${footprint_length} ${footprint_width} ${footprint_height}"/>        
+      </geometry>
+    </collision>
+
+    <visual name='chassis_visual'>
+      <origin xyz="${footprint_length/2 - axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <geometry>
+        <box size="${footprint_length} ${footprint_width} ${footprint_height}"/>        
+      </geometry>
+    </visual>
+
+     <collision name='back_caster_collision'>
+      <origin xyz="${footprint_length - axel_dx - wheel_radius} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <geometry>
+        <sphere radius="${wheel_radius}"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <slip1>1.0</slip1>
+            <slip2>1.0</slip2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+
+    <visual name='back_caster_visual'>
+      <origin xyz="${footprint_length - axel_dx - wheel_radius} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <geometry>
+        <sphere radius="${wheel_radius}"/>
+      </geometry>
+    </visual>
+
+    <!--collision name='nxt_collision'>
+      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
+      <geometry>
+        <box size="${triangle_h} ${triangle_b} 0.01"/>
+      </geometry>
+    </collision>
+
+    <visual name='nxt_visual'>
+      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
+      <geometry>
+        <box size="${triangle_h} ${triangle_b} 0.01"/>
+      </geometry>
+    </visual-->
+
+  </link>
+
+  <link name="NXT20">
+    <visual name='NXT20_visual'>
+      <origin xyz="0.05 0 ${triangle_z/2}" rpy="-0.7853 0 1.5707"/>      
+      <geometry>
+
+        <mesh filename="package://mindstorm_simulator/media/models/Lego_MindstormsNXT20.stl"  scale="0.001 0.001 0.001"/>
+        <!--box size="${triangle_h} ${triangle_b} 0.005"/-->
+      </geometry>
+    </visual>
+  </link>
+
+
+  <link name="top_layer">
+      <collision name='top_layer_collision'>
+      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
+      <geometry>
+        <box size="${triangle_h} ${triangle_b} 0.005"/>
+      </geometry>
+    </collision>
+
+    <visual name='top_layer_visual'>
+     <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
+      <geometry>
+        <box size="${triangle_h} ${triangle_b} 0.005"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="top_triangle">
+      <collision name='top_layer_collision'>
+      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.0025}" rpy=" 0 0 0"/>
+      <geometry>
+        <box size="${triangle_h} ${triangle_b} 0.005"/>
+      </geometry>
+    </collision>
+
+    <visual name='top_triangle_visual'>
+      <origin xyz="${-0.16/3 + 0.005} -0.04 ${triangle_z - 0.01}" rpy=" 0 0 0"/>      
+      <geometry>
+        <mesh filename="package://mindstorm_simulator/media/models/triangle.STL"  scale="0.001 0.001 0.001"/>
+        <!--box size="${triangle_h} ${triangle_b} 0.005"/-->
+      </geometry>
+    </visual>
+  </link>
+
+
+  <link name="left_wheel">
+    <collision name='left_wheel_collision'>
+      <origin xyz="0 ${wheel_width/2} 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+
+    <visual name='left_wheel_visual'>
+      <origin xyz="0 ${wheel_width/2} 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0.0 0 0" rpy="0 1.5707 1.5707"/>
+      <inertia
+          ixx="0.03" ixy="0" ixz="0"
+          iyy="0.03" iyz="0"
+          izz="0.03"
+      />
+    </inertial>
+  </link>
+  
+  <link name="right_wheel">
+    <collision name='right_wheel_collision'>
+      <origin xyz="0 ${-wheel_width/2} 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+
+    <visual name='right_wheel_visual'>
+      <origin xyz="0 ${-wheel_width/2} 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0.0 0 0" rpy="0 1.5707 1.5707"/>
+      <inertia
+          ixx="0.03" ixy="0" ixz="0"
+          iyy="0.03" iyz="0"
+          izz="0.03"
+      />
+    </inertial>
+  </link>
+
+  <joint type="continuous" name="left_wheel_hinge">
+    <origin xyz="0 ${footprint_width/2} ${wheel_radius}" rpy="0 0 0"/>
+    <child link="left_wheel"/>
+    <parent link="chassis"/>
+    <axis xyz="0 -1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="5"/>
+    <dynamics damping="1.0" friction="1.0"/>
+  </joint>
+
+  <joint type="continuous" name="right_wheel_hinge">
+    <origin xyz="0 ${-footprint_width/2} ${wheel_radius}" rpy="0 0 0"/>
+    <child link="right_wheel"/>
+    <parent link="chassis"/>
+    <axis xyz="0 -1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="5"/>
+    <dynamics damping="1.0" friction="1.0"/>
+  </joint>
+
+
+
+<gazebo reference="left_wheel">
+    <material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="right_wheel">
+    <material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="chassis">
+    <material>Gazebo/Grey</material>
+</gazebo>
+
+<gazebo reference="NXT20">
+    <material>Gazebo/Grey</material>
+</gazebo>
+
+<gazebo reference="top_triangle">
+    <material>Gazebo/SkyBlue</material>
+</gazebo>
+
+<gazebo reference="top_layer">
+    <material>Gazebo/White</material>
+</gazebo>
+
+<gazebo reference="camera">
+    <material>Gazebo/Red</material>
+</gazebo>
+
+
+</robot>
+

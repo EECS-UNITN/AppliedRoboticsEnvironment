@@ -1,0 +1,28 @@
+material TexturedShape/Squares
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture squares.png
+      }
+    }
+  }
+}
+
+material TexturedShape/WoodGround
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture ground.png
+      }
+    }
+  }
+}
+

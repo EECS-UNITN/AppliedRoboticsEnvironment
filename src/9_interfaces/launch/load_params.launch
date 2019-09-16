@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <!-- Load Configuration -->
+  <rosparam command="load" file="$(find student)/config/camera_params.config" />
+  <rosparam command="load" file="$(find student)/config/default_implementation.config" />
+
+
+</launch>
+

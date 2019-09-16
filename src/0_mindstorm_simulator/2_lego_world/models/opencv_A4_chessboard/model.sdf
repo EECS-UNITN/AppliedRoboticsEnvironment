@@ -1,0 +1,28 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='opencv_A4_chessboard'>
+    <static>true</static>
+    <link name='link_0'>
+      <pose frame=''>0 0 0 0 0 0</pose>
+      <visual name='visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.210 0.297 0.005</size>
+          </box>
+        </geometry>
+
+        <material>
+          <script>
+            <uri>model://opencv_A4_chessboard/materials/scripts</uri>
+            <uri>model://opencv_A4_chessboard/materials/textures</uri>
+            <name>TexturedShape/chessboard</name>
+          </script>
+        </material>
+
+        <cast_shadows>1</cast_shadows>
+        <transparency>0</transparency>
+      </visual>
+    </link>
+  </model>
+</sdf>

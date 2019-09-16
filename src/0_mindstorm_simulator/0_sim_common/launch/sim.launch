@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- albeto berti chi e'?-->
+<launch>
+  <!-- Robot pose -->
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>  
+  <arg name="yaw" default="0"/>
+
+  <!-- Load Robot Description -->
+  <include file="$(find lego_robot)/launch/robot_description.launch"/>
+
+  <!-- Launch Gazebo World -->
+  <include file="$(find lego_world)/launch/world.launch"/>
+
+  <!-- Load Robot in Gazebo -->
+  <include file="$(find lego_robot)/launch/spawn_gazebo.launch">
+    <arg name="x" value="$(arg x)"/>
+    <arg name="y" value="$(arg y)"/>
+    <arg name="z" value="0.0"/>
+    <arg name="roll" value="0.0"/>
+    <arg name="pitch" value="0.0"/>
+    <arg name="yaw" value="$(arg yaw)"/>
+  </include>
+
+
+</launch>
+
