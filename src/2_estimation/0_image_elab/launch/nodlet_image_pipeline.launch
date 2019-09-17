@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-
-	
-  <param name="num_worker_threads" type="int" value="4" />
-
   <node pkg="nodelet" type="nodelet" name="image_elab_nodelet"  args="manager" output="screen"/>
 
   <node pkg="nodelet" type="nodelet" name="unwarp_nodelet" args="load image_elab/UnwarpNodelet image_elab_nodelet" output="screen" />

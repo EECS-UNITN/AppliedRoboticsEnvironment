@@ -15,7 +15,7 @@ namespace image_elab
 	private:
 		virtual void onInit()
 		{
-		    ros::NodeHandle& nh = getMTNodeHandle();
+		    ros::NodeHandle& nh = getNodeHandle();
 			handle_.onInit(nh);
 	  	}
 
