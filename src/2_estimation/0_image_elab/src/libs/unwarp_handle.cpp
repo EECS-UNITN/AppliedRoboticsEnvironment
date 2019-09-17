@@ -49,8 +49,8 @@ namespace image_proc {
         loadVariable<bool>(nh_,"/default_implementation/unwarp",&default_implementation_);
 
 
-        sub_ground_topic_name_           = "/unwarp/ground_plane";
-        sub_robot_topic_name_            = "/unwarp/robot_plane";
+        sub_ground_topic_name_           = "/transform/ground_plane";
+        sub_robot_topic_name_            = "/transform/robot_plane";
         sub_undistort_topic_name_        = "/image/rectify";
         robot_publisher_topic_name_      = "/image/unwarp_robot";
         ground_publisher_topic_name_     = "/image/unwarp_ground";
@@ -123,8 +123,10 @@ namespace image_proc {
 
         }
         // IMPORTANT PUBLISH SHARED POINTER!!!
-        pub_unwarp_ground_.publish(out_img_ground->toImageMsg());
-        pub_unwarp_robot_.publish(out_img_robot->toImageMsg());
+        sensor_msgs::ImagePtr u_ground = out_img_ground->toImageMsg();
+        pub_unwarp_ground_.publish(u_ground);
+        sensor_msgs::ImagePtr u_robot = out_img_robot->toImageMsg();
+        pub_unwarp_robot_.publish(u_robot);
     }
 
     void UnwarpHandle::groundCb(const image_elab::PlaneTransform& transf){

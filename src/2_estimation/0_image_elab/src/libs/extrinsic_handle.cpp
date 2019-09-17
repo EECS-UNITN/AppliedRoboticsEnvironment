@@ -59,8 +59,8 @@ namespace image_proc {
         extr_publisher_topic_name_   = "/transform/camera_pose";
         rect_subscriber_topic_name_  = "/image/rectify";//"/camera/rgb/image_raw"; 
         //camera_subscriber_topic_name_  = "/camera/rgb/image_raw";
-        pub_ground_topic_name_ = "/unwarp/ground_plane";
-        pub_robot_topic_name_ = "/unwarp/robot_plane";
+        pub_ground_topic_name_ = "/transform/ground_plane";
+        pub_robot_topic_name_  = "/transform/robot_plane";
 
 
         double arena_w, arena_h;

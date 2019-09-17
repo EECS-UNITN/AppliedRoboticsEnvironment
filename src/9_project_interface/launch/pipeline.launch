@@ -5,9 +5,7 @@
   <include file="$(find project_interface)/launch/load_params.launch"/>
 
   <!-- Start pipeline -->
-  <include file="$(find image_elab)/launch/rectify.launch"/>
-
-  <include file="$(find image_elab)/launch/extrinsic.launch"/>
-
+  <include file="$(find image_elab)/launch/image_pipeline.launch"/>
+  
 </launch>
 
