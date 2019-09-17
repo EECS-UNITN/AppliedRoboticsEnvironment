@@ -2,6 +2,19 @@
 <robot>
 
   <gazebo>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50.0</updateRate>
+      <bodyName>robot_footprint</bodyName>
+      <topicName>ground_truth/state</topicName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <frameName>world</frameName>
+      <xyzOffsets>0 0 0</xyzOffsets>
+      <rpyOffsets>0 0 0</rpyOffsets>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <cmd_vel_timeout>0.25</cmd_vel_timeout>
       <publish_rate>50</publish_rate>
@@ -30,7 +43,6 @@
       <publishTf>1</publishTf>
       <publishOdomTF>true</publishOdomTF>
       <publish_cmd>true</publish_cmd>
-
     </plugin>
   </gazebo>
 

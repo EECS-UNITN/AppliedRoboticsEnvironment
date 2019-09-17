@@ -10,7 +10,13 @@
     <include>
       <uri>model://victim_1</uri>
       <pose>0.5 -0.3 0 0 0 0</pose>
-      <name>gate</name>
+      <name>victim1</name>
+    </include>
+
+    <include>
+      <uri>model://victim_2</uri>
+      <pose>-0.3 0.3 0 0 0 0</pose>
+      <name>victim2</name>
     </include>
 
     <include>
@@ -36,5 +42,43 @@
       <pose>0 -0.25 0 0 0 0</pose>
       <name>triangolo_95</name>
     </include>
-  </model>
+
+    <!-- ARENA PERIMENTER AND GROUND -->
+    <include>
+      <uri> model://long_black_stripe</uri>
+      <pose> 0.0 -0.5 0 0 -0 0 </pose>
+      <name>long_stripe_0</name>
+    </include>  
+  
+    <include>
+      <uri> model://long_black_stripe</uri>
+      <pose> 0.0 0.5 0 0 -0 0 </pose>
+      <name>long_stripe_1</name>
+    </include> 
+
+    <include>
+      <uri> model://short_black_stripe</uri>
+      <pose> -0.75 0.0 0 0 0 1.5707963268 </pose>
+      <name>long_stripe_1</name>
+    </include>  
+
+    <include>
+      <uri> model://short_black_stripe</uri>
+      <pose> 0.75 0.0 0 0 0 1.5707963268 </pose>
+      <name>long_stripe_1</name>
+    </include>
+
+    <include>
+      <uri> model://short_red_stripe</uri>
+      <pose> -0.5 -0.6 0 0 0 0 </pose>
+      <name>short_red_stripe</name>
+    </include>
+
+    <include>
+      <uri> model://arena_ground </uri>
+      <pose> 0.0 0.0 -0.05 0 -0 0 </pose>
+      <name>arena_ground</name>
+    </include>
+
+  </model>      
 </sdf>

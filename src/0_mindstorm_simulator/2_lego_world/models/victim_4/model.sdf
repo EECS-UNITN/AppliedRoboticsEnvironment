@@ -16,7 +16,7 @@
           <script>
             <uri>model://victim_4/materials/scripts</uri>
             <uri>model://victim_4/materials/textures</uri>
-            <name>TexturedShape/Victim</name>
+            <name>TexturedShape/Victim4</name>
           </script>
         </material>
 

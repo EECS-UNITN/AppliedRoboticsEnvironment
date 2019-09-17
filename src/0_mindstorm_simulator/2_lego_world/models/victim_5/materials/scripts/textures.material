@@ -1,4 +1,4 @@
-material TexturedShape/Victim
+material TexturedShape/Victim5
 {
   technique
   {
@@ -6,7 +6,7 @@ material TexturedShape/Victim
     {
       texture_unit
       {
-        texture ../textures/victim.png
+        texture ../textures/victim5.png
         scale 1 1
       }
     }

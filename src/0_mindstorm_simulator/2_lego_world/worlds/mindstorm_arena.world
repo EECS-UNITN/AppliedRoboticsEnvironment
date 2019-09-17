@@ -60,69 +60,17 @@
 
     <include>
       <uri> model://mindstorm_map </uri>
-      <pose> 0 0 0 0 0 0 </pose>
+      <pose> 0.75 0.5 0 0 0 0 </pose>
       <name>mindstorm_map</name>
     </include>
 
-    <include>
-      <uri> model://arena_ground </uri>
-      <pose> 0 0 -0.05 0 -0 0 </pose>
-      <name>arena_ground</name>
-    </include>
-
+    
     <include>
       <uri> model://my_camera </uri>
       <!--pose> 0 0 2.8 0 1.5707963268 1.5707963268 </pose-->
-      <pose> 0.05 -0.1 2.8 0.0 1.5 1.5 </pose>
+      <pose> 0.75 0.5 2.8 0.0 1.5 1.5 </pose>
       <name>camera_0</name>
     </include>
 
-    <!--include>
-      <uri> model://edge_pillar</uri>
-      <pose> 0.75 0.5 0.0 0 -0 0 </pose>
-      <name>edge_pillar_0</name>
-    </include>
-
-    <include>
-      <uri> model://edge_pillar</uri>
-      <pose> -0.75 0.5 0 0 -0 0 </pose>
-      <name>edge_pillar_1</name>
-    </include>
-
-    <include>
-      <uri> model://edge_pillar</uri>
-      <pose> -0.75 -0.5 0 0 -0 0 </pose>
-      <name>edge_pillar_2</name>
-    </include>
-
-    <include>
-      <uri> model://edge_pillar</uri>
-      <pose> 0.75 -0.5 0 0 -0 0 </pose>
-      <name>edge_pillar_3</name>
-    </include-->  
-
-    <include>
-      <uri> model://long_black_stripe</uri>
-      <pose> 0.0 -0.5 0 0 -0 0 </pose>
-      <name>long_stripe_0</name>
-    </include>  
-  
-    <include>
-      <uri> model://long_black_stripe</uri>
-      <pose> 0.0 0.5 0 0 -0 0 </pose>
-      <name>long_stripe_1</name>
-    </include> 
-
-    <include>
-      <uri> model://short_black_stripe</uri>
-      <pose> -0.75 0.0 0 0 0 1.5707963268 </pose>
-      <name>long_stripe_1</name>
-    </include>  
-
-    <include>
-      <uri> model://short_black_stripe</uri>
-      <pose> 0.75 0.0 0 0 0 1.5707963268 </pose>
-      <name>long_stripe_1</name>
-    </include>   
   </world>
 </sdf>
