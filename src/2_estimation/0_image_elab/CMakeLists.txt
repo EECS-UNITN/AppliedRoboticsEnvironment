@@ -116,7 +116,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS student image_geometry roscpp sensor_msgs message_runtime roscpp 
+  CATKIN_DEPENDS project_interface image_geometry roscpp sensor_msgs message_runtime roscpp 
   DEPENDS OpenCV
 )
 
@@ -133,26 +133,15 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(rectify_LIBRARY
+add_library(image_elab_LIBRARY
    src/libs/rectify_handle.cpp
-)
-add_library(extrinsic_LIBRARY
    src/libs/extrinsic_handle.cpp
-)
-add_library(img_clbk_LIBRARY
    src/libs/generic_handle.cpp
-)
-
-add_library(unwarp_LIBRARY
    src/libs/unwarp_handle.cpp
-)
-add_library(obstacle_detector_LIBRARY
    src/libs/obstacle_detector_handle.cpp
-)
-add_library(robot_detector_LIBRARY
    src/libs/robot_detector_handle.cpp
+   src/libs/utils.cpp
 )
-
 
 add_library(image_elab_nodelet 
   src/nodelets/unwarp_nodelet.cpp
@@ -207,70 +196,40 @@ add_executable(robot_detector_node
 
 ## Specify libraries to link a library or executable target against
 # LIBRARY
-target_link_libraries(obstacle_detector_LIBRARY
+target_link_libraries(image_elab_LIBRARY
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
 )
-target_link_libraries(robot_detector_LIBRARY
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-)
-target_link_libraries(unwarp_LIBRARY
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-)
-target_link_libraries(rectify_LIBRARY
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-)
-target_link_libraries(img_clbk_LIBRARY
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-)
-target_link_libraries(extrinsic_LIBRARY
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}  
-)
-
 
 # NODE
 target_link_libraries(rectify_node
-  rectify_LIBRARY	
+  image_elab_LIBRARY	
   ${catkin_LIBRARIES} 
 )
 target_link_libraries(raw_img_listener_node
-  img_clbk_LIBRARY 
+  image_elab_LIBRARY 
   ${catkin_LIBRARIES} 
 )
 target_link_libraries(extrinsic_calib_node
-  extrinsic_LIBRARY 
+  image_elab_LIBRARY 
   ${catkin_LIBRARIES} 
 )
 target_link_libraries(unwarp_node
-  unwarp_LIBRARY
+  image_elab_LIBRARY
   ${catkin_LIBRARIES} 
 )
 target_link_libraries(obstacle_detector_node
-  obstacle_detector_LIBRARY
+  image_elab_LIBRARY
   ${catkin_LIBRARIES} 
 )
 target_link_libraries(robot_detector_node
-  robot_detector_LIBRARY
+  image_elab_LIBRARY
   ${catkin_LIBRARIES} 
 )
 
-
-
-
-
 # NODELET
 target_link_libraries(image_elab_nodelet 
-  unwarp_LIBRARY
-  extrinsic_LIBRARY
-  obstacle_detector_LIBRARY
-  img_clbk_LIBRARY
-  rectify_LIBRARY
-  robot_detector_LIBRARY
+  image_elab_LIBRARY
   ${catkin_LIBRARIES}
 )
 

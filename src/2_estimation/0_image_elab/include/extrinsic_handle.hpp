@@ -6,6 +6,8 @@
 
 #include <vector>
 
+#include "utils.hpp"
+
 namespace image_proc {
 
 class ExtrinsicHandle {

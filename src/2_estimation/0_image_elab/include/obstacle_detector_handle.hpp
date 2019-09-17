@@ -6,10 +6,9 @@
 #include <image_elab/PlaneTransform.h>
 
 #include <vector>
+#include "utils.hpp"
 
 namespace image_proc {
-
-typedef std::vector<cv::Point2f> Polygon;
 
 class ObstacleDetectorHandle {
 

@@ -7,9 +7,9 @@
 
 #include <vector>
 
-namespace image_proc {
+#include "utils.hpp"
 
-typedef std::vector<cv::Point2f> Polygon;
+namespace image_proc {
 
 class RobotDetectorHandle {
 

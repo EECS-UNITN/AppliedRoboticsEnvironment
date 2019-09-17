@@ -1,8 +1,8 @@
-#include "student_interface.hpp"
+#include "professor_interface.hpp"
 
 #include <stdexcept>
 #include <sstream>
-namespace student {
+namespace professor {
 
   std::string initImageFolder(){
   	return "/home/valerio/Pictures/";

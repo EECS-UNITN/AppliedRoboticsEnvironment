@@ -14,6 +14,8 @@
 #include "geometry_msgs/PoseStamped.h"
 #include "tf/transform_broadcaster.h"
 
+#include "utils.hpp"
+
 namespace enc = sensor_msgs::image_encodings;
 const std::string kPringName = "robot_detector_handle.hpp";
 
@@ -82,22 +84,6 @@ namespace image_proc {
 
         sub_transf_ = nh_.subscribe(sub_transf_topic_name_, queue_size_, &RobotDetectorHandle::transformCb, this);
     }
-
-
-
-    geometry_msgs::Polygon createPolygon(const Polygon & poly_2D){
-
-        geometry_msgs::Polygon poly_3D;
-        for (const auto & pt: poly_2D){ 
-            geometry_msgs::Point32 pt_3D;
-            pt_3D.x = pt.x;
-            pt_3D.y = pt.y;
-            pt_3D.z = 0.;
-            poly_3D.points.push_back(pt_3D);
-        }
-        return poly_3D;
-    }
-                
 
 
 

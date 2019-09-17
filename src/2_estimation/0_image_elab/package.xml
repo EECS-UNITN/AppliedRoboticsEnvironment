@@ -29,9 +29,9 @@
   <build_depend>roscpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>message_generation</build_depend>
-  <build_depend>student</build_depend>
+  <build_depend>project_interface</build_depend>
 
-  <exec_depend>student</exec_depend>
+  <exec_depend>project_interface</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
   <exec_depend>dynamic_reconfigure</exec_depend>
   <exec_depend>image_geometry</exec_depend>
