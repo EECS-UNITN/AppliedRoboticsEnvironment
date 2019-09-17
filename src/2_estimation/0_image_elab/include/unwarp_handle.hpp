@@ -62,5 +62,10 @@ private:
   void groundCb(const image_elab::PlaneTransform& transf);
   void robotCb(const image_elab::PlaneTransform& transf);
 
+  void connectGroundCb();
+  void connectRobotCb();
+
+  int n_subscribers_ground_, n_subscribers_robot_;
+
 };
 }

@@ -27,6 +27,10 @@ namespace image_proc {
         loadParameters();    
         publishToTopics();
         subscribeToTopics();
+
+        // Be sure that the variable are initialized properly
+        connectGroundCb();
+        connectRobotCb();
     }
 
     template <class T>
@@ -58,18 +62,28 @@ namespace image_proc {
      
     }
 
+    void UnwarpHandle::connectGroundCb(){
+        n_subscribers_ground_ = pub_unwarp_ground_.getNumSubscribers();
+    }
+
+    void UnwarpHandle::connectRobotCb(){
+        n_subscribers_robot_ = pub_unwarp_robot_.getNumSubscribers();
+    }
+
     void UnwarpHandle::publishToTopics() {
         ROS_INFO_NAMED(kPringName, "Init publishers");
         assert (initialized_);
 
-        
-        // Make sure we don't enter connectCb() between advertising and assigning to pub_rect_
-        pub_unwarp_robot_  = nh_.advertise<sensor_msgs::Image>(robot_publisher_topic_name_,  1);
+        // Monitor whether anyone is subscribed to the output
+        ros::SubscriberStatusCallback connect_ground_cb = boost::bind(&UnwarpHandle::connectGroundCb, this);
+        ros::SubscriberStatusCallback connect_robot_cb = boost::bind(&UnwarpHandle::connectRobotCb, this);
 
-        pub_unwarp_ground_  = nh_.advertise<sensor_msgs::Image>(ground_publisher_topic_name_,  1);
+        // Make sure we don't enter connectCb() between advertising and assigning to pub_rect_
+        pub_unwarp_robot_  = nh_.advertise<sensor_msgs::Image>(robot_publisher_topic_name_,  1, connect_ground_cb, connect_ground_cb);
+
+        pub_unwarp_ground_  = nh_.advertise<sensor_msgs::Image>(ground_publisher_topic_name_,  1, connect_ground_cb, connect_ground_cb);
 
         pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
-
 
     }
 
@@ -115,13 +129,21 @@ namespace image_proc {
             out_img_robot->encoding  = cv_ptr->encoding; 
             if(default_implementation_){
                 ROS_INFO_NAMED(kPringName, "Call default function");
-                professor::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_);
-                professor::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_);
+                if(n_subscribers_ground_ > 0){
+                    professor::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_);
+                }
+                if(n_subscribers_robot_ > 0){
+                    professor::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_);
+                }
             }else{
                 // CALL STUDENT FUNCTION    
                 ROS_WARN_NAMED(kPringName, "Call student function");
-                student::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_);
-                student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_);
+                if(n_subscribers_ground_ > 0){
+                    student::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_);
+                }
+                if(n_subscribers_robot_ > 0){
+                    student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_);
+                }
             }
         }catch(...){
 
