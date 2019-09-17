@@ -33,5 +33,13 @@ bool extrinsicCalib(const cv::Mat& img_in, std::vector<cv::Point3f> object_point
     throw std::logic_error( "STUDENT FUNCTION NOT LOADED" );   
   }
 
+  bool processMap(const cv::Mat& img_in, const double scale, std::vector<Polygon>& obstacle_list, std::vector<std::pair<int,Polygon>>& victim_list, Polygon& gate){
+    throw std::logic_error( "STUDENT FUNCTION NOT LOADED" );   
+  }
+
+  bool findRobot(const cv::Mat& img_in, const double scale, Polygon& triangle, double& x, double& y, double& theta){
+    throw std::logic_error( "STUDENT FUNCTION NOT LOADED" );    
+  }
+
 }
 
