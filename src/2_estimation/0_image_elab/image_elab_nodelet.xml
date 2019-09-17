@@ -1,0 +1,39 @@
+<library path="lib/libimage_elab_nodelet">
+  
+  <class name="image_elab/UnwarpNodelet" type="image_elab::UnwarpNodelet" base_class_type="nodelet::Nodelet">
+    <description> 
+      A node to add a value and republish.
+    </description>
+  </class>
+
+  <class name="image_elab/ExtrinsicCalibNodelet" type="image_elab::ExtrinsicCalibNodelet" base_class_type="nodelet::Nodelet">
+    <description> 
+      A node to add a value and republish.
+    </description>
+  </class>
+
+  <class name="image_elab/ObstacleDetectorNodelet" type="image_elab::ObstacleDetectorNodelet" base_class_type="nodelet::Nodelet">
+    <description> 
+      A node to add a value and republish.
+    </description>
+  </class>
+
+  <class name="image_elab/RawImageListenerNodelet" type="image_elab::RawImageListenerNodelet" base_class_type="nodelet::Nodelet">
+    <description> 
+      A node to add a value and republish.
+    </description>
+  </class>
+
+  <class name="image_elab/RectifyNodelet" type="image_elab::RectifyNodelet" base_class_type="nodelet::Nodelet">
+    <description> 
+      A node to add a value and republish.
+    </description>
+  </class>
+
+  <class name="image_elab/RobotDetectorNodelet" type="image_elab::RobotDetectorNodelet" base_class_type="nodelet::Nodelet">
+    <description> 
+      A node to add a value and republish.
+    </description>
+  </class>
+
+</library>

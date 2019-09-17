@@ -146,6 +146,22 @@ add_library(img_clbk_LIBRARY
 add_library(unwarp_LIBRARY
    src/libs/unwarp_handle.cpp
 )
+add_library(obstacle_detector_LIBRARY
+   src/libs/obstacle_detector_handle.cpp
+)
+add_library(robot_detector_LIBRARY
+   src/libs/robot_detector_handle.cpp
+)
+
+
+add_library(image_elab_nodelet 
+  src/nodelets/unwarp_nodelet.cpp
+  src/nodelets/extrinsic_calib_nodelet.cpp
+  src/nodelets/obstacle_detector_nodelet.cpp
+  src/nodelets/raw_img_listener_nodelet.cpp
+  src/nodelets/rectify_nodelet.cpp
+  src/nodelets/robot_detector_nodelet.cpp)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -170,6 +186,15 @@ add_executable(raw_img_listener_node
 add_executable(extrinsic_calib_node 
           src/extrinsic_calib_node.cpp
           )
+
+add_executable(obstacle_detector_node 
+          src/obstacle_detector_node.cpp
+          )
+
+add_executable(robot_detector_node 
+          src/robot_detector_node.cpp
+          )
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -181,24 +206,38 @@ add_executable(extrinsic_calib_node
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+# LIBRARY
+target_link_libraries(obstacle_detector_LIBRARY
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+)
+target_link_libraries(robot_detector_LIBRARY
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+)
 target_link_libraries(unwarp_LIBRARY
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
 )
 target_link_libraries(rectify_LIBRARY
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
 )
 target_link_libraries(img_clbk_LIBRARY
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
 )
 target_link_libraries(extrinsic_LIBRARY
-  ${catkin_LIBRARIES}  
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}  
 )
 
+
+# NODE
 target_link_libraries(rectify_node
   rectify_LIBRARY	
   ${catkin_LIBRARIES} 
 )
-
 target_link_libraries(raw_img_listener_node
   img_clbk_LIBRARY 
   ${catkin_LIBRARIES} 
@@ -207,11 +246,35 @@ target_link_libraries(extrinsic_calib_node
   extrinsic_LIBRARY 
   ${catkin_LIBRARIES} 
 )
-
 target_link_libraries(unwarp_node
   unwarp_LIBRARY
   ${catkin_LIBRARIES} 
 )
+target_link_libraries(obstacle_detector_node
+  obstacle_detector_LIBRARY
+  ${catkin_LIBRARIES} 
+)
+target_link_libraries(robot_detector_node
+  robot_detector_LIBRARY
+  ${catkin_LIBRARIES} 
+)
+
+
+
+
+
+# NODELET
+target_link_libraries(image_elab_nodelet 
+  unwarp_LIBRARY
+  extrinsic_LIBRARY
+  obstacle_detector_LIBRARY
+  img_clbk_LIBRARY
+  rectify_LIBRARY
+  robot_detector_LIBRARY
+  ${catkin_LIBRARIES}
+)
+
+
 
 #############
 ## Install ##

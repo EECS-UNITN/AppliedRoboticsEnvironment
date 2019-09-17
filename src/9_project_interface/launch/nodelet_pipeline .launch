@@ -4,8 +4,11 @@
   <!-- Load Configuration -->
   <include file="$(find project_interface)/launch/load_params.launch"/>
 
+  <!-- Rviz visualizer -->
+  <include file="$(find project_interface)/launch/visualization.launch"/>
+
   <!-- Start pipeline -->
-  <include file="$(find image_elab)/launch/image_pipeline.launch"/>
+  <include file="$(find image_elab)/launch/nodelet_image_pipeline.launch"/>
   
 </launch>
 

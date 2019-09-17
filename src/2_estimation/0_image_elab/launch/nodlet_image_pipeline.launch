@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+	
+  <param name="num_worker_threads" type="int" value="4" />
+
+  <node pkg="nodelet" type="nodelet" name="image_elab_nodelet"  args="manager" output="screen"/>
+
+  <node pkg="nodelet" type="nodelet" name="unwarp_nodelet" args="load image_elab/UnwarpNodelet image_elab_nodelet" output="screen" />
+
+  <node pkg="nodelet" type="nodelet" name="extrinsic_calib_nodelet" args="load image_elab/ExtrinsicCalibNodelet image_elab_nodelet" output="screen" />
+
+  <node pkg="nodelet" type="nodelet" name="obstacle_detector_nodelet" args="load image_elab/ObstacleDetectorNodelet image_elab_nodelet" output="screen" />
+
+  <node pkg="nodelet" type="nodelet" name="raw_image_listener_nodelet" args="load image_elab/RawImageListenerNodelet image_elab_nodelet" output="screen" />
+
+  <node pkg="nodelet" type="nodelet" name="rectify_nodelet" args="load image_elab/RectifyNodelet image_elab_nodelet" output="screen" />
+
+  <node pkg="nodelet" type="nodelet" name="robot_detector_nodelet" args="load image_elab/RobotDetectorNodelet image_elab_nodelet" output="screen" />
+
+ 
+
+
+</launch>
+

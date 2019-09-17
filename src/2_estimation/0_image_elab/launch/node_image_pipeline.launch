@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <node name="extrinsic_calib" pkg="image_elab" type="extrinsic_calib_node" respawn="false" output="screen"/>
+
+  <node name="rectify_image" pkg="image_elab" type="rectify_node" respawn="true" output="screen"/>
+
+  <node name="unwarp_image" pkg="image_elab" type="unwarp_node" respawn="true" output="screen"/>
+
+  <node name="obstacle_detector" pkg="image_elab" type="obstacle_detector_node" respawn="true" output="screen"/>
+
+  <node name="robot_detector" pkg="image_elab" type="robot_detector_node" respawn="true" output="screen"/>
+
+</launch>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <!-- Load Configuration -->
+  <include file="$(find project_interface)/launch/load_params.launch"/>
+
+  <!-- Rviz visualizer -->
+  <include file="$(find project_interface)/launch/visualization.launch"/>
+
+  <!-- Start pipeline -->
+  <include file="$(find image_elab)/launch/node_image_pipeline.launch"/>
+  
+</launch>
+
