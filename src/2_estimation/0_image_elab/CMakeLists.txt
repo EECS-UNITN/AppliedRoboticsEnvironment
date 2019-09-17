@@ -161,27 +161,27 @@ add_library(image_elab_nodelet
 ## The recommended prefix ensures that target names across packages don't collide
 
 add_executable(unwarp_node 
-          src/unwarp_node.cpp
+          src/node/unwarp_node.cpp
           )
 
 add_executable(rectify_node 
-					src/rectify_node.cpp
+					src/node/rectify_node.cpp
 					)
 
 add_executable(raw_img_listener_node 
-          src/raw_img_listener.cpp
+          src/node/raw_img_listener.cpp
           )
 
 add_executable(extrinsic_calib_node 
-          src/extrinsic_calib_node.cpp
+          src/node/extrinsic_calib_node.cpp
           )
 
 add_executable(obstacle_detector_node 
-          src/obstacle_detector_node.cpp
+          src/node/obstacle_detector_node.cpp
           )
 
 add_executable(robot_detector_node 
-          src/robot_detector_node.cpp
+          src/node/robot_detector_node.cpp
           )
 
 ## Rename C++ executable without prefix
