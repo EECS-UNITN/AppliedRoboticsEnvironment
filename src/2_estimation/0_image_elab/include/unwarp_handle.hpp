@@ -41,7 +41,7 @@ private:
   ros::Subscriber sub_ground_; 
   ros::Subscriber sub_robot_;   
   ros::Publisher  pub_unwarp_robot_;
-  ros::Publisher  pub_unwarp_ground_;  
+  ros::Publisher  pub_unwarp_ground_, pub_dt_;  
 
 
   // TOPICS  
@@ -49,7 +49,7 @@ private:
   std::string sub_robot_topic_name_;  
   std::string sub_undistort_topic_name_;
   std::string robot_publisher_topic_name_;
-  std::string ground_publisher_topic_name_;
+  std::string ground_publisher_topic_name_, pub_dt_topic_name_;
   
 
   cv::Mat ground_transf_, robot_transf_;

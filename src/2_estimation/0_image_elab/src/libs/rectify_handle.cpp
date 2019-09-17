@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <cv_bridge/cv_bridge.h>
 
+#include "std_msgs/Float32.h"
+
 #include <sstream>
 using namespace image_proc;
 
@@ -14,7 +16,7 @@ const std::string kPringName = "rectify_handle.hpp";
 // Constructor
 RectifyHandle::RectifyHandle(){
     ROS_INFO_NAMED(kPringName, "Constructor");
-    initialized_  = false;    
+    initialized_  = false;     
 }
 
 void RectifyHandle::onInit(ros::NodeHandle &nodeHandle){
@@ -60,7 +62,7 @@ void RectifyHandle::loadParameters() {
     queue_size_ = 1;
     rec_publisher_topic_name_      = "/image/rectify";
     camera_subscriber_topic_name_  = "/camera/rgb/image_raw";
-    //camera_subscriber_topic_name_  = "/camera/rgb/image_raw";
+    pub_dt_topic_name_             = "/process_time/imageUndistort";
 
 
     dist_coeffs_   = (cv::Mat1d(1,4) << k1, k2, p1, p2, k3);
@@ -79,6 +81,7 @@ void RectifyHandle::publishToTopics() {
 
     // Make sure we don't enter connectCb() between advertising and assigning to pub_rect_
     pub_rect_  = nh_.advertise<sensor_msgs::Image>(rec_publisher_topic_name_,  1, connect_cb, connect_cb);
+    pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
 }
 
 void RectifyHandle::connectCb() {
@@ -115,9 +118,9 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
-    
-    cv_bridge::CvImagePtr out_img(new cv_bridge::CvImage());
 
+    cv_bridge::CvImagePtr out_img(new cv_bridge::CvImage());    
+    auto start_time = ros::Time::now();
     try{
         out_img->header   = cv_ptr->header;
         out_img->encoding = cv_ptr->encoding; 
@@ -134,6 +137,8 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
     }catch(...){
 
     }
-    // IMPORTANT PUBLISH SHARED POINTER!!!
+    std_msgs::Float32 dt_msg;    
+    dt_msg.data = (ros::Time::now() - start_time).toSec();
+    pub_dt_.publish(dt_msg);    
     pub_rect_.publish(out_img->toImageMsg());
 }

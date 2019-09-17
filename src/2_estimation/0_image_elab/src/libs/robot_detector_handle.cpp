@@ -13,7 +13,7 @@
 #include "geometry_msgs/PolygonStamped.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "tf/transform_broadcaster.h"
-
+#include "std_msgs/Float32.h"
 #include "utils.hpp"
 
 namespace enc = sensor_msgs::image_encodings;
@@ -65,7 +65,7 @@ namespace image_proc {
         
         pub_robot_topic_name_   = "/detection/robot";
         pub_gps_loc_topic_name_ = "/estimation/pose";
-        
+        pub_dt_topic_name_      = "/process_time/findRobot";
     }
 
     void RobotDetectorHandle::publishToTopics() {
@@ -74,6 +74,7 @@ namespace image_proc {
 
         pub_robot_ = nh_.advertise<geometry_msgs::PolygonStamped>(pub_robot_topic_name_, 1, false);
         pub_gps_loc_ = nh_.advertise<geometry_msgs::PoseStamped>(pub_gps_loc_topic_name_, 1, false);
+        pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
     }
 
     void RobotDetectorHandle::subscribeToTopic() {
@@ -111,6 +112,7 @@ namespace image_proc {
         
 
         bool res = false;
+        auto start_time = ros::Time::now();
         try{
             if(default_implementation_){
                 ROS_INFO_NAMED(kPringName, "Call default function");
@@ -130,7 +132,10 @@ namespace image_proc {
         }catch(...){
 
         }
-
+        std_msgs::Float32 dt_msg;
+        dt_msg.data = (ros::Time::now() - start_time).toSec();
+        pub_dt_.publish(dt_msg);
+        
         if(res){
 
             std::string frame_id = "odom";

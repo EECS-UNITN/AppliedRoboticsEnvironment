@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include "jsk_recognition_msgs/PolygonArray.h"
+#include "std_msgs/Float32.h"
 #include "utils.hpp"
 
 namespace enc = sensor_msgs::image_encodings;
@@ -63,6 +64,7 @@ namespace image_proc {
         pub_obstacles_topic_name_ = "/detection/obstacles";
         pub_victims_topic_name_   = "/detection/victims";
         pub_gate_topic_name_      = "/detection/gate";
+        pub_dt_topic_name_        = "/process_time/processMap";
     }
 
     void ObstacleDetectorHandle::publishToTopics() {
@@ -72,6 +74,7 @@ namespace image_proc {
         pub_obstacles_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_obstacles_topic_name_, 1, true);
         pub_victims_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_victims_topic_name_, 1, true);
         pub_gate_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_gate_topic_name_, 1, true);
+        pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
     }
 
     void ObstacleDetectorHandle::subscribeToTopic() {
@@ -109,6 +112,7 @@ namespace image_proc {
         
 
         bool res = false;
+        auto start_time = ros::Time::now();
         try{
             if(default_implementation_){
                 ROS_INFO_NAMED(kPringName, "Call default function");
@@ -128,7 +132,10 @@ namespace image_proc {
         }catch(...){
 
         }
-
+        std_msgs::Float32 dt_msg;
+        dt_msg.data = (ros::Time::now() - start_time).toSec();
+        pub_dt_.publish(dt_msg);
+        
         if(res){
 
             std::string frame_id = "odom";

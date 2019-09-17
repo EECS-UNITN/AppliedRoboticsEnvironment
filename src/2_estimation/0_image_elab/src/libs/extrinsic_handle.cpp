@@ -4,6 +4,7 @@
 
 #include "image_elab/ExtrinsicParams.h"
 #include "image_elab/PlaneTransform.h"
+#include "std_msgs/Float32.h"
 
 #include <assert.h>
 #include <cv_bridge/cv_bridge.h>
@@ -61,7 +62,7 @@ namespace image_proc {
         //camera_subscriber_topic_name_  = "/camera/rgb/image_raw";
         pub_ground_topic_name_ = "/transform/ground_plane";
         pub_robot_topic_name_  = "/transform/robot_plane";
-
+        pub_dt_topic_name_     = "/process_time/findPlaneTransform";
 
         double arena_w, arena_h;
         int img_width, img_height;
@@ -92,6 +93,8 @@ namespace image_proc {
         pub_extr_  = nh_.advertise<image_elab::ExtrinsicParams>(extr_publisher_topic_name_, 1, true);
         pub_ground_transf_ = nh_.advertise<image_elab::PlaneTransform>(pub_ground_topic_name_, 1, true);
         pub_robot_transf_ = nh_.advertise<image_elab::PlaneTransform>(pub_robot_topic_name_, 1, true);
+
+        pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
     }
 
     void ExtrinsicHandle::subscribeToTopic() {
@@ -129,6 +132,7 @@ namespace image_proc {
         image_elab::PlaneTransformPtr robot_msg(new image_elab::PlaneTransform());
 
         bool res = false;
+        auto start_time = ros::Time::now();
         try{
             if(default_implementation_){
                 ROS_INFO_NAMED(kPringName, "Call default function");
@@ -149,41 +153,39 @@ namespace image_proc {
                     student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_);
                 }
             }
-
-
-            if (res){
-                for (int i=0; i<robot_plane_.rows; ++i) {
-                  for (int j=0; j<robot_plane_.cols; ++j) {
-                    robot_msg->matrix.push_back(robot_plane_.at<double>(i,j));
-                  }      
-                }        
-                robot_msg->scale = scale_;
-
-                for (int i=0; i<ground_plane_.rows; ++i) {
-                  for (int j=0; j<ground_plane_.cols; ++j) {
-                    ground_msg->matrix.push_back(ground_plane_.at<double>(i,j));
-                  }      
-                }
-                ground_msg->scale = scale_;
-
-                for (int i=0; i<rvec_.rows; ++i) {
-                  for (int j=0; j<rvec_.cols; ++j) {
-                    extr_msg->rvec.push_back(rvec_.at<double>(i,j));
-                  }      
-                }
-                
-                for (int i=0; i<tvec_.rows; ++i) {
-                  for (int j=0; j<tvec_.cols; ++j) {
-                    extr_msg->tvec.push_back(tvec_.at<double>(i,j));
-                  }      
-                }
-            }
-
         }catch(...){
 
-        }
+        }        
 
+        std_msgs::Float32 dt_msg;
+        dt_msg.data = (ros::Time::now() - start_time).toSec();
+        pub_dt_.publish(dt_msg);
         if(res){
+          for (int i=0; i<robot_plane_.rows; ++i) {
+              for (int j=0; j<robot_plane_.cols; ++j) {
+              robot_msg->matrix.push_back(robot_plane_.at<double>(i,j));
+              }      
+          }        
+          robot_msg->scale = scale_;
+
+          for (int i=0; i<ground_plane_.rows; ++i) {
+              for (int j=0; j<ground_plane_.cols; ++j) {
+              ground_msg->matrix.push_back(ground_plane_.at<double>(i,j));
+              }      
+          }
+          ground_msg->scale = scale_;
+
+          for (int i=0; i<rvec_.rows; ++i) {
+              for (int j=0; j<rvec_.cols; ++j) {
+              extr_msg->rvec.push_back(rvec_.at<double>(i,j));
+              }      
+          }
+
+          for (int i=0; i<tvec_.rows; ++i) {
+              for (int j=0; j<tvec_.cols; ++j) {
+              extr_msg->tvec.push_back(tvec_.at<double>(i,j));
+              }      
+          }
           sub_rect_.shutdown();
 
           // Publish the msg
@@ -191,11 +193,6 @@ namespace image_proc {
           pub_ground_transf_.publish(ground_msg);
           pub_robot_transf_.publish(robot_msg);
           calib_done_ = true;
-        } 
-          
-    //TODO: publish position of the camera in tf:TREE
-    //TODO: use camera matrix to project up the points!!!!
-        
+        }
     }
-
 }

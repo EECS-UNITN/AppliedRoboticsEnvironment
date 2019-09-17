@@ -4,5 +4,6 @@
   <!-- Load Configuration -->
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find project_interface)/rviz/config_file.rviz" />
 
+  <node type="rqt_multiplot" name="rqt_multiplot" pkg="rqt_multiplot" args="--multiplot-config $(find project_interface)/rqt_multiplot/config_file.rviz" />
 </launch>
 

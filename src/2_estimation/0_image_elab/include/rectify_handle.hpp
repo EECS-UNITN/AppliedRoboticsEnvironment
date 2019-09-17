@@ -36,15 +36,15 @@ private:
 
   // ROS communication  
   ros::Subscriber sub_camera_;
-  ros::Publisher  pub_rect_;
+  ros::Publisher  pub_rect_, pub_dt_;
 
   // TOPICS  
   std::string camera_subscriber_topic_name_;
-  std::string rec_publisher_topic_name_;
+  std::string rec_publisher_topic_name_, pub_dt_topic_name_;
 
   // CALIBRATION MATRIX
   cv::Mat dist_coeffs_, camera_matrix_;
-
+  
   // Callback
   void imageCb(const sensor_msgs::ImageConstPtr& image_msg);
 

@@ -32,12 +32,14 @@ private:
 
   // ROS communication  
   ros::Subscriber sub_rect_;
+  ros::Publisher  pub_dt_;
   ros::Publisher  pub_extr_;
   ros::Publisher  pub_ground_transf_, pub_robot_transf_;
 
   // TOPICS  
   std::string rect_subscriber_topic_name_;
   std::string extr_publisher_topic_name_, pub_ground_topic_name_, pub_robot_topic_name_;
+  std::string pub_dt_topic_name_;
 
   // CALIBRATION MATRIX
   cv::Mat camera_matrix_;

@@ -4,7 +4,7 @@
 
 #include <assert.h>
 #include <cv_bridge/cv_bridge.h>
-
+#include "std_msgs/Float32.h"
 #include <sstream>
 
 namespace enc = sensor_msgs::image_encodings;
@@ -54,6 +54,7 @@ namespace image_proc {
         sub_undistort_topic_name_        = "/image/rectify";
         robot_publisher_topic_name_      = "/image/unwarp_robot";
         ground_publisher_topic_name_     = "/image/unwarp_ground";
+        pub_dt_topic_name_               = "/process_time/unwarp";
      
     }
 
@@ -66,6 +67,8 @@ namespace image_proc {
         pub_unwarp_robot_  = nh_.advertise<sensor_msgs::Image>(robot_publisher_topic_name_,  1);
 
         pub_unwarp_ground_  = nh_.advertise<sensor_msgs::Image>(ground_publisher_topic_name_,  1);
+
+        pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
 
 
     }
@@ -104,6 +107,7 @@ namespace image_proc {
 
         cv_bridge::CvImagePtr out_img_ground(new cv_bridge::CvImage());
         cv_bridge::CvImagePtr out_img_robot(new cv_bridge::CvImage());
+        auto start_time = ros::Time::now();
         try{
             out_img_ground->header   = cv_ptr->header;
             out_img_ground->encoding = cv_ptr->encoding; 
@@ -122,6 +126,10 @@ namespace image_proc {
         }catch(...){
 
         }
+        std_msgs::Float32 dt_msg;
+        dt_msg.data = (ros::Time::now() - start_time).toSec();
+        pub_dt_.publish(dt_msg); 
+               
         // IMPORTANT PUBLISH SHARED POINTER!!!
         sensor_msgs::ImagePtr u_ground = out_img_ground->toImageMsg();
         pub_unwarp_ground_.publish(u_ground);
