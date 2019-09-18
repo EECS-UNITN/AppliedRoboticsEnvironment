@@ -51,15 +51,14 @@ namespace image_proc {
         ROS_INFO_NAMED(kPringName, "Loading Params");
 
         loadVariable<bool>(nh_,"/default_implementation/unwarp",&default_implementation_);
-
+        loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
 
         sub_ground_topic_name_           = "/transform/ground_plane";
         sub_robot_topic_name_            = "/transform/robot_plane";
         sub_undistort_topic_name_        = "/image/rectify";
         robot_publisher_topic_name_      = "/image/unwarp_robot";
         ground_publisher_topic_name_     = "/image/unwarp_ground";
-        pub_dt_topic_name_               = "/process_time/unwarp";
-     
+        pub_dt_topic_name_               = "/process_time/unwarp";     
     }
 
     void UnwarpHandle::connectGroundCb(){
@@ -130,19 +129,19 @@ namespace image_proc {
             if(default_implementation_){
                 ROS_INFO_NAMED(kPringName, "Call default function");
                 if(n_subscribers_ground_ > 0){
-                    professor::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_);
+                    professor::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_, config_folder_);
                 }
                 if(n_subscribers_robot_ > 0){
-                    professor::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_);
+                    professor::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_, config_folder_);
                 }
             }else{
                 // CALL STUDENT FUNCTION    
                 ROS_WARN_NAMED(kPringName, "Call student function");
                 if(n_subscribers_ground_ > 0){
-                    student::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_);
+                    student::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_, config_folder_);
                 }
                 if(n_subscribers_robot_ > 0){
-                    student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_);
+                    student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_, config_folder_);
                 }
             }
         }catch(...){

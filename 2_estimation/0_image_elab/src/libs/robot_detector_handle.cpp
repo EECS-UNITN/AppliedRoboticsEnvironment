@@ -56,8 +56,8 @@ namespace image_proc {
       
               
         loadVariable<bool>(nh_,"/default_implementation/robot_detector", &default_implementation_);
-
-
+        loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
+        
         queue_size_ = 1;
 
         sub_transf_topic_name_ = "/transform/robot_plane";
@@ -118,7 +118,7 @@ namespace image_proc {
                 ROS_INFO_NAMED(kPringName, "Call default function");
 
                 // PROFESSOR FUNCTION IMPLEMENTATION
-                res = professor::findRobot(cv_ptr->image, scale_, triangle_, x_, y_, theta_);
+                res = professor::findRobot(cv_ptr->image, scale_, triangle_, x_, y_, theta_, config_folder_);
 
                  
             }else{
@@ -126,7 +126,7 @@ namespace image_proc {
                 ROS_WARN_NAMED(kPringName, "Call student function");
                 
                 // STUDENT FUNCTION IMPLEMENTATION
-                res = student::findRobot(cv_ptr->image, scale_, triangle_, x_, y_, theta_);
+                res = student::findRobot(cv_ptr->image, scale_, triangle_, x_, y_, theta_, config_folder_);
             }
 
         }catch(...){

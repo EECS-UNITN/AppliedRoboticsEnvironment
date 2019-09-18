@@ -49,7 +49,7 @@ namespace image_proc {
         ROS_INFO_NAMED(kPringName, "Loading Params");
       
         double fx, fy, cx, cy;
-        
+        loadVariable<std::string>(nh_,"/config_folder",&config_folder_); 
         loadVariable<double>(nh_, "/camera_calibration/fx", &fx);
         loadVariable<double>(nh_, "/camera_calibration/fy", &fy);
         loadVariable<double>(nh_, "/camera_calibration/cx", &cx);
@@ -136,21 +136,21 @@ namespace image_proc {
         try{
             if(default_implementation_){
                 ROS_INFO_NAMED(kPringName, "Call default function");
-                res = professor::extrinsicCalib(cv_ptr->image, object_points_ground_, camera_matrix_, rvec_, tvec_);
+                res = professor::extrinsicCalib(cv_ptr->image, object_points_ground_, camera_matrix_, rvec_, tvec_, config_folder_);
                 
                 if (res){
-                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, ground_plane_);
+                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, ground_plane_, config_folder_);
                     
-                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_);            
+                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_, config_folder_);            
                 }
                 
             }else{
                 // CALL STUDENT FUNCTION    
                 ROS_WARN_NAMED(kPringName, "Call student function");
-                res = student::extrinsicCalib(cv_ptr->image, object_points_ground_, camera_matrix_, rvec_, tvec_);            
+                res = student::extrinsicCalib(cv_ptr->image, object_points_ground_, camera_matrix_, rvec_, tvec_, config_folder_);            
                 if (res){
-                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, ground_plane_);
-                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_);
+                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, ground_plane_, config_folder_);
+                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_, config_folder_);
                 }
             }
         }catch(...){

@@ -35,6 +35,7 @@ private:
   bool initialized_; // check if node handle is initialized
   int queue_size_;
   bool default_implementation_;
+  std::string config_folder_;
 
   // ROS communication  
   ros::Subscriber sub_undistort_;

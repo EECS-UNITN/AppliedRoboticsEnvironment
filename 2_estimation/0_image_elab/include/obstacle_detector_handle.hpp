@@ -29,7 +29,8 @@ private:
   bool initialized_; // check if node handle is initialized
   int queue_size_;
   bool default_implementation_;
-
+  std::string config_folder_;
+  
   // ROS communication  
   ros::Subscriber sub_image_, sub_transf_;
   ros::Publisher  pub_obstacles_, pub_gate_, pub_victims_, pub_dt_;

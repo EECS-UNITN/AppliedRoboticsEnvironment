@@ -46,7 +46,7 @@ void RectifyHandle::loadParameters() {
     ROS_INFO_NAMED(kPringName, "Loading Params");
   
     double fx, fy, cx, cy, k1, k2, k3, p1, p2;
-    
+    loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
     loadVariable<double>(nh_, "/camera_calibration/fx", &fx);
     loadVariable<double>(nh_, "/camera_calibration/fy", &fy);
     loadVariable<double>(nh_, "/camera_calibration/cx", &cx);
@@ -127,12 +127,12 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
         if(default_implementation_){
             ROS_INFO_NAMED(kPringName, "Call default function");
             professor::imageUndistort(cv_ptr->image, out_img->image, 
-                            camera_matrix_, dist_coeffs_);
+                            camera_matrix_, dist_coeffs_, config_folder_);
         }else{
             // CALL STUDENT FUNCTION    
             ROS_WARN_NAMED(kPringName, "Call student function");
             student::imageUndistort(cv_ptr->image, out_img->image, 
-                            camera_matrix_, dist_coeffs_);
+                            camera_matrix_, dist_coeffs_, config_folder_);
         }
     }catch(...){
 

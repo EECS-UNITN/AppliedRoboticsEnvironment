@@ -51,6 +51,7 @@ void loadVariable(ros::NodeHandle &nh, std::string variable_name, T* ret_val){
 void GenericHandle::loadParameters() {
     ROS_INFO_NAMED(kPringName, "Loading Params");
   
+    loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
     loadVariable<bool>(nh_,default_implementation_field_,&default_implementation_);  
 }
 
@@ -81,7 +82,7 @@ void GenericHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
     
     try{     
         ROS_INFO_NAMED(kPringName, "calling student implementation");    
-        student::genericImageListener(cv_ptr->image, camera_subscriber_topic_name_);
+        student::genericImageListener(cv_ptr->image, camera_subscriber_topic_name_, config_folder_);
     }catch(...){
 
     }    

@@ -52,7 +52,7 @@ namespace image_proc {
     void ObstacleDetectorHandle::loadParameters() {
         ROS_INFO_NAMED(kPringName, "Loading Params");
       
-              
+        loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
         loadVariable<bool>(nh_,"/default_implementation/obstacle_detector", &default_implementation_);
 
 
@@ -118,7 +118,7 @@ namespace image_proc {
                 ROS_INFO_NAMED(kPringName, "Call default function");
 
                 // PROFESSOR FUNCTION IMPLEMENTATION
-                res = professor::processMap(cv_ptr->image, scale_, obstacle_list_, victim_list_, gate_);
+                res = professor::processMap(cv_ptr->image, scale_, obstacle_list_, victim_list_, gate_, config_folder_);
 
                  
             }else{
@@ -126,7 +126,7 @@ namespace image_proc {
                 ROS_WARN_NAMED(kPringName, "Call student function");
                 
                 // STUDENT FUNCTION IMPLEMENTATION
-                res = student::processMap(cv_ptr->image, scale_, obstacle_list_, victim_list_, gate_);
+                res = student::processMap(cv_ptr->image, scale_, obstacle_list_, victim_list_, gate_, config_folder_);
             }
 
         }catch(...){
