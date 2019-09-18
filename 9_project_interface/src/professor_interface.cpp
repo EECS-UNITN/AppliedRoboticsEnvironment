@@ -1,5 +1,6 @@
 #include "professor_interface.hpp"
 
+
 #include <stdexcept>
 #include <sstream>
 
@@ -7,14 +8,37 @@
 #include <atomic>
 #include <unistd.h>
 
+#include <experimental/filesystem>
+#include <sstream>
+
 namespace professor {
+
+
+  //-------------------------------------------------------------------------
+  //          GENERIC IMAGE LISTENER IMPLEMENTATION
+  //-------------------------------------------------------------------------
   void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder){
   	static size_t id = 0;
   	static bool init = false;
   	static std::string folder_path;
 
-  	if(!init){
-  		folder_path = config_folder + "/camera_image/";
+  	if(!init){      
+      bool exist = true;
+      int i = 0;
+      while(exist && i < 1000){
+        std::stringstream ss;
+        ss << config_folder << "/camera_image" << std::setw(3) << std::setfill('0') << i << "/";
+  		  folder_path = ss.str();
+
+        exist = std::experimental::filesystem::exists(folder_path);
+
+        i++;        
+      }
+      
+      if(i > 999 || !std::experimental::filesystem::create_directories(folder_path)){
+        throw std::logic_error( "NO EMTY FOLDER" );
+      }
+
   		init = true;
   	}
     	    
@@ -22,19 +46,24 @@ namespace professor {
     char c;
     c = cv::waitKey(30);
     
-    std::stringstream file;
+    std::stringstream img_file;
     switch (c) {    	
 		case 's':		
-			file << folder_path << std::setfill('0') 
-					<< std::setw(2)  << (id++) << ".jpg";
-		 	cv::imwrite( file.str(), img_in );
-		 	std::cout << "Saved image " << file.str() << std::endl;
+			img_file << folder_path << std::setfill('0') 
+					<< std::setw(3)  << (id++) << ".jpg";
+		 	cv::imwrite( img_file.str(), img_in );
+
+		 	std::cout << "Saved image " << img_file.str() << std::endl;
 		 	break;
 		default:
 				break;
     }
   }
 
+
+  //-------------------------------------------------------------------------
+  //          EXTRINSIC CALIB IMPLEMENTATION
+  //-------------------------------------------------------------------------
 
   // Defintion of the function pickNPoints and the callback mouseCallback.
   // The function pickNPoints is used to display a window with a background
@@ -81,21 +110,47 @@ namespace professor {
 
   bool extrinsicCalib(const cv::Mat& img_in, std::vector<cv::Point3f> object_points, const cv::Mat& camera_matrix, cv::Mat& rvec, cv::Mat& tvec, const std::string& config_folder){
 
-    //std::vector<cv::Point2f> image_points = pickNPoints(4, img_in);
-    
-    std::vector<cv::Point2f> image_points = {
-      {342, 851},
-      {974, 809},
-      {940, 388},
-      {316, 433}};
+    std::string file_path = config_folder + "extrinsicCalib.csv";
 
-    
+    std::vector<cv::Point2f> image_points;
 
-    std::cout << "IMAGE POINTS: " << std::endl;
-    for (const auto pt: image_points) {
-      std::cout << pt << std::endl;
+    if (!std::experimental::filesystem::exists(file_path)){
+          
+      std::experimental::filesystem::create_directories(config_folder);
+      
+      image_points = pickNPoints(4, img_in);
+      // SAVE POINT TO FILE
+      // std::cout << "IMAGE POINTS: " << std::endl;
+      // for (const auto pt: image_points) {
+      //   std::cout << pt << std::endl;
+      // }
+      std::ofstream output(file_path);
+      if (!output.is_open()){
+        throw std::runtime_error("Cannot write file: " + file_path);
+      }
+      for (const auto pt: image_points) {
+        output << pt.x << " " << pt.y << std::endl;
+      }
+      output.close();
+    }else{
+      // LOAD POINT FROM FILE
+      std::ifstream input(file_path);
+      if (!input.is_open()){
+        throw std::runtime_error("Cannot read file: " + file_path);
+      }
+      while (!input.eof()){
+        double x, y;
+        if (!(input >> x >> y)) {
+          if (input.eof()) break;
+          else {
+            throw std::runtime_error("Malformed file: " + file_path);
+          }
+        }
+        image_points.emplace_back(x, y);
+      }
+      input.close();
     }
-
+    
     cv::Mat dist_coeffs;
     dist_coeffs   = (cv::Mat1d(1,4) << 0, 0, 0, 0, 0);
     bool ok = cv::solvePnP(object_points, image_points, camera_matrix, dist_coeffs, rvec, tvec);
@@ -112,11 +167,15 @@ namespace professor {
     return ok;
   }
 
+  //-------------------------------------------------------------------------
+  //          UNDISTORT IMAGE IMPLEMENTATION
+  //-------------------------------------------------------------------------
 	void imageUndistort(const cv::Mat& img_in, cv::Mat& img_out, 
 					const cv::Mat& cam_matrix, const cv::Mat& dist_coeffs, const std::string& config_folder){
-
+    // // SLOW VERSION
     //undistort(img_in, img_out, cam_matrix, dist_coeffs);
 
+    // OPTIMIZED VERSION
     static bool maps_initialized = false;
     static cv::Mat full_map1, full_map2;
 
@@ -135,6 +194,9 @@ namespace professor {
 
 
 
+  //-------------------------------------------------------------------------
+  //          FIND PLANE TRANSFORM
+  //-------------------------------------------------------------------------
   void findPlaneTransform(const cv::Mat& cam_matrix, const cv::Mat& rvec, const cv::Mat& tvec, const std::vector<cv::Point3f>& object_points_plane, cv::Mat& plane_transf, const std::string& config_folder){
     
     cv::Mat image_points;
@@ -151,10 +213,17 @@ namespace professor {
     plane_transf = cv::getPerspectiveTransform(image_points, plane_points);
   }
 
+  //-------------------------------------------------------------------------
+  //          UNWARP TRANSFORM
+  //-------------------------------------------------------------------------
   void unwarp(const cv::Mat& img_in, cv::Mat& img_out, const cv::Mat& transf, const double scale, const std::string& config_folder){
     cv::warpPerspective(img_in, img_out, transf, img_in.size());
   }
 
+
+  //-------------------------------------------------------------------------
+  //          PROCESS MAP
+  //-------------------------------------------------------------------------
   bool processObstacles(const cv::Mat& hsv_img, const double scale, std::vector<Polygon>& obstacle_list){
     
     // Find red regions: h values around 0 (positive and negative angle: [0,15] U [160,179])
@@ -292,6 +361,10 @@ namespace professor {
     return res;
   }
 
+
+  //-------------------------------------------------------------------------
+  //          FIND ROBOT
+  //-------------------------------------------------------------------------
   bool processRobot(const cv::Mat& hsv_img, const double scale, Polygon& triangle, double& x, double& y, double& theta){
 
     cv::Mat blue_mask;    
@@ -392,5 +465,3 @@ namespace professor {
   }
 
 }
-
-

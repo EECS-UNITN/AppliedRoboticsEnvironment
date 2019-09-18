@@ -35,4 +35,5 @@ add_library(professor SHARED
 
 target_link_libraries(professor
   ${catkin_LIBRARIES}  
+  stdc++fs
 )
