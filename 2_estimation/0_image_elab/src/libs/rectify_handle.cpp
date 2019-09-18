@@ -15,7 +15,7 @@ const std::string kPringName = "rectify_handle.hpp";
 
 // Constructor
 RectifyHandle::RectifyHandle(){
-    ROS_INFO_NAMED(kPringName, "Constructor");
+    ROS_DEBUG_NAMED(kPringName, "Constructor");
     initialized_  = false;     
 }
 
@@ -43,7 +43,7 @@ void loadVariable(ros::NodeHandle &nh, std::string variable_name, T* ret_val){
 
 // Methods
 void RectifyHandle::loadParameters() {
-    ROS_INFO_NAMED(kPringName, "Loading Params");
+    ROS_DEBUG_NAMED(kPringName, "Loading Params");
   
     double fx, fy, cx, cy, k1, k2, k3, p1, p2;
     loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
@@ -73,7 +73,7 @@ void RectifyHandle::loadParameters() {
 }
 
 void RectifyHandle::publishToTopics() {
-    ROS_INFO_NAMED(kPringName, "Init publishers");
+    ROS_DEBUG_NAMED(kPringName, "Init publishers");
     assert (initialized_);
 
     // Monitor whether anyone is subscribed to the output
@@ -85,11 +85,10 @@ void RectifyHandle::publishToTopics() {
 }
 
 void RectifyHandle::connectCb() {
-    ROS_INFO_NAMED(kPringName, "Init subscribers");
+    ROS_DEBUG_NAMED(kPringName, "Init subscribers");
     assert (initialized_);
 
-    boost::lock_guard<boost::mutex> lock(connect_mutex_);
-    std::cout << "SUBS num: " << pub_rect_.getNumSubscribers() << std::endl;
+    boost::lock_guard<boost::mutex> lock(connect_mutex_);    
     if (pub_rect_.getNumSubscribers() == 0){
         if(sub_camera_){ // if subscriber is active
             sub_camera_.shutdown();
@@ -125,17 +124,17 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
         out_img->header   = cv_ptr->header;
         out_img->encoding = cv_ptr->encoding; 
         if(default_implementation_){
-            ROS_INFO_NAMED(kPringName, "Call default function");
+            ROS_DEBUG_NAMED(kPringName, "Call default function");
             professor::imageUndistort(cv_ptr->image, out_img->image, 
                             camera_matrix_, dist_coeffs_, config_folder_);
         }else{
             // CALL STUDENT FUNCTION    
-            ROS_WARN_NAMED(kPringName, "Call student function");
+            ROS_DEBUG_NAMED(kPringName, "Call student function");
             student::imageUndistort(cv_ptr->image, out_img->image, 
                             camera_matrix_, dist_coeffs_, config_folder_);
         }
-    }catch(...){
-
+    }catch(std::exception ex){
+        std::cerr << ex.what() << std::endl;
     }
     std_msgs::Float32 dt_msg;    
     dt_msg.data = (ros::Time::now() - start_time).toSec();

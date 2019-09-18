@@ -15,13 +15,13 @@
 #include "utils.hpp"
 
 namespace enc = sensor_msgs::image_encodings;
-const std::string kPringName = "obstacle_detector_handle.hpp";
+static const std::string kPringName = "obstacle_detector_handle.hpp";
 
 namespace image_proc {
 
     // Constructor
     ObstacleDetectorHandle::ObstacleDetectorHandle(){
-        ROS_INFO_NAMED(kPringName, "Constructor");
+        ROS_DEBUG_NAMED(kPringName, "Constructor");
         initialized_  = false;  
         has_transform_ = false;  
     }
@@ -50,7 +50,7 @@ namespace image_proc {
 
     // Methods
     void ObstacleDetectorHandle::loadParameters() {
-        ROS_INFO_NAMED(kPringName, "Loading Params");
+        ROS_DEBUG_NAMED(kPringName, "Loading Params");
       
         loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
         loadVariable<bool>(nh_,"/default_implementation/obstacle_detector", &default_implementation_);
@@ -68,7 +68,7 @@ namespace image_proc {
     }
 
     void ObstacleDetectorHandle::publishToTopics() {
-        ROS_INFO_NAMED(kPringName, "Init publishers");
+        ROS_DEBUG_NAMED(kPringName, "Init publishers");
         assert (initialized_);
 
         pub_obstacles_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_obstacles_topic_name_, 1, true);
@@ -78,7 +78,7 @@ namespace image_proc {
     }
 
     void ObstacleDetectorHandle::subscribeToTopic() {
-        ROS_INFO_NAMED(kPringName, "Init subscribers");
+        ROS_DEBUG_NAMED(kPringName, "Init subscribers");
         assert (initialized_);
          
         sub_image_ = nh_.subscribe(sub_image_topic_name_, queue_size_, &ObstacleDetectorHandle::imageCb, this);
@@ -115,7 +115,7 @@ namespace image_proc {
         auto start_time = ros::Time::now();
         try{
             if(default_implementation_){
-                ROS_INFO_NAMED(kPringName, "Call default function");
+                ROS_DEBUG_NAMED(kPringName, "Call default function");
 
                 // PROFESSOR FUNCTION IMPLEMENTATION
                 res = professor::processMap(cv_ptr->image, scale_, obstacle_list_, victim_list_, gate_, config_folder_);
@@ -123,14 +123,14 @@ namespace image_proc {
                  
             }else{
                 // CALL STUDENT FUNCTION    
-                ROS_WARN_NAMED(kPringName, "Call student function");
+                ROS_DEBUG_NAMED(kPringName, "Call student function");
                 
                 // STUDENT FUNCTION IMPLEMENTATION
                 res = student::processMap(cv_ptr->image, scale_, obstacle_list_, victim_list_, gate_, config_folder_);
             }
 
-        }catch(...){
-
+        }catch(std::exception ex){
+          std::cerr << ex.what() << std::endl;
         }
         std_msgs::Float32 dt_msg;
         dt_msg.data = (ros::Time::now() - start_time).toSec();
@@ -194,7 +194,9 @@ namespace image_proc {
             // Distable the subscribers  
             sub_image_.shutdown();
             sub_transf_.shutdown();
-        } 
+        }else{
+            ROS_WARN_NAMED(kPringName, "processMap returned false");
+        }
     }
 
     void ObstacleDetectorHandle::transformCb(const image_elab::PlaneTransform& transf){

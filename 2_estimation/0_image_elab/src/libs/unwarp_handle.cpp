@@ -8,14 +8,14 @@
 #include <sstream>
 
 namespace enc = sensor_msgs::image_encodings;
-const std::string kPringName = "rectify_handle.hpp";
+const std::string kPringName = "unwarp_handle.hpp";
 
 
 namespace image_proc {
 
     // Constructor
     UnwarpHandle::UnwarpHandle(){
-        ROS_INFO_NAMED(kPringName, "Constructor");
+        ROS_DEBUG_NAMED(kPringName, "Constructor");
         initialized_  = false;    
         has_ground_transf_ = has_robot_transf_ = false;
     }
@@ -48,7 +48,7 @@ namespace image_proc {
 
     // Methods
     void UnwarpHandle::loadParameters() {
-        ROS_INFO_NAMED(kPringName, "Loading Params");
+        ROS_DEBUG_NAMED(kPringName, "Loading Params");
 
         loadVariable<bool>(nh_,"/default_implementation/unwarp",&default_implementation_);
         loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
@@ -70,7 +70,7 @@ namespace image_proc {
     }
 
     void UnwarpHandle::publishToTopics() {
-        ROS_INFO_NAMED(kPringName, "Init publishers");
+        ROS_DEBUG_NAMED(kPringName, "Init publishers");
         assert (initialized_);
 
         // Monitor whether anyone is subscribed to the output
@@ -78,7 +78,7 @@ namespace image_proc {
         ros::SubscriberStatusCallback connect_robot_cb = boost::bind(&UnwarpHandle::connectRobotCb, this);
 
         // Make sure we don't enter connectCb() between advertising and assigning to pub_rect_
-        pub_unwarp_robot_  = nh_.advertise<sensor_msgs::Image>(robot_publisher_topic_name_,  1, connect_ground_cb, connect_ground_cb);
+        pub_unwarp_robot_  = nh_.advertise<sensor_msgs::Image>(robot_publisher_topic_name_,  1, connect_robot_cb, connect_robot_cb);
 
         pub_unwarp_ground_  = nh_.advertise<sensor_msgs::Image>(ground_publisher_topic_name_,  1, connect_ground_cb, connect_ground_cb);
 
@@ -87,7 +87,7 @@ namespace image_proc {
     }
 
     void UnwarpHandle::subscribeToTopics() {
-        ROS_INFO_NAMED(kPringName, "Init subscribers");
+        ROS_DEBUG_NAMED(kPringName, "Init subscribers");
         assert (initialized_);
 
         sub_undistort_ = nh_.subscribe(sub_undistort_topic_name_, queue_size_, &UnwarpHandle::imageCb, this);
@@ -127,7 +127,7 @@ namespace image_proc {
             out_img_robot->header    = cv_ptr->header;
             out_img_robot->encoding  = cv_ptr->encoding; 
             if(default_implementation_){
-                ROS_INFO_NAMED(kPringName, "Call default function");
+                ROS_DEBUG_NAMED(kPringName, "Call default function");
                 if(n_subscribers_ground_ > 0){
                     professor::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_, config_folder_);
                 }
@@ -136,7 +136,7 @@ namespace image_proc {
                 }
             }else{
                 // CALL STUDENT FUNCTION    
-                ROS_WARN_NAMED(kPringName, "Call student function");
+                ROS_DEBUG_NAMED(kPringName, "Call student function");
                 if(n_subscribers_ground_ > 0){
                     student::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_, config_folder_);
                 }
@@ -144,8 +144,8 @@ namespace image_proc {
                     student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_, config_folder_);
                 }
             }
-        }catch(...){
-
+        }catch(std::exception ex){
+            std::cerr << ex.what() << std::endl;
         }
         std_msgs::Float32 dt_msg;
         dt_msg.data = (ros::Time::now() - start_time).toSec();

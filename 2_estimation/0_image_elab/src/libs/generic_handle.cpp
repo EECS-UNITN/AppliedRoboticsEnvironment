@@ -12,7 +12,7 @@ const std::string kPringName = "generic_handle.hpp";
 
 // Constructor
 GenericHandle::GenericHandle(){
-    ROS_INFO_NAMED(kPringName, "Constructor");
+    ROS_DEBUG_NAMED(kPringName, "Constructor");
     initialized_  = false;    
 }
 
@@ -49,14 +49,14 @@ void loadVariable(ros::NodeHandle &nh, std::string variable_name, T* ret_val){
 
 // Methods
 void GenericHandle::loadParameters() {
-    ROS_INFO_NAMED(kPringName, "Loading Params");
+    ROS_DEBUG_NAMED(kPringName, "Loading Params");
   
     loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
     loadVariable<bool>(nh_,default_implementation_field_,&default_implementation_);  
 }
 
 void GenericHandle::connectCb() {
-    ROS_INFO_NAMED(kPringName, "Init subscribers");
+    ROS_DEBUG_NAMED(kPringName, "Init subscribers");
     assert (initialized_);
 
     sub_camera_ = nh_.subscribe(camera_subscriber_topic_name_, queue_size_, &GenericHandle::imageCb, this);    
@@ -81,10 +81,10 @@ void GenericHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
     }
     
     try{     
-        ROS_INFO_NAMED(kPringName, "calling student implementation");    
+        ROS_DEBUG_NAMED(kPringName, "calling student implementation");    
         student::genericImageListener(cv_ptr->image, camera_subscriber_topic_name_, config_folder_);
-    }catch(...){
-
+    }catch(std::exception ex){
+        std::cerr << ex.what() << std::endl;
     }    
     
 }

@@ -12,13 +12,13 @@
 #include <sstream>
 
 namespace enc = sensor_msgs::image_encodings;
-const std::string kPringName = "rectify_handle.hpp";
+const std::string kPringName = "extrinsic_handle.hpp";
 
 namespace image_proc {
 
     // Constructor
     ExtrinsicHandle::ExtrinsicHandle(){
-        ROS_INFO_NAMED(kPringName, "Constructor");
+        ROS_DEBUG_NAMED(kPringName, "Constructor");
         initialized_  = false;    
     }
 
@@ -46,7 +46,7 @@ namespace image_proc {
 
     // Methods
     void ExtrinsicHandle::loadParameters() {
-        ROS_INFO_NAMED(kPringName, "Loading Params");
+        ROS_DEBUG_NAMED(kPringName, "Loading Params");
       
         double fx, fy, cx, cy;
         loadVariable<std::string>(nh_,"/config_folder",&config_folder_); 
@@ -85,7 +85,7 @@ namespace image_proc {
     }
 
     void ExtrinsicHandle::publishToTopics() {
-        ROS_INFO_NAMED(kPringName, "Init publishers");
+        ROS_DEBUG_NAMED(kPringName, "Init publishers");
         assert (initialized_);
 
 
@@ -98,7 +98,7 @@ namespace image_proc {
     }
 
     void ExtrinsicHandle::subscribeToTopic() {
-        ROS_INFO_NAMED(kPringName, "Init subscribers");
+        ROS_DEBUG_NAMED(kPringName, "Init subscribers");
         assert (initialized_);
          
         sub_rect_ = nh_.subscribe(rect_subscriber_topic_name_, queue_size_, &ExtrinsicHandle::imageCb, this);
@@ -135,7 +135,7 @@ namespace image_proc {
         auto start_time = ros::Time::now();
         try{
             if(default_implementation_){
-                ROS_INFO_NAMED(kPringName, "Call default function");
+                ROS_DEBUG_NAMED(kPringName, "Call default function");
                 res = professor::extrinsicCalib(cv_ptr->image, object_points_ground_, camera_matrix_, rvec_, tvec_, config_folder_);
                 
                 if (res){
@@ -153,8 +153,8 @@ namespace image_proc {
                     student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_, config_folder_);
                 }
             }
-        }catch(...){
-
+        }catch(std::exception ex){
+          std::cerr << ex.what() << std::endl;
         }        
 
         std_msgs::Float32 dt_msg;
@@ -193,6 +193,8 @@ namespace image_proc {
           pub_ground_transf_.publish(ground_msg);
           pub_robot_transf_.publish(robot_msg);
           calib_done_ = true;
+        }else{
+          ROS_WARN_NAMED(kPringName, "findPlaneTransform returned false");
         }
     }
 }

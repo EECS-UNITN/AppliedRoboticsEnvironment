@@ -23,7 +23,7 @@ namespace image_proc {
 
     // Constructor
     RobotDetectorHandle::RobotDetectorHandle(){
-        ROS_INFO_NAMED(kPringName, "Constructor");
+        ROS_DEBUG_NAMED(kPringName, "Constructor");
         initialized_  = false;  
         has_transform_ = false;  
     }
@@ -52,7 +52,7 @@ namespace image_proc {
 
     // Methods
     void RobotDetectorHandle::loadParameters() {
-        ROS_INFO_NAMED(kPringName, "Loading Params");
+        ROS_DEBUG_NAMED(kPringName, "Loading Params");
       
               
         loadVariable<bool>(nh_,"/default_implementation/robot_detector", &default_implementation_);
@@ -69,7 +69,7 @@ namespace image_proc {
     }
 
     void RobotDetectorHandle::publishToTopics() {
-        ROS_INFO_NAMED(kPringName, "Init publishers");
+        ROS_DEBUG_NAMED(kPringName, "Init publishers");
         assert (initialized_);
 
         pub_robot_ = nh_.advertise<geometry_msgs::PolygonStamped>(pub_robot_topic_name_, 1, false);
@@ -78,7 +78,7 @@ namespace image_proc {
     }
 
     void RobotDetectorHandle::subscribeToTopic() {
-        ROS_INFO_NAMED(kPringName, "Init subscribers");
+        ROS_DEBUG_NAMED(kPringName, "Init subscribers");
         assert (initialized_);
          
         sub_image_ = nh_.subscribe(sub_image_topic_name_, queue_size_, &RobotDetectorHandle::imageCb, this);
@@ -93,8 +93,6 @@ namespace image_proc {
 
         if (!has_transform_) return;
 
-        auto delta_time = (ros::Time::now() - msg->header.stamp).toSec();
-        ROS_WARN_STREAM("Elapsed time " << delta_time);
         // Convert to Opencs
         cv_bridge::CvImageConstPtr cv_ptr; 
         try
@@ -115,7 +113,7 @@ namespace image_proc {
         auto start_time = ros::Time::now();
         try{
             if(default_implementation_){
-                ROS_INFO_NAMED(kPringName, "Call default function");
+                ROS_DEBUG_NAMED(kPringName, "Call default function");
 
                 // PROFESSOR FUNCTION IMPLEMENTATION
                 res = professor::findRobot(cv_ptr->image, scale_, triangle_, x_, y_, theta_, config_folder_);
@@ -123,14 +121,14 @@ namespace image_proc {
                  
             }else{
                 // CALL STUDENT FUNCTION    
-                ROS_WARN_NAMED(kPringName, "Call student function");
+                ROS_DEBUG_NAMED(kPringName, "Call student function");
                 
                 // STUDENT FUNCTION IMPLEMENTATION
                 res = student::findRobot(cv_ptr->image, scale_, triangle_, x_, y_, theta_, config_folder_);
             }
 
-        }catch(...){
-
+        }catch(std::exception ex){
+            std::cerr << ex.what() << std::endl;
         }
         std_msgs::Float32 dt_msg;
         dt_msg.data = (ros::Time::now() - start_time).toSec();
@@ -163,7 +161,9 @@ namespace image_proc {
                        
             pub_robot_.publish(triangle_msg);
             pub_gps_loc_.publish(robot_pose_msg);
-        } 
+        }else{
+            ROS_WARN_NAMED(kPringName, "findRobot returned false");
+        }
     }
 
     void RobotDetectorHandle::transformCb(const image_elab::PlaneTransform& transf){
