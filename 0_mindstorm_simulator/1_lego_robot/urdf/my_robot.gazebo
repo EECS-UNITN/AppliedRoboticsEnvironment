@@ -5,7 +5,7 @@
     <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
       <alwaysOn>true</alwaysOn>
       <updateRate>50.0</updateRate>
-      <bodyName>robot_footprint</bodyName>
+      <bodyName>chassis</bodyName>
       <topicName>ground_truth/state</topicName>
       <gaussianNoise>0.0</gaussianNoise>
       <frameName>world</frameName>
@@ -33,7 +33,7 @@
       <commandTopic>cmd_vel</commandTopic>
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>robot_footprint</robotBaseFrame>
+      <robotBaseFrame>chassis</robotBaseFrame>
       <publishWheelTF>false</publishWheelTF>
       <publishWheelJointState>false</publishWheelJointState>
       <rosDebugLevel>na</rosDebugLevel>
