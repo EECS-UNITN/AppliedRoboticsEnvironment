@@ -233,7 +233,7 @@ target_link_libraries(image_elab_nodelet
   ${catkin_LIBRARIES}
 )
 
-
+add_dependencies(image_elab_LIBRARY image_elab_generate_messages_cpp)
 
 #############
 ## Install ##
