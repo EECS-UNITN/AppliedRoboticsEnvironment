@@ -27,6 +27,7 @@ add_library(student SHARED
 
 target_link_libraries(student
   ${catkin_LIBRARIES}  
+  ${OpenCV_LIBS}
 )
 
 add_library(professor SHARED
@@ -36,4 +37,5 @@ add_library(professor SHARED
 target_link_libraries(professor
   ${catkin_LIBRARIES}  
   stdc++fs
+  ${OpenCV_LIBS}
 )

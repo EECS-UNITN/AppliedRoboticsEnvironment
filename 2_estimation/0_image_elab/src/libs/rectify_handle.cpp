@@ -133,7 +133,7 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
             student::imageUndistort(cv_ptr->image, out_img->image, 
                             camera_matrix_, dist_coeffs_, config_folder_);
         }
-    }catch(std::exception ex){
+    }catch(std::exception& ex){
         std::cerr << ex.what() << std::endl;
     }
     std_msgs::Float32 dt_msg;    

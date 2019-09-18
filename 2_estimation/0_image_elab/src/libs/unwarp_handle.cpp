@@ -144,7 +144,7 @@ namespace image_proc {
                     student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_, config_folder_);
                 }
             }
-        }catch(std::exception ex){
+        }catch(std::exception& ex){
             std::cerr << ex.what() << std::endl;
         }
         std_msgs::Float32 dt_msg;

@@ -412,8 +412,8 @@ namespace professor {
       cy /= triangle.size();
 
       double dst = 0;
-      cv::Point2f vertex;
-      for (cv::Point2f item: triangle)
+      Point vertex;
+      for (auto& item: triangle)
       {
         double dx = item.x-cx;      
         double dy = item.y-cy;
@@ -462,6 +462,18 @@ namespace professor {
     cv::cvtColor(img_in, hsv_img, cv::COLOR_BGR2HSV);
 
     return processRobot(hsv_img, scale, triangle, x, y, theta);
+  }
+
+
+  bool planPath(const Polygon& borders, const std::vector<Polygon>& obstacle_list, const std::vector<std::pair<int,Polygon>>& victim_list, const Polygon& gate, const float x, const float y, const float theta, Path& path){
+    float x0 = 0.2;
+    float y0 = 0.5;
+    float L  = 1.1;
+    float ds = 0.05;
+    
+    for (float s = 0; s<L+L/2; s+=ds) {
+      path.emplace_back(s, x0+s, y0, 0., 0.f);
+    }
   }
 
 }

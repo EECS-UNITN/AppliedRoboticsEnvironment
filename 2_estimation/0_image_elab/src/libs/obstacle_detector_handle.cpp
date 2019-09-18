@@ -12,7 +12,6 @@
 
 #include "jsk_recognition_msgs/PolygonArray.h"
 #include "std_msgs/Float32.h"
-#include "utils.hpp"
 
 namespace enc = sensor_msgs::image_encodings;
 static const std::string kPringName = "obstacle_detector_handle.hpp";
@@ -129,7 +128,7 @@ namespace image_proc {
                 res = student::processMap(cv_ptr->image, scale_, obstacle_list_, victim_list_, gate_, config_folder_);
             }
 
-        }catch(std::exception ex){
+        }catch(std::exception& ex){
           std::cerr << ex.what() << std::endl;
         }
         std_msgs::Float32 dt_msg;

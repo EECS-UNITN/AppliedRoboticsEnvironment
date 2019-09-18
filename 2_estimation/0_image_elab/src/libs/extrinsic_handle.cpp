@@ -64,18 +64,19 @@ namespace image_proc {
         pub_robot_topic_name_  = "/transform/robot_plane";
         pub_dt_topic_name_     = "/process_time/findPlaneTransform";
 
-        double arena_w, arena_h;
+        double arena_w, arena_h, robot_height;
         int img_width, img_height;
 
         loadVariable<int>(nh_,"/camera_calibration/image_height",&img_height);
         loadVariable<int>(nh_,"/camera_calibration/image_width",&img_width);
         loadVariable<double>(nh_,"/arena/w",&arena_w);
         loadVariable<double>(nh_,"/arena/h",&arena_h);
+        loadVariable<double>(nh_,"/arena/robot_height",&robot_height);
         scale_ = std::min(img_height/arena_h, img_width/arena_w);
 
 
         calib_done_ = false;
-        float w = 1.5f*scale_, h = 1.0f*scale_, z = 0.16f;
+        float w = arena_w*scale_, h = arena_h*scale_, z = robot_height;
         object_points_ground_ = {{0.f,0.f,0.f},{w,0.f,0.f},{w,h,0.f},{0.f,h,0.f}};
         object_points_robot_ = {{0.f,0.f,z},{w,0.f,z},{w,h,z},{0.f,h,z}};
 
@@ -153,7 +154,7 @@ namespace image_proc {
                     student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_, config_folder_);
                 }
             }
-        }catch(std::exception ex){
+        }catch(std::exception& ex){
           std::cerr << ex.what() << std::endl;
         }        
 

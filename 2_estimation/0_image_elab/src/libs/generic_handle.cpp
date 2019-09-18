@@ -83,7 +83,7 @@ void GenericHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
     try{     
         ROS_DEBUG_NAMED(kPringName, "calling student implementation");    
         student::genericImageListener(cv_ptr->image, camera_subscriber_topic_name_, config_folder_);
-    }catch(std::exception ex){
+    }catch(std::exception& ex){
         std::cerr << ex.what() << std::endl;
     }    
     

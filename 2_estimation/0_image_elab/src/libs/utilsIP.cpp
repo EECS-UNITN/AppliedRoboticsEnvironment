@@ -1,8 +1,6 @@
-#include "utils.hpp"
+#include "utilsIP.hpp"
 
 namespace image_proc {
-
-typedef std::vector<cv::Point2f> Polygon;
 
 geometry_msgs::Polygon createPolygon(const Polygon & poly_2D){
 

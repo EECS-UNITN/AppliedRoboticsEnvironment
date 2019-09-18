@@ -116,7 +116,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS project_interface image_geometry roscpp sensor_msgs message_runtime roscpp 
+  CATKIN_DEPENDS project_interface image_geometry roscpp sensor_msgs message_runtime 
   DEPENDS OpenCV
 )
 
@@ -140,7 +140,7 @@ add_library(image_elab_LIBRARY
    src/libs/unwarp_handle.cpp
    src/libs/obstacle_detector_handle.cpp
    src/libs/robot_detector_handle.cpp
-   src/libs/utils.cpp
+   src/libs/utilsIP.cpp
 )
 
 add_library(image_elab_nodelet 

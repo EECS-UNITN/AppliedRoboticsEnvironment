@@ -14,7 +14,6 @@
 #include "geometry_msgs/PoseStamped.h"
 #include "tf/transform_broadcaster.h"
 #include "std_msgs/Float32.h"
-#include "utils.hpp"
 
 namespace enc = sensor_msgs::image_encodings;
 const std::string kPringName = "robot_detector_handle.hpp";
@@ -127,7 +126,7 @@ namespace image_proc {
                 res = student::findRobot(cv_ptr->image, scale_, triangle_, x_, y_, theta_, config_folder_);
             }
 
-        }catch(std::exception ex){
+        }catch(std::exception& ex){
             std::cerr << ex.what() << std::endl;
         }
         std_msgs::Float32 dt_msg;

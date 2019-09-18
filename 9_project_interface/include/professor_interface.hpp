@@ -1,10 +1,9 @@
 #pragma once
 
 #include <opencv2/opencv.hpp>
+#include "utils.hpp"
 
 namespace professor {
-
-typedef std::vector<cv::Point2f> Polygon; // TODO: move to utility header function
 
 void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder);
 
@@ -20,5 +19,7 @@ void unwarp(const cv::Mat& img_in, cv::Mat& img_out, const cv::Mat& transf, cons
 bool processMap(const cv::Mat& img_in, const double scale, std::vector<Polygon>& obstacle_list, std::vector<std::pair<int,Polygon>>& victim_list, Polygon& gate, const std::string& config_folder);
 
 bool findRobot(const cv::Mat& img_in, const double scale, Polygon& triangle, double& x, double& y, double& theta, const std::string& config_folder);
+
+bool planPath(const Polygon& borders, const std::vector<Polygon>& obstacle_list, const std::vector<std::pair<int,Polygon>>& victim_list, const Polygon& gate, const float x, const float y, const float theta, Path& path);
 
 }
