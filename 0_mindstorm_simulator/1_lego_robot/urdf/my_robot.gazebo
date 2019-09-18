@@ -30,7 +30,7 @@
       <wheel_radius_multiplier> 1 </wheel_radius_multiplier>
       <wheel_separation_multiplier> 1 </wheel_separation_multiplier>
       <torque>10</torque>
-      <commandTopic>cmd_vel</commandTopic>
+      <commandTopic>control/cmd_vel</commandTopic>
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <robotBaseFrame>chassis</robotBaseFrame>
