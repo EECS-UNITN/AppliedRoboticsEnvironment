@@ -1,0 +1,9 @@
+#goal definition
+---
+#result definition
+float32 travel_time
+---
+#feedback
+string status
+float32 s_done
+float32 s_tot
