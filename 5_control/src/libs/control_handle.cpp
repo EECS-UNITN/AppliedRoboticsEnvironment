@@ -189,10 +189,11 @@ namespace control {
             dt_msg.data = (ros::Time::now()-start_control).toSec();
             pub_dt_.publish(dt_msg);
 
-            std::cerr << "STATE: " << rho << " " << x_ << " " << y_ << " " << theta_ << std::endl;
 
-            cmd_vel.linear.x = v_ref_;
-            cmd_vel.angular.z = -v_ref_*rho;
+            //std::cerr << "STATE: " << rho << " " << x_ << " " << y_ << " " << theta_ << std::endl;
+                        
+            cmd_vel.linear.x  = v_ref_;
+            cmd_vel.angular.z = v_ref_*rho;
             pub_control_.publish(cmd_vel);
 
             // publish the feedback
