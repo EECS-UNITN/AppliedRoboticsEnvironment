@@ -187,9 +187,7 @@ namespace image_proc {
             gate_array.polygons.push_back(poly);
             gate_array.labels.emplace_back(0);
             gate_array.likelihood.emplace_back(1.0);
-            
-
-                  
+                 
             geometry_msgs::PolygonStamped poly_p;            
             geometry_msgs::Point32 pt;
             pt.x = 0; pt.y = 0; pt.z = 0;
