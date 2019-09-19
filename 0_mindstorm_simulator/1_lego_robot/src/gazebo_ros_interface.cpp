@@ -46,7 +46,7 @@ LegoModelPlugin::LegoModelPlugin():
     sub_set_pose_ = nh_.subscribe("/initialpose", 1, &LegoModelPlugin::initialPoseCb, this);
     sub_twist_ = nh_.subscribe("/control/cmd_vel",1, &LegoModelPlugin::setTwistCb, this);
 
-    pub_twist_ = nh_.advertise<geometry_msgs::TwistWithCovarianceStamped>("/sensor/odom", 1, true);
+    pub_twist_ = nh_.advertise<geometry_msgs::TwistWithCovarianceStamped>("/sensor/twist", 1, true);
 
     pub_ideal_odom_ = nh_.advertise<nav_msgs::Odometry>("/ideal/odom", 1, true);
 

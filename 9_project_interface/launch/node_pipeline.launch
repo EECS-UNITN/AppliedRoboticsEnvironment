@@ -12,6 +12,8 @@
 
   <node name="localization" pkg="localization" type="localization_node" respawn="true" output="screen"/>
 
+  <node name="odometry" pkg="localization" type="odometry_node" respawn="true" output="screen"/>
+  
   <node name="planning" pkg="planning" type="planning_node" respawn="false" output="screen"/>
 
   <node name="control" pkg="control" type="control_node" respawn="false" output="screen"/>  

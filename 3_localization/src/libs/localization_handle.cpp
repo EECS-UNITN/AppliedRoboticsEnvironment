@@ -82,6 +82,7 @@ namespace localization {
 
         //EKF PREDICTION
         const auto& gps_stamp = robot_pose->header.stamp;
+        frame_id_ = robot_pose->header.frame_id;
         bool found = false;
         if(odom_list_.front().stamp < gps_stamp && odom_list_.back().stamp > gps_stamp){
             std::list<RobotState>::iterator odo_el;
@@ -207,7 +208,8 @@ namespace localization {
 
         // Rototranslate odometry
         nav_msgs::OdometryPtr map(new nav_msgs::Odometry);
-        map->header = odom->header;
+        map->header.stamp = odom->header.stamp;
+        map->header.frame_id = frame_id_;
         map->pose.pose.position.x = p_map(0);
         map->pose.pose.position.y = p_map(1);
         map->pose.pose.position.z = 0;

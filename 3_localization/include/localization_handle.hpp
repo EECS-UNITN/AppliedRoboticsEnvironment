@@ -45,6 +45,7 @@ private:
   ros::Subscriber sub_gps_, sub_odom_;
   ros::Publisher pub_map_odom_, pub_dt_;
   bool has_gps_, has_odom_;
+  std::string frame_id_;
 
   // TOPICS  
   std::string sub_gps_topic_name_, sub_odom_topic_name_;

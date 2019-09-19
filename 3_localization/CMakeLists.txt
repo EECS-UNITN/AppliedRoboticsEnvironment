@@ -131,6 +131,7 @@ include_directories(
 add_library(localization_LIBRARY
   src/libs/localization_handle.cpp
   src/libs/extended_kalman_filter.cpp
+  src/libs/odometry_handle.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -142,6 +143,8 @@ add_library(localization_LIBRARY
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(localization_node src/node/localization_node.cpp)
+
+add_executable(odometry_node src/node/odometry_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -161,6 +164,11 @@ target_link_libraries(localization_LIBRARY
 target_link_libraries(localization_node
 	localization_LIBRARY
  	${catkin_LIBRARIES}
+)
+
+target_link_libraries(odometry_node
+  localization_LIBRARY
+  ${catkin_LIBRARIES}
 )
 
 #add_dependencies(localization_LIBRARY localization_generate_messages_cpp)
