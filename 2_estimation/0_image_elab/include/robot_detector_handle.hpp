@@ -38,6 +38,7 @@ private:
   ros::Publisher  pub_gps_loc_, pub_dt_;
   
   // TOPICS  
+  std::string frame_id_;
   std::string sub_image_topic_name_, sub_transf_topic_name_;
   std::string pub_robot_topic_name_, pub_gps_loc_topic_name_, pub_dt_topic_name_;
 

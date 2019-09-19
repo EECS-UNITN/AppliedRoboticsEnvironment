@@ -25,6 +25,7 @@ namespace image_proc {
         ROS_DEBUG_NAMED(kPringName, "Constructor");
         initialized_  = false;  
         has_transform_ = false;  
+        
     }
 
     void RobotDetectorHandle::onInit(ros::NodeHandle &nodeHandle){
@@ -65,6 +66,8 @@ namespace image_proc {
         pub_robot_topic_name_   = "/detection/robot";
         pub_gps_loc_topic_name_ = "/estimation/pose";
         pub_dt_topic_name_      = "/process_time/findRobot";
+
+        frame_id_ = "map";
     }
 
     void RobotDetectorHandle::publishToTopics() {
@@ -135,19 +138,17 @@ namespace image_proc {
         
         if(res){
 
-            std::string frame_id = "odom";
-            
             geometry_msgs::PolygonStamped triangle_msg;
             geometry_msgs::PoseStamped robot_pose_msg;
 
             triangle_msg.header.stamp = msg->header.stamp;
-            triangle_msg.header.frame_id = frame_id;
+            triangle_msg.header.frame_id = frame_id_;
             triangle_msg.polygon = createPolygon(triangle_);
 
     
     
             robot_pose_msg.header.stamp = msg->header.stamp;
-            robot_pose_msg.header.frame_id = frame_id;
+            robot_pose_msg.header.frame_id = frame_id_;
 
             //set the position
             //since all odometry is 6DOF we'll need a quaternion created from yaw

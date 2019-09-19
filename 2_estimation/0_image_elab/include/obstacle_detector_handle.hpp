@@ -35,7 +35,8 @@ private:
   ros::Subscriber sub_image_, sub_transf_;
   ros::Publisher  pub_obstacles_, pub_gate_, pub_victims_, pub_dt_;
   
-  // TOPICS  
+  // TOPICS 
+  std::string frame_id_;
   std::string sub_image_topic_name_, sub_transf_topic_name_;
   std::string pub_obstacles_topic_name_, pub_gate_topic_name_, pub_victims_topic_name_, pub_dt_topic_name_;
   

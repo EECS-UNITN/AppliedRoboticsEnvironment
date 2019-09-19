@@ -64,6 +64,8 @@ namespace image_proc {
         pub_victims_topic_name_   = "/detection/victims";
         pub_gate_topic_name_      = "/detection/gate";
         pub_dt_topic_name_        = "/process_time/processMap";
+
+        frame_id_ = "map";
     }
 
     void ObstacleDetectorHandle::publishToTopics() {
@@ -136,15 +138,13 @@ namespace image_proc {
         pub_dt_.publish(dt_msg);
         
         if(res){
-
-            std::string frame_id = "odom";
             
             jsk_recognition_msgs::PolygonArray obstacles_array;
 
             static int cnt = 0;
 
             obstacles_array.header.stamp = msg->header.stamp;
-            obstacles_array.header.frame_id = frame_id;
+            obstacles_array.header.frame_id = frame_id_;
             obstacles_array.header.seq = cnt++;
             for (int i=0; i<obstacle_list_.size(); ++i) {
                 geometry_msgs::PolygonStamped poly;
@@ -160,7 +160,7 @@ namespace image_proc {
             jsk_recognition_msgs::PolygonArray victims_array;
 
             victims_array.header.stamp = msg->header.stamp;
-            victims_array.header.frame_id = frame_id;
+            victims_array.header.frame_id = frame_id_;
             victims_array.header.seq = cnt++;
             for (int i=0; i<victim_list_.size(); ++i) {
                 geometry_msgs::PolygonStamped poly;
@@ -175,7 +175,7 @@ namespace image_proc {
             jsk_recognition_msgs::PolygonArray gate_array;
 
             gate_array.header.stamp = msg->header.stamp;
-            gate_array.header.frame_id = frame_id;
+            gate_array.header.frame_id = frame_id_;
             gate_array.header.seq = cnt++;
             geometry_msgs::PolygonStamped poly;
             poly.header = gate_array.header;
