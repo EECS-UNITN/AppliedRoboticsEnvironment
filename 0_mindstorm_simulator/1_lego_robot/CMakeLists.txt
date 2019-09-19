@@ -2,13 +2,19 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lego_robot)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+	gazebo_msgs
+	geometry_msgs
+    roscpp
+    )
 
+find_package(gazebo 7 REQUIRED)
+#find_package(Boost REQUIRED COMPONENTS thread)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -111,15 +117,22 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-# include
-# ${catkin_INCLUDE_DIRS}
-)
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/my_robot.cpp
-# )
+add_library(gazebo_ros_interface
+   src/gazebo_ros_interface.cpp
+)
+
+target_include_directories(gazebo_ros_interface PUBLIC 
+	include 
+	${catkin_INCLUDE_DIRS}
+    ${GAZEBO_INCLUDE_DIRS}
+	)
+
+target_link_libraries(gazebo_ros_interface 
+	${GAZEBO_LIBRARIES} 	
+	${catkin_LIBRARIES}
+	)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

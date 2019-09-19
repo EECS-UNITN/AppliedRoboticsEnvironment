@@ -18,33 +18,16 @@
 
 
   <joint name="robot_footprint_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 -3.14" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
     <parent link="robot_footprint"/>
     <child link="chassis" />
   </joint>
 
-  <joint name="robot_top_triangle_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="chassis"/>
-    <child link="top_triangle" />
-  </joint>
-
-  <joint name="robot_top_layer_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="chassis"/>
-    <child link="top_layer" />
-  </joint>
-
-  <joint name="robot_NXT20_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="chassis"/>
-    <child link="NXT20" />
-  </joint>
-
+  
   <link name='chassis'>
     <inertial>
-      <mass value="1.5"/>
-      <origin xyz="${footprint_length/2 - axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <mass value="5.0"/>
+      <origin xyz="${-footprint_length/2 + axel_dx} 0 0" rpy=" 0 0 0"/>
       <inertia
           ixx="0.001" ixy="0" ixz="0"
           iyy="0.001" iyz="0"
@@ -53,21 +36,21 @@
     </inertial>
       
     <collision name='chassis_collision'>
-      <origin xyz="${footprint_length/2 - axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <origin xyz="${-footprint_length/2 + axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
       <geometry>
         <box size="${footprint_length} ${footprint_width} ${footprint_height}"/>        
       </geometry>
     </collision>
 
     <visual name='chassis_visual'>
-      <origin xyz="${footprint_length/2 - axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <origin xyz="${-footprint_length/2 + axel_dx} 0 ${wheel_radius}" rpy=" 0 0 0"/>
       <geometry>
         <box size="${footprint_length} ${footprint_width} ${footprint_height}"/>        
       </geometry>
     </visual>
 
      <collision name='back_caster_collision'>
-      <origin xyz="${footprint_length - axel_dx - wheel_radius} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <origin xyz="${-footprint_length + axel_dx + wheel_radius} 0 ${wheel_radius}" rpy=" 0 0 0"/>
       <geometry>
         <sphere radius="${wheel_radius}"/>
       </geometry>
@@ -84,31 +67,23 @@
     </collision>
 
     <visual name='back_caster_visual'>
-      <origin xyz="${footprint_length - axel_dx - wheel_radius} 0 ${wheel_radius}" rpy=" 0 0 0"/>
+      <origin xyz="${-footprint_length + axel_dx + wheel_radius} 0 ${wheel_radius}" rpy=" 0 0 0"/>
       <geometry>
         <sphere radius="${wheel_radius}"/>
       </geometry>
     </visual>
-
-    <!--collision name='nxt_collision'>
-      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
-      <geometry>
-        <box size="${triangle_h} ${triangle_b} 0.01"/>
-      </geometry>
-    </collision>
-
-    <visual name='nxt_visual'>
-      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
-      <geometry>
-        <box size="${triangle_h} ${triangle_b} 0.01"/>
-      </geometry>
-    </visual-->
-
   </link>
+
+
+  <joint name="robot_NXT20_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="chassis"/>
+    <child link="NXT20" />
+  </joint>
 
   <link name="NXT20">
     <visual name='NXT20_visual'>
-      <origin xyz="0.05 0 ${triangle_z/2}" rpy="-0.7853 0 1.5707"/>      
+      <origin xyz="-0.05 0 ${triangle_z/2}" rpy="-0.7853 0 -1.5707"/>      
       <geometry>
 
         <mesh filename="package://lego_robot/media/models/Lego_MindstormsNXT20.stl"  scale="0.001 0.001 0.001"/>
@@ -117,40 +92,49 @@
     </visual>
   </link>
 
-
+  
+  <joint name="robot_top_layer_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="chassis"/>
+    <child link="top_layer" />
+  </joint>
   <link name="top_layer">
       <collision name='top_layer_collision'>
-      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
+      <origin xyz="${-triangle_h/6} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
       <geometry>
         <box size="${triangle_h} ${triangle_b} 0.005"/>
       </geometry>
     </collision>
 
     <visual name='top_layer_visual'>
-     <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
+     <origin xyz="${-triangle_h/6} 0 ${triangle_z - 0.005}" rpy=" 0 0 0"/>
       <geometry>
         <box size="${triangle_h} ${triangle_b} 0.005"/>
       </geometry>
     </visual>
   </link>
 
+  <joint name="robot_top_triangle_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="chassis"/>
+    <child link="top_triangle" />
+  </joint>
   <link name="top_triangle">
       <collision name='top_layer_collision'>
-      <origin xyz="${triangle_h/6 + 0.005} 0 ${triangle_z - 0.0025}" rpy=" 0 0 0"/>
+      <origin xyz="${-triangle_h/6 + triangle_h/2 } 0 ${triangle_z - 0.0025}" rpy=" 0 0 3.1415"/>
       <geometry>
         <box size="${triangle_h} ${triangle_b} 0.005"/>
       </geometry>
     </collision>
 
     <visual name='top_triangle_visual'>
-      <origin xyz="${-0.16/3 + 0.005} -0.04 ${triangle_z - 0.01}" rpy=" 0 0 0"/>      
+      <origin xyz="${-triangle_h/6 + triangle_h/2} 0.04 ${triangle_z - 0.01}" rpy=" 0 0 3.1415"/>      
       <geometry>
-        <mesh filename="package://lego_robot/media/models/triangle.STL"  scale="0.001 0.001 0.001"/>
-        <!--box size="${triangle_h} ${triangle_b} 0.005"/-->
+        <mesh filename="package://lego_robot/media/models/triangle.STL"  scale="0.001 0.001 0.001"/>        
       </geometry>
     </visual>
   </link>
-
+  
 
   <link name="left_wheel">
     <collision name='left_wheel_collision'>
@@ -168,7 +152,7 @@
     </visual>
 
     <inertial>
-      <mass value="0.1"/>
+      <mass value="1"/>
       <origin xyz="0.0 0 0" rpy="0 1.5707 1.5707"/>
       <inertia
           ixx="0.0001" ixy="0" ixz="0"
@@ -194,7 +178,7 @@
     </visual>
 
     <inertial>
-      <mass value="0.1"/>
+      <mass value="1"/>
       <origin xyz="0.0 0 0" rpy="0 1.5707 1.5707"/>
       <inertia
           ixx="0.0001" ixy="0" ixz="0"
@@ -205,20 +189,20 @@
   </link>
 
   <joint type="continuous" name="left_wheel_hinge">
-    <origin xyz="0 ${footprint_width/2} ${wheel_radius}" rpy="0 0 0"/>
+    <origin xyz="0 ${footprint_width/2 + 0.001} ${wheel_radius}" rpy="0 0 0"/>
     <child link="left_wheel"/>
     <parent link="chassis"/>
-    <axis xyz="0 -1 0" rpy="0 0 0"/>
-    <limit effort="5" velocity="100"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="1000" velocity="1000"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
   <joint type="continuous" name="right_wheel_hinge">
-    <origin xyz="0 ${-footprint_width/2} ${wheel_radius}" rpy="0 0 0"/>
+    <origin xyz="0 ${-footprint_width/2 - 0.001} ${wheel_radius}" rpy="0 0 0"/>
     <child link="right_wheel"/>
     <parent link="chassis"/>
-    <axis xyz="0 -1 0" rpy="0 0 0"/>
-    <limit effort="5" velocity="100"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="1000" velocity="1000"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
 

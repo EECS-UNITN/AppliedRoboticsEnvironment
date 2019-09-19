@@ -15,6 +15,11 @@
   </gazebo>
 
   <gazebo>
+    <plugin name="lego_hardware" filename="libgazebo_ros_interface.so">
+
+    </plugin>    
+  </gazebo>
+  <!--gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <cmd_vel_timeout>0.25</cmd_vel_timeout>
       <publish_rate>50</publish_rate>
@@ -22,29 +27,29 @@
       <twist_covariance_diagonal>"0.001, 0.001, 0.001, 0.001, 0.001, 0.001"</twist_covariance_diagonal>
       <legacyMode>false</legacyMode>
       <alwaysOn>true</alwaysOn>
-      <updateRate>10</updateRate>
+      <updateRate>20</updateRate>
       <leftJoint>left_wheel_hinge</leftJoint>
       <rightJoint>right_wheel_hinge</rightJoint>
       <wheelSeparation>0.1</wheelSeparation>
       <wheelDiameter> 0.055</wheelDiameter>
       <wheel_radius_multiplier> 1 </wheel_radius_multiplier>
       <wheel_separation_multiplier> 1 </wheel_separation_multiplier>
-      <torque>10</torque>
+      <torque>10000</torque>
       <commandTopic>control/cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
+      <odometryTopic>estimation/odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>chassis</robotBaseFrame>
+      <robotBaseFrame>robot_footprint</robotBaseFrame>
       <publishWheelTF>false</publishWheelTF>
       <publishWheelJointState>false</publishWheelJointState>
       <rosDebugLevel>na</rosDebugLevel>
       <wheelAcceleration>0</wheelAcceleration>
-      <wheelTorque>5</wheelTorque>
+      <wheelTorque>10000</wheelTorque>
       <odometrySource>world</odometrySource>
       <publishTf>1</publishTf>
       <publishOdomTF>true</publishOdomTF>
       <publish_cmd>true</publish_cmd>
     </plugin>
-  </gazebo>
+  </gazebo-->
 
   <!-- camera -->
   <gazebo reference="camera">

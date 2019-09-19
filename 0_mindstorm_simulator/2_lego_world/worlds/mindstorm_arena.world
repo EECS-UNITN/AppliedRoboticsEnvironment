@@ -28,9 +28,16 @@
     <atmosphere type='adiabatic'/>
 
     <physics name='default_physics' default='0' type='ode'>
-      <max_step_size>0.001</max_step_size>
-      <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>10</iters>
+        </solver>
+      </ode>
+      <!--real_time_update_rate>0.000000</real_time_update_rate-->
+      <max_step_size>0.01</max_step_size>
+      <real_time_factor>0.5</real_time_factor>
+      <real_time_update_rate>100</real_time_update_rate>
     </physics>
 
     <scene>
@@ -49,10 +56,10 @@
     </spherical_coordinates>
 
     <state world_name='default'>
-      <sim_time>17 183000000</sim_time>
-      <real_time>34 318213079</real_time>
-      <wall_time>1567688934 449238644</wall_time>
-      <iterations>17183</iterations>
+      <sim_time>0 0</sim_time>
+      <real_time>0 0</real_time>
+      <wall_time>0 0</wall_time>
+      <iterations>0</iterations>
       <light name='sun'>
         <pose frame=''>0 0 10 0 -0 0</pose>
       </light>
