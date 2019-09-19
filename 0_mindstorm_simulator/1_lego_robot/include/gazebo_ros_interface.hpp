@@ -59,7 +59,8 @@ class LegoModelPlugin : public ModelPlugin {
     double measure_alpha_v_, measure_alpha_yaw_r_;
     double actuation_alpha_v_, actuation_alpha_yaw_r_;
 
-    std::string map_frame_id_;
+    std::string map_frame_id_, robot_frame_id_;
+    bool publish_tf_;
 };
 
 } // namespace gazebo

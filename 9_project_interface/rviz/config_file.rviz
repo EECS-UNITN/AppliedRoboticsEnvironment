@@ -6,7 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Localization1
+        - /Localization1/IdealPosition1/Shape1
         - /ekf1/Shape1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 202
   - Class: rviz/Selection
@@ -188,6 +190,40 @@ Visualization Manager:
           Topic: /estimation/odom
           Unreliable: false
           Value: true
+        - Angle Tolerance: 0.100000001
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.300000012
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: false
+          Enabled: true
+          Keep: 100
+          Name: IdealPosition
+          Position Tolerance: 0.100000001
+          Shape:
+            Alpha: 0.699999988
+            Axes Length: 1
+            Axes Radius: 0.100000001
+            Color: 170; 255; 127
+            Head Length: 0.0299999993
+            Head Radius: 0.0299999993
+            Shaft Length: 0.0700000003
+            Shaft Radius: 0.0149999997
+            Value: Arrow
+          Topic: /ideal/odom
+          Unreliable: false
+          Value: true
       Enabled: true
       Name: Localization
     - Alpha: 1
@@ -247,6 +283,20 @@ Visualization Manager:
       Topic: /estimation/map
       Unreliable: false
       Value: false
+    - Class: rviz/TF
+      Enabled: false
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        {}
+      Update Interval: 0
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -272,25 +322,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.61510873
+      Distance: 2.96367598
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.469032347
-        Y: 0.31759426
-        Z: 0.0965189338
+        X: 0.705077171
+        Y: 0.577638149
+        Z: 0.319888055
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 1.2547965
+      Pitch: 0.889796495
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.41358376
+      Yaw: 4.64358521
     Saved: ~
 Window Geometry:
   Displays:

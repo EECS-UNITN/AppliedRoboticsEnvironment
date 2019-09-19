@@ -1,14 +1,16 @@
 // Main Include
 #include "gazebo_ros_interface.hpp"
-#include "tf/transform_broadcaster.h"
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 // STD Include
 #include <algorithm>
 #include <fstream>
 #include <mutex>
 #include <thread>
 
-#include "nav_msgs/Odometry.h"
-#include "geometry_msgs/TwistWithCovarianceStamped.h"
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/TwistWithCovarianceStamped.h>
 
 namespace gazebo {
 
@@ -33,9 +35,12 @@ LegoModelPlugin::LegoModelPlugin():
     char *argv = nullptr;
     ros::init(argc, &argv, "LegoModelPlugin");
     update_from_last_cmd_ = 0;
-
-    measure_alpha_v_ = measure_alpha_yaw_r_ = 0.01;     // 1% noise
+    publish_tf_ = true;
+    measure_alpha_v_   = measure_alpha_yaw_r_ = 0.01;     // 1% noise
     actuation_alpha_v_ = actuation_alpha_yaw_r_ = 0.01; // 1% noise
+
+    map_frame_id_ = "map";
+    robot_frame_id_ = "robot_footprint";
     
     nh_ = ros::NodeHandle();
     sub_set_pose_ = nh_.subscribe("/initialpose", 1, &LegoModelPlugin::initialPoseCb, this);
@@ -62,18 +67,24 @@ void LegoModelPlugin::setTwistCb(geometry_msgs::TwistConstPtr twist){
 
 void LegoModelPlugin::initialPoseCb(geometry_msgs::PoseWithCovarianceStampedConstPtr pose){    
 
-    if(pose->header.frame_id.compare("map")){
+    if(pose->header.frame_id.compare(map_frame_id_)){
         return;
     }
+    const double& qx = pose->pose.pose.orientation.x;
+    const double& qy = pose->pose.pose.orientation.y;
+    const double& qz = pose->pose.pose.orientation.z;
+    const double& qw = pose->pose.pose.orientation.w;
+
     x_car_ = pose->pose.pose.position.x;
     y_car_ = pose->pose.pose.position.y;
-    const tf::Quaternion q(pose->pose.pose.orientation.x, 
-            pose->pose.pose.orientation.y, 
-            pose->pose.pose.orientation.z, 
-            pose->pose.pose.orientation.w);
-    const tf::Matrix3x3 m(q);
-    double roll, pitch;
-    m.getRPY(roll, pitch, yaw_car_);
+    yaw_car_ = std::atan2(2.0*(qy*qz + qw*qx), qw*qw - qx*qx - qy*qy + qz*qz);
+    // const tf2::Quaternion q(pose->pose.pose.orientation.x, 
+    //         pose->pose.pose.orientation.y, 
+    //         pose->pose.pose.orientation.z, 
+    //         pose->pose.pose.orientation.w);
+    // const tf2::Matrix3x3 m(q);
+    // double roll, pitch;
+    // m.getRPY(roll, pitch, yaw_car_);
 
     v_car_ = 0;
     yaw_r_car_ = 0;
@@ -94,7 +105,6 @@ void LegoModelPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     model_ = _model;
     world_ = model_->GetWorld();
 
-    map_frame_id_ = "map";
 }
 
 void LegoModelPlugin::Reset() 
@@ -138,30 +148,65 @@ void LegoModelPlugin::onUpdate()
     y_car_   += s*v_car_ * dt;
     yaw_car_ += dth;
 
-    setModelState();    
+    setModelState();
+    publishInfo();   
     update_from_last_cmd_++;
 
 
 
 }
 void LegoModelPlugin::publishInfo(){
+    static tf2_ros::TransformBroadcaster odom_broadcaster;
+    
     // IDEAL ODOMETRY
+    tf2::Quaternion q;
+    q.setRPY(0, 0, yaw_car_);
+
+    // MSG
     nav_msgs::OdometryPtr map(new nav_msgs::Odometry);
-    map->header.frame_id   = map_frame_id_;
+    map->header.frame_id = map_frame_id_;
+    map->child_frame_id  = robot_frame_id_;
     map->header.stamp.sec  = last_sim_time_.sec;
     map->header.stamp.nsec = last_sim_time_.nsec;
     map->pose.pose.position.x = x_car_;
-    map->pose.pose.position.y = yaw_car_;
-    map->pose.pose.position.z = 0;
-    const geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(yaw_car_);
-    map->pose.pose.orientation = odom_quat;
+    map->pose.pose.position.y = y_car_;
+    map->pose.pose.position.z = 0;    
+    map->pose.pose.orientation.x = q.x();
+    map->pose.pose.orientation.y = q.y();
+    map->pose.pose.orientation.z = q.z();
+    map->pose.pose.orientation.w = q.w();
     pub_ideal_odom_.publish(map);
-
-
-    // ACTUAL SPEED
     
+    if(publish_tf_){    
+        geometry_msgs::TransformStamped odom_trans;
+        odom_trans.header.stamp    = map->header.stamp;
+        odom_trans.header.frame_id = map_frame_id_;
+        odom_trans.child_frame_id  = robot_frame_id_;
+
+        odom_trans.transform.translation.x = x_car_;
+        odom_trans.transform.translation.y = y_car_;
+        odom_trans.transform.translation.z = 0.0;
+        odom_trans.transform.rotation = map->pose.pose.orientation;
+
+        
+        tf2::Transform tf2_trans;
+        tf2::fromMsg(odom_trans.transform, tf2_trans);
+
+        const auto tf2_trans_inv = tf2_trans.inverse();
+
+        geometry_msgs::TransformStamped odom_trans_inverse;
+        odom_trans_inverse.header.stamp = map->header.stamp;
+        odom_trans_inverse.header.frame_id = robot_frame_id_;
+        odom_trans_inverse.child_frame_id  = map_frame_id_;
+        tf2::convert(tf2_trans_inv, odom_trans_inverse.transform);
+        //tf2::toMsg(, tf2_stamped);
+        //send the transform
+        odom_broadcaster.sendTransform(odom_trans_inverse);
+    }
+
+    // ACTUAL SPEED    
     geometry_msgs::TwistWithCovarianceStamped twist_msg;
-    twist_msg.header.frame_id   = "robot_footprint";
+    twist_msg.header.frame_id   = robot_frame_id_;
     twist_msg.header.stamp.sec  = last_sim_time_.sec;    
     twist_msg.header.stamp.nsec = last_sim_time_.nsec;
 

@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 	gazebo_msgs
 	geometry_msgs
     roscpp
+    tf2_ros
+    tf2
     )
 
 find_package(gazebo 7 REQUIRED)
@@ -107,7 +109,7 @@ find_package(gazebo 7 REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES my_robot
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS tf2 tf2_ros
 #  DEPENDS system_lib
 )
 
