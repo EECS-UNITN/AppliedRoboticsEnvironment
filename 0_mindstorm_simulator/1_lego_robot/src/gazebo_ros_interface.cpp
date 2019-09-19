@@ -93,6 +93,8 @@ void LegoModelPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
     model_ = _model;
     world_ = model_->GetWorld();
+
+    map_frame_id_ = "map";
 }
 
 void LegoModelPlugin::Reset() 
@@ -145,7 +147,7 @@ void LegoModelPlugin::onUpdate()
 void LegoModelPlugin::publishInfo(){
     // IDEAL ODOMETRY
     nav_msgs::OdometryPtr map(new nav_msgs::Odometry);
-    map->header.frame_id   = "map";
+    map->header.frame_id   = map_frame_id_;
     map->header.stamp.sec  = last_sim_time_.sec;
     map->header.stamp.nsec = last_sim_time_.nsec;
     map->pose.pose.position.x = x_car_;
