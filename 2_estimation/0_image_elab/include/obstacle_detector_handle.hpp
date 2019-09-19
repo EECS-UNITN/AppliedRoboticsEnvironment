@@ -33,17 +33,18 @@ private:
   
   // ROS communication  
   ros::Subscriber sub_image_, sub_transf_;
-  ros::Publisher  pub_obstacles_, pub_gate_, pub_victims_, pub_dt_;
+  ros::Publisher  pub_obstacles_, pub_gate_, pub_victims_, pub_dt_, pub_perimeter_;
   
   // TOPICS 
   std::string frame_id_;
   std::string sub_image_topic_name_, sub_transf_topic_name_;
-  std::string pub_obstacles_topic_name_, pub_gate_topic_name_, pub_victims_topic_name_, pub_dt_topic_name_;
+  std::string pub_obstacles_topic_name_, pub_gate_topic_name_, pub_victims_topic_name_, pub_dt_topic_name_, pub_perimeter_topic_name_;
   
   // CALIBRATION MATRIX  
   bool has_transform_;
   cv::Mat transform_;  
   double scale_;
+  double arena_w_, arena_h_;
 
   std::vector<Polygon> obstacle_list_;
   std::vector<std::pair<int,Polygon>> victim_list_;

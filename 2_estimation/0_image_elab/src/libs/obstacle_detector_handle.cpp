@@ -54,6 +54,8 @@ namespace image_proc {
         loadVariable<std::string>(nh_,"/config_folder",&config_folder_);
         loadVariable<bool>(nh_,"/default_implementation/obstacle_detector", &default_implementation_);
 
+        loadVariable<double>(nh_,"/arena/w",&arena_w_);
+        loadVariable<double>(nh_,"/arena/h",&arena_h_);
 
         queue_size_ = 1;
 
@@ -63,6 +65,7 @@ namespace image_proc {
         pub_obstacles_topic_name_ = "/detection/obstacles";
         pub_victims_topic_name_   = "/detection/victims";
         pub_gate_topic_name_      = "/detection/gate";
+        pub_perimeter_topic_name_ = "/detection/perimeter";
         pub_dt_topic_name_        = "/process_time/processMap";
 
         frame_id_ = "map";
@@ -72,6 +75,7 @@ namespace image_proc {
         ROS_DEBUG_NAMED(kPringName, "Init publishers");
         assert (initialized_);
 
+        pub_perimeter_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_perimeter_topic_name_, 1, true);
         pub_obstacles_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_obstacles_topic_name_, 1, true);
         pub_victims_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_victims_topic_name_, 1, true);
         pub_gate_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_gate_topic_name_, 1, true);
@@ -173,7 +177,6 @@ namespace image_proc {
             }
 
             jsk_recognition_msgs::PolygonArray gate_array;
-
             gate_array.header.stamp = msg->header.stamp;
             gate_array.header.frame_id = frame_id_;
             gate_array.header.seq = cnt++;
@@ -185,7 +188,32 @@ namespace image_proc {
             gate_array.labels.emplace_back(0);
             gate_array.likelihood.emplace_back(1.0);
             
+
+                  
+            geometry_msgs::PolygonStamped poly_p;            
+            geometry_msgs::Point32 pt;
+            pt.x = 0; pt.y = 0; pt.z = 0;
+            poly_p.polygon.points.push_back(pt);
+            pt.x = arena_w_; pt.y = 0; pt.z = 0;
+            poly_p.polygon.points.push_back(pt);
+            pt.x = arena_w_; pt.y = arena_h_; pt.z = 0;
+            poly_p.polygon.points.push_back(pt);
+            pt.x = 0; pt.y = arena_h_; pt.z = 0;
+            poly_p.polygon.points.push_back(pt);
             
+            jsk_recognition_msgs::PolygonArray perimeter_array;
+            perimeter_array.header.stamp = msg->header.stamp;
+            perimeter_array.header.frame_id = frame_id_;
+            perimeter_array.header.seq = cnt++;  
+            poly_p.header = perimeter_array.header;
+            poly_p.header.seq = cnt++;    
+            perimeter_array.polygons.push_back(poly_p);
+            perimeter_array.labels.emplace_back(0);
+            perimeter_array.likelihood.emplace_back(1.0);
+
+            
+            
+            pub_perimeter_.publish(perimeter_array);
             pub_obstacles_.publish(obstacles_array);
             pub_victims_.publish(victims_array);
             pub_gate_.publish(gate_array);
