@@ -90,7 +90,7 @@ namespace control {
         queue_size_ = 1;
 
         srv_plan_topic_name_      = "/planning/compute_plan";
-        sub_robot_topic_name_     = "/ground_truth/state";
+        sub_robot_topic_name_     = "/ideal/odom";
         as_topic_name_            = "/control/action";
         pub_control_topic_name_   = "/control/cmd_vel";
         pub_dt_topic_name_        = "/process_time/control";        
@@ -192,8 +192,8 @@ namespace control {
 
             //std::cerr << "STATE: " << rho << " " << x_ << " " << y_ << " " << theta_ << std::endl;
                         
-            cmd_vel.linear.x  = v_ref_;
-            cmd_vel.angular.z = v_ref_*rho;
+            cmd_vel.linear.x  =   v_ref_;
+            cmd_vel.angular.z = - v_ref_*rho;
             pub_control_.publish(cmd_vel);
 
             // publish the feedback
