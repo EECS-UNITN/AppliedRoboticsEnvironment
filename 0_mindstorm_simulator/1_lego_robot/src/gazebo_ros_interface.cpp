@@ -111,9 +111,12 @@ void LegoModelPlugin::Reset()
 {
     update_from_last_cmd_ = 0;
     last_sim_time_ = 0;
-    x_car_     = 0;
-    y_car_     = 0;
-    yaw_car_   = 0;
+
+    gazebo::math::Pose pose;     
+    pose = model_->GetWorldPose();
+    x_car_     = pose.pos.x;
+    y_car_     = pose.pos.y;
+    yaw_car_   = pose.rot.GetYaw();
     v_car_     = 0;
     yaw_r_car_ = 0;
 }
@@ -121,6 +124,15 @@ void LegoModelPlugin::Reset()
 void LegoModelPlugin::onUpdate() 
 {   
     static bool msg_sent = false; 
+    static bool fist_update = false;
+    if(!fist_update){
+        gazebo::math::Pose pose;     
+        pose = model_->GetWorldPose();
+        x_car_     = pose.pos.x;
+        y_car_     = pose.pos.y;
+        yaw_car_   = pose.rot.GetYaw();
+        fist_update = true;
+    }
     std::lock_guard<std::mutex> lock(mtx_);
     common::Time curTime = world_->GetSimTime();
     double dt = 0.0;
