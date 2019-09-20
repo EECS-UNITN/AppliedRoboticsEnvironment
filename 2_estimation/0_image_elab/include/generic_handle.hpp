@@ -30,6 +30,7 @@ private:
   ros::NodeHandle nh_;
   bool initialized_; // check if node handle is initialized
   int queue_size_;
+  int width_, height_;
   bool default_implementation_;
   std::string config_folder_;
   
