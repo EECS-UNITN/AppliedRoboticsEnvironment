@@ -3,6 +3,11 @@ build/
 devel/
 logs/
 
+#Catking files
+src/CMakeLists.txt
+.catkin_tools/
+.catkin_workspace/
+
 # Prerequisites
 *.d
 
