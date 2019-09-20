@@ -61,7 +61,7 @@ void RectifyHandle::loadParameters() {
     loadVariable<bool>(nh_,"/default_implementation/rectify",&default_implementation_);
     queue_size_ = 1;
     rec_publisher_topic_name_      = "/image/rectify";
-    camera_subscriber_topic_name_  = "/camera/rgb/image_raw";
+    camera_subscriber_topic_name_  = "/image/raw";
     pub_dt_topic_name_             = "/process_time/imageUndistort";
 
 
@@ -136,8 +136,10 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
     }catch(std::exception& ex){
         std::cerr << ex.what() << std::endl;
     }
+
+    sensor_msgs::ImageConstPtr out_img_ros = out_img->toImageMsg();
     std_msgs::Float32 dt_msg;    
     dt_msg.data = (ros::Time::now() - start_time).toSec();
     pub_dt_.publish(dt_msg);    
-    pub_rect_.publish(out_img->toImageMsg());
+    pub_rect_.publish(out_img_ros); //out_img->toImageMsg());
 }

@@ -134,6 +134,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(image_elab_LIBRARY
+   src/libs/grab_frame_handle.cpp
    src/libs/rectify_handle.cpp
    src/libs/extrinsic_handle.cpp
    src/libs/generic_handle.cpp
@@ -144,6 +145,7 @@ add_library(image_elab_LIBRARY
 )
 
 add_library(image_elab_nodelet 
+  src/nodelets/grab_frame_nodelet.cpp
   src/nodelets/unwarp_nodelet.cpp
   src/nodelets/extrinsic_calib_nodelet.cpp
   src/nodelets/obstacle_detector_nodelet.cpp
@@ -159,6 +161,10 @@ add_library(image_elab_nodelet
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+
+add_executable(grab_frame_node 
+          src/node/grab_frame_node.cpp
+          )
 
 add_executable(unwarp_node 
           src/node/unwarp_node.cpp
@@ -202,6 +208,10 @@ target_link_libraries(image_elab_LIBRARY
 )
 
 # NODE
+target_link_libraries(grab_frame_node
+  image_elab_LIBRARY  
+  ${catkin_LIBRARIES} 
+)
 target_link_libraries(rectify_node
   image_elab_LIBRARY	
   ${catkin_LIBRARIES} 
