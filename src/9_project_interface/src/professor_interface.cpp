@@ -13,6 +13,10 @@
 
 namespace professor {
 
+  bool processGtMap(std::string file_name, std::vector<Polygon>& obstacle_list, std::vector<std::pair<int,Polygon>>& victim_list, Polygon& gate, Polygon& perimeter){
+      	throw std::logic_error( "PROFESSOR FUNCTION NOT IMPLEMENTED" );
+  }
+
   //-------------------------------------------------------------------------
   //          GENERIC IMAGE LISTENER IMPLEMENTATION
   //-------------------------------------------------------------------------
