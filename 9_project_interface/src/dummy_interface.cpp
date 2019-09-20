@@ -8,7 +8,7 @@ namespace student {
   	return "/home/valerio/Pictures/";
   }	
 
-  void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder){
+ void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder){
   	throw std::logic_error( "STUDENT FUNCTION NOT LOADED" );
   }
 

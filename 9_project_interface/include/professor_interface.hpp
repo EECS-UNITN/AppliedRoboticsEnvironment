@@ -4,7 +4,6 @@
 #include "utils.hpp"
 
 namespace professor {
-
 void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder);
 
 bool extrinsicCalib(const cv::Mat& img_in, std::vector<cv::Point3f> object_points, const cv::Mat& camera_matrix, cv::Mat& rvec, cv::Mat& tvec, const std::string& config_folder);
