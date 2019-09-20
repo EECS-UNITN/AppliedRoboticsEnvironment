@@ -45,6 +45,7 @@ private:
 
   // CALIBRATION MATRIX
   cv::Mat dist_coeffs_, camera_matrix_;
+  int expected_img_w_, expected_img_h_;
   
   // Callback
   void imageCb(const sensor_msgs::ImageConstPtr& image_msg);

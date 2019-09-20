@@ -58,7 +58,13 @@ void RectifyHandle::loadParameters() {
     loadVariable<double>(nh_, "/camera_calibration/p1", &p1);
     loadVariable<double>(nh_, "/camera_calibration/p2", &p2);
 
+
+    loadVariable<int>(nh_, "/camera_calibration/image_width", &expected_img_w_);
+    loadVariable<int>(nh_, "/camera_calibration/image_height", &expected_img_h_);
     loadVariable<bool>(nh_,"/default_implementation/rectify",&default_implementation_);
+
+    
+    
     queue_size_ = 1;
     rec_publisher_topic_name_      = "/image/rectify";
     camera_subscriber_topic_name_  = "/image/raw";
@@ -100,7 +106,12 @@ void RectifyHandle::connectCb() {
     }
 }
 
-void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){    
+void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
+    // Check dimension consistency with calibration params
+    if(!(msg->height == expected_img_h_  && msg->width == expected_img_w_)){
+        throw std::logic_error( "LOADED CAMERA CALIB RESOLUTION DO NOT MACTCH INPUT FRAME RESOLUTIONCONFIG " );   
+    }
+
     // Convert to Opencs
     //cv_bridge::CvImagePtr cv_ptr; // use cv_bridge::toCvCopy with this 
     cv_bridge::CvImageConstPtr cv_ptr; 
