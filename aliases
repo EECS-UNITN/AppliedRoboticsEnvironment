@@ -9,12 +9,6 @@ alias AR_catkin_clean="catkin clean --yes"
 alias AR_catkin_build="catkin build"
 alias AR_catkin_cd="cd ${AR_CATKIN_ROOT}"
 
-# catkin workspace alias
-alias AR_source="source ${AR_STUDENT_ROOT}/environment.sh"
-alias AR_build="cd ${AR_STUDENT_ROOT} && rm -r build && mkdir build && cd build && cmake .."
-alias AR_make="cd ${AR_STUDENT_ROOT}/build && make"
-alias AR_cd="cd ${AR_STUDENT_ROOT}"
-
 # Missions
 #alias AR_launch_sim="roslaunch fsd_common_meta trackdrive.launch"
 #alias AR_launch_sim_pipeline="roslaunch fsd_common_meta trackdrive.launch"
