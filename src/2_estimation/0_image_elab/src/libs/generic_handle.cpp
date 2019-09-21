@@ -1,5 +1,5 @@
 #include "generic_handle.hpp"
-#include "student_interface.hpp"
+#include "student_image_elab_interface.hpp"
 
 #include <assert.h>
 #include <cv_bridge/cv_bridge.h>

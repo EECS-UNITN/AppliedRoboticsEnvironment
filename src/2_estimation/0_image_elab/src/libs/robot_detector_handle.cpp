@@ -1,6 +1,6 @@
 #include "robot_detector_handle.hpp"
-#include "student_interface.hpp"
-#include "professor_interface.hpp"
+#include "student_image_elab_interface.hpp"
+#include "professor_image_elab_interface.hpp"
 
 #include "image_elab/ExtrinsicParams.h"
 #include "image_elab/PlaneTransform.h"

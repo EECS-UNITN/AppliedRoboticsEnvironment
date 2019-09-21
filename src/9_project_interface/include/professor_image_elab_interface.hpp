@@ -4,6 +4,7 @@
 #include "utils.hpp"
 
 namespace professor {
+
 void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder);
 
 bool extrinsicCalib(const cv::Mat& img_in, std::vector<cv::Point3f> object_points, const cv::Mat& camera_matrix, cv::Mat& rvec, cv::Mat& tvec, const std::string& config_folder);
@@ -20,7 +21,5 @@ bool processGtMap(std::string file_name, std::vector<Polygon>& obstacle_list, st
 bool processMap(const cv::Mat& img_in, const double scale, std::vector<Polygon>& obstacle_list, std::vector<std::pair<int,Polygon>>& victim_list, Polygon& gate, const std::string& config_folder);
 
 bool findRobot(const cv::Mat& img_in, const double scale, Polygon& triangle, double& x, double& y, double& theta, const std::string& config_folder);
-
-bool planPath(const Polygon& borders, const std::vector<Polygon>& obstacle_list, const std::vector<std::pair<int,Polygon>>& victim_list, const Polygon& gate, const float x, const float y, const float theta, Path& path);
 
 }

@@ -1,6 +1,6 @@
 #include "planning_handle.hpp"
-#include "student_interface.hpp"
-#include "professor_interface.hpp"
+#include "student_planning_interface.hpp"
+#include "professor_planning_interface.hpp"
 
 #include "std_msgs/Float32.h" // used to publish dt
 #include "nav_msgs/Path.h"

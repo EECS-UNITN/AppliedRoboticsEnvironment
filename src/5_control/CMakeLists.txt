@@ -8,7 +8,6 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS  
-  project_interface
   genmsg
   actionlib
   actionlib_msgs
@@ -113,7 +112,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   #LIBRARIES planning
-  CATKIN_DEPENDS actionlib_msgs planning project_interface geometry_msgs nav_msgs std_msgs roscpp message_runtime
+  CATKIN_DEPENDS actionlib_msgs planning geometry_msgs nav_msgs std_msgs roscpp message_runtime
   DEPENDS system_lib
 )
 

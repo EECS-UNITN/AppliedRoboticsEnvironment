@@ -1,5 +1,5 @@
-#include "professor_interface.hpp"
-
+#include "professor_image_elab_interface.hpp"
+#include "professor_planning_interface.hpp"
 
 #include <stdexcept>
 #include <sstream>

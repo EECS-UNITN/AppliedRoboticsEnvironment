@@ -1,12 +1,9 @@
-#include "student_interface.hpp"
+#include "student_image_elab_interface.hpp"
+#include "student_planning_interface.hpp"
 
 #include <stdexcept>
 #include <sstream>
 namespace student {
-
-  std::string initImageFolder(){
-  	return "/home/valerio/Pictures/";
-  }	
 
  void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder){
   	throw std::logic_error( "STUDENT FUNCTION NOT LOADED" );
