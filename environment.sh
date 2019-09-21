@@ -24,13 +24,11 @@ then
       read -p "\t\tWant to build it now? [y/n]" -n 1 -r
       if [[ $REPLY =~ ^[Yy]$ ]]
       then
-        AR_catkin_clean
-        AR_catkin_build
+        catkin clean --yes
+        catkin build
         source "${AR_CATKIN_ROOT}/devel/setup.bash"
       fi
   fi
-  printf "\t* Exporting lib folder in LD_LIBRARY_PATH\n"
-  LD_LIBRARY_PATH="${AR_CATKIN_ROOT}/build:${LD_LIBRARY_PATH}"
 else
   printf "\t*\e[33m Seems that you already source this environment.\e[0m\n"  
 fi
