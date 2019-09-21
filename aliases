@@ -10,8 +10,8 @@ alias AR_catkin_build="catkin build"
 alias AR_catkin_cd="cd ${AR_CATKIN_ROOT}"
 
 # Missions
-#alias AR_launch_sim="roslaunch fsd_common_meta trackdrive.launch"
-#alias AR_launch_sim_pipeline="roslaunch fsd_common_meta trackdrive.launch"
+alias AR_launch_sim="roslaunch sim_common sim.launch"
+alias AR_launch_pipeline="roslaunch project_interface node_pipeline.launch"
 
 # RVIZ Launching
 #alias AR_rviz="roslaunch fsd_common_meta rviz_trackdrive.launch"
