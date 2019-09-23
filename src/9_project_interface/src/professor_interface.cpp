@@ -76,13 +76,14 @@ namespace professor {
   static std::string name;
   static std::atomic<bool> done;
   static int n;
+  static double show_scale = 2.0;
 
   void mouseCallback(int event, int x, int y, int, void* p)
   {
     if (event != cv::EVENT_LBUTTONDOWN || done.load()) return;
     
-    result.emplace_back(x, y);
-    cv::circle(bg_img, result.back(), 20, cv::Scalar(0,0,255), -1);
+    result.emplace_back(x*show_scale, y*show_scale);
+    cv::circle(bg_img, cv::Point(x,y), 20/show_scale, cv::Scalar(0,0,255), -1);
     cv::imshow(name.c_str(), bg_img);
 
     if (result.size() >= n) {
@@ -94,7 +95,9 @@ namespace professor {
   std::vector<cv::Point2f> pickNPoints(int n0, const cv::Mat& img)
   {
     result.clear();
-    bg_img = img.clone();
+    cv::Size small_size(img.cols/show_scale, img.rows/show_scale);
+    cv::resize(img, bg_img, small_size);
+    //bg_img = img.clone();
     name = "Pick " + std::to_string(n0) + " points";
     cv::imshow(name.c_str(), bg_img);
     cv::namedWindow(name.c_str());
