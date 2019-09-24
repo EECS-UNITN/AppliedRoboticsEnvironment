@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- albeto berti chi e'?-->
 <launch>
   <!-- World File -->
   <!--arg name="world_file" default="$(find my_robot)/worlds/empty.world"/-->

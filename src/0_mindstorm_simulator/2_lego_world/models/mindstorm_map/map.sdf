@@ -59,13 +59,13 @@
     <include>
       <uri> model://short_black_stripe</uri>
       <pose> -0.75 0.0 0 0 0 1.5707963268 </pose>
-      <name>long_stripe_1</name>
+      <name>short_stripe_0</name>
     </include>  
 
     <include>
       <uri> model://short_black_stripe</uri>
       <pose> 0.75 0.0 0 0 0 1.5707963268 </pose>
-      <name>long_stripe_1</name>
+      <name>short_stripe_1</name>
     </include>
 
     <include>
@@ -75,7 +75,7 @@
     </include>
 
     <include>
-      <uri> model://arena_ground </uri>
+      <uri> model://arena_ground</uri>
       <pose> 0.0 0.0 -0.05 0 -0 0 </pose>
       <name>arena_ground</name>
     </include>

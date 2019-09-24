@@ -2,14 +2,27 @@
 
 CATKIN_SHELL=bash
 
-printf "* RoboticsEnvironment/environment.sh\n"
+printf "* RoboticsEnvironment/environment.sh\n\n"
+
+# Display Applied Robotics logo
+printf "       \e[32m++++++ Applied Robotics  ++++++\n"
+printf "       |\e[34m                             \e[32m|\n"
+printf "       |\e[34m           \_\               \e[32m|\n"
+printf "       |\e[34m          (_**)              \e[32m|\n"
+printf "       |\e[34m         __) #_              \e[32m|\n"
+printf "       |\e[34m        ( )...()             \e[32m|\n"
+printf "       |\e[34m        || | |I|             \e[32m|\n"
+printf "       |\e[34m        || | |()__/          \e[32m|\n"
+printf "       |\e[34m        /\(___)              \e[32m|\n"
+printf "       |\e[34m       _-\"\"\"\"\"\"\"-_\"\"-_       \e[32m|\n"
+printf "       |\e[34m       -,,,,,,,,- ,,-        \e[32m|\n"
+printf "       \e[33mTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\e[0m"
+
+
 if [ -z "$AR_CATKIN_ROOT" ]
 then
   export AR_CATKIN_ROOT=$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)
   source ${AR_CATKIN_ROOT}/aliases
-
-  # Display Applied Robotics logo
-  AR_logo
 
   # check whether devel folder exists
   printf "\t* Loading ROS environment\n"
