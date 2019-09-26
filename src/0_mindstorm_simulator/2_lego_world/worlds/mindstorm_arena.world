@@ -67,7 +67,7 @@
 
     <include>
       <uri> model://mindstorm_map </uri>
-      <pose> 0.75 0.5 0 0 0 0 </pose>
+      <pose> 0.0 0.0 0 0 0 0 </pose>
       <name>mindstorm_map</name>
     </include>
 
