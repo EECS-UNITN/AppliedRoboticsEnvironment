@@ -44,25 +44,25 @@
     <!-- Obstacle section -->    
     <include>
       <uri>model://hexagon_95</uri>
-      <pose>0.05 0.45 0 0 0 0</pose>
+      <pose>0.04 0.45 0 0 0 0</pose>
       <name>obstacle_1</name>
     </include>
 
     <include>
       <uri>model://pentagon_95</uri>
-      <pose>0.05 0.6 0 0 0 0</pose>
+      <pose>0.04 0.6 0 0 0 0</pose>
       <name>obstacle_2</name>
     </include>
 
     <include>
       <uri>model://rectangle_95</uri>
-      <pose>0.15 0.45 0 0 0 0</pose>
+      <pose>0.17 0.45 0 0 0 0</pose>
       <name>obstacle_3</name>
     </include>
 
     <include>
       <uri>model://triangle_95</uri>
-      <pose>0.15 0.6 0 0 0 0</pose>
+      <pose>0.17 0.6 0 0 0 0</pose>
       <name>obstacle_4</name>
     </include>
 
