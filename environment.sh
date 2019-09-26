@@ -34,7 +34,9 @@ then
       source "/opt/ros/kinetic/setup.bash"
       printf "\t\e[31mYou need to build first before you can source\n\e[0m"
       printf "\t\e[33mRun 'catkin build' in ${AR_CATKIN_ROOT} directory\n\e[0m"
-      read -p "\t\tWant to build it now? [y/n]" -n 1 -r
+      printf "\t\t"
+      read -p "Want to build it now? [y/n]" -n 1 -r
+      printf "\n"
       if [[ $REPLY =~ ^[Yy]$ ]]
       then
         catkin clean --yes
