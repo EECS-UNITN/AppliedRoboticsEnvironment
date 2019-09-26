@@ -13,7 +13,7 @@ namespace localization {
 
     // Constructor
     LocalizationHandle::LocalizationHandle(){
-        ROS_INFO_NAMED(kPringName, "Constructor");
+        ROS_DEBUG_NAMED(kPringName, "Constructor");
         initialized_   = false;  
         has_gps_       = false;
         has_odom_      = false;
@@ -43,7 +43,7 @@ namespace localization {
 
     // Methods
     void LocalizationHandle::loadParameters() {
-        ROS_INFO_NAMED(kPringName, "Loading Params");
+        ROS_DEBUG_NAMED(kPringName, "Loading Params");
       
         odom_list_.clear();
         queue_size_ = 1;
@@ -59,7 +59,7 @@ namespace localization {
     }
 
     void LocalizationHandle::publishToTopics() {
-        ROS_INFO_NAMED(kPringName, "Init publishers");
+        ROS_DEBUG_NAMED(kPringName, "Init publishers");
         assert (initialized_);
 
         pub_map_odom_ = nh_.advertise<nav_msgs::Odometry>(pub_map_odom_topic_name_, 1, true);
@@ -68,7 +68,7 @@ namespace localization {
     }
 
     void LocalizationHandle::subscribeToTopic() {
-        ROS_INFO_NAMED(kPringName, "Init subscribers");
+        ROS_DEBUG_NAMED(kPringName, "Init subscribers");
         assert (initialized_);
         
         sub_odom_ = nh_.subscribe(sub_odom_topic_name_, queue_size_, &LocalizationHandle::odomCb, this, ros::TransportHints().tcpNoDelay());
@@ -78,7 +78,7 @@ namespace localization {
 
 
     void LocalizationHandle::gpsCb(const geometry_msgs::PoseStampedPtr robot_pose){
-        ROS_INFO_NAMED(kPringName, "gpsCb");
+        ROS_DEBUG_NAMED(kPringName, "gpsCb");
         const double arena_margin = 0.15;
         const double xy_max_err   = 0.1;
         const double yaw_max_err  = M_PI/180*10;
