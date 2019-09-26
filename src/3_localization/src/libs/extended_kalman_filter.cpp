@@ -34,6 +34,8 @@ void ExtendedKalmanFilter::reset(){
 
 void ExtendedKalmanFilter::predict(Vec2& u, Matrix2& Q)
 {
+  if(!initialized) return;
+  
   // predict next state using Kalman filter.
   double ds  = u(0);
   double dth = u(1);

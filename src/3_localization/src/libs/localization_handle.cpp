@@ -47,6 +47,9 @@ namespace localization {
       
         queue_size_ = 1;
 
+        loadVariable<double>(nh_,"/arena/w",&arena_w_);
+        loadVariable<double>(nh_,"/arena/h",&arena_h_);
+
         sub_gps_topic_name_      = "/estimation/pose";
         sub_odom_topic_name_     = "/estimation/odom";
         pub_map_odom_topic_name_ = "/estimation/map";
@@ -75,8 +78,30 @@ namespace localization {
 
     void LocalizationHandle::gpsCb(const geometry_msgs::PoseStampedPtr robot_pose){
 
+        const double arena_margin = 0.25;
+        const double xy_max_err = 0.2;
+        const double yaw_max_err = M_PI/180*20;
+
         if(odom_list_.size() < 2){
             ROS_WARN_STREAM("Localization handle waiting more odom msg");
+            return;
+        }
+
+        const double& x = robot_pose->pose.position.x;
+        const double& y = robot_pose->pose.position.y;
+        const tf::Quaternion q(robot_pose->pose.orientation.x, 
+            robot_pose->pose.orientation.y, 
+            robot_pose->pose.orientation.z, 
+            robot_pose->pose.orientation.w);
+        const tf::Matrix3x3 m(q);
+        double roll, pitch, yaw;
+        m.getRPY(roll, pitch, yaw);
+
+        // Raugh ceck on the measure! Must be inside the arena
+        if(!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(yaw) ||
+                x < -arena_margin || x > (arena_w_ + arena_margin) ||
+                y < -arena_margin || y > (arena_h_ + arena_margin)){
+            ROS_WARN_STREAM("Discarding the measure (position out of the arena!) UPS!");
             return;
         }
 
@@ -134,20 +159,21 @@ namespace localization {
         
 
         {
-        // EKF UPDATE
-        const double& x = robot_pose->pose.position.x;
-        const double& y = robot_pose->pose.position.y;
-        const tf::Quaternion q(robot_pose->pose.orientation.x, 
-            robot_pose->pose.orientation.y, 
-            robot_pose->pose.orientation.z, 
-            robot_pose->pose.orientation.w);
-        const tf::Matrix3x3 m(q);
-        double roll, pitch, yaw;
-        m.getRPY(roll, pitch, yaw);
+        // EKF UPDATE        
+        const double delta_x = x - ekf_.x(0);
+        const double delta_y = y - ekf_.x(1);
+        const double cos_sum = std::cos(yaw) + std::cos(ekf_.x(2));
+        const double sin_sum = std::sin(yaw) + std::sin(ekf_.x(2));
+        const double delta_a = std::atan2(sin_sum, cos_sum);
+        const double measure_dist = std::hypot(delta_x, delta_y);
 
+        // TODO: better to compute this using the covariance of prediction!
+        if(measure_dist > xy_max_err || std::abs(delta_a) > yaw_max_err ){
+            ekf_.reset();
+        }
 
-        const double xy_cov = 0.002*0.002;
-        const double th_cov = 0.005*0.005;
+        const double xy_cov = 0.02*0.02;
+        const double th_cov = 0.05*0.05;
         Vec3 z;
         Matrix3 R;
         z << x, y, yaw;
@@ -194,6 +220,7 @@ namespace localization {
     if(odom_list_.empty() || odom->header.stamp > odom_list_.back().stamp){
         odom_list_.emplace_back(odom->header.stamp, x, y, yaw);
     }
+
     // Publish last odom rotated to map
     if(has_gps_){
         //
@@ -203,6 +230,10 @@ namespace localization {
         p_map = R_ * p_odo + t_;
 
         const double dth = std::atan2(R_(0,1), R_(0,0));
+        if(!std::isfinite(p_map(0)) || !std::isfinite(p_map(1)) || 
+            !std::isfinite(dth)){
+            return;
+        }
 
         geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(yaw - dth);
 

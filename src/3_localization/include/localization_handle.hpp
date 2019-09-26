@@ -58,6 +58,7 @@ private:
   Matrix2 R_;
   Vec2 t_;
 
+  double arena_w_, arena_h_;
   // Callback
   void gpsCb(const geometry_msgs::PoseStampedPtr robot_pose);
   void odomCb(const nav_msgs::OdometryPtr odom);
