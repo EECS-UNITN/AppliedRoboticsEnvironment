@@ -127,6 +127,8 @@ void LegoModelPlugin::Reset()
 
 void LegoModelPlugin::onUpdate() 
 {   
+    const double v_EPS = 0.001;
+    const double max_k = 1/10; // max curvature 1/m
     static bool msg_sent = false; 
     static bool initialized = false;
     if(!initialized){
@@ -156,8 +158,21 @@ void LegoModelPlugin::onUpdate()
         msg_sent = false;
     }
     
+    double trimed_yaw_r = 0;
+    if(std::abs(v_car_) > v_EPS){
+        trimed_yaw_r = yaw_r_car_;
+        const double max_yaw_r = std::abs(v_car_/max_k);
+        if(trimed_yaw_r > max_yaw_r){
+            trimed_yaw_r = max_yaw_r;
+        }
+        
+        if(trimed_yaw_r < -max_yaw_r){
+            trimed_yaw_r = -max_yaw_r;
+        }
+    }
+
     // FIX if yaw_r_car_ > 0 --> approx as a circ arc
-    const double dth = yaw_r_car_ * dt;
+    const double dth = trimed_yaw_r * dt;
     const double c = std::cos(yaw_car_ + dth/2);
     const double s = std::sin(yaw_car_ + dth/2);
     x_car_   += c*v_car_ * dt;   
