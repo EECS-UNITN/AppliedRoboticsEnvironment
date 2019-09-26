@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-
-  <arg name="not_simulation" default="false"/>  
-  <group if="$(arg not_simulation)">
-    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
-      <remap from="/usb_cam/image_raw" to="/image/raw"/>
-      <param name="video_device" value="/dev/video1" />
-      <param name="image_width" value="1280" />
-      <param name="image_height" value="1080" />
-      <param name="pixel_format" value="yuyv" />
-      <param name="camera_frame_id" value="usb_cam" />
-      <param name="io_method" value="mmap"/>
-    </node>
-  </group>
-
   <!-- Load Configuration -->
   <include file="$(find project_interface)/launch/load_params.launch"/>
 

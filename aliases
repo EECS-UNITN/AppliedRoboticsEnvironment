@@ -9,25 +9,28 @@ alias AR_catkin_clean="catkin clean --yes"
 alias AR_catkin_build="catkin build"
 alias AR_catkin_cd="cd ${AR_CATKIN_ROOT}"
 
-# Missions
-alias AR_rviz="roslaunch sim_common sim.launch"
+# Simulator
 alias AR_simulator="roslaunch sim_common sim.launch"
 alias AR_simulator_gui="roslaunch sim_common sim.launch gui:=true"
+
+# Load image from file or videostream
+alias AR_image_loader="roslaunch project_interface image_load.launch"
+alias AR_video_stream="roslaunch project_interface video_stream.launch" #video_device:=/dev/video0
+
+# Run project code
 alias AR_pipeline="roslaunch project_interface node_pipeline.launch"
-alias AR_pipeline_from_file="roslaunch project_interface image_load_pipeline.launch"
-
-alias AR_pipeline_video="node_pipeline.launch not_simulation:=true"  #video_device:=/dev/video0
-
-# Files
-AR_map_file="${AR_CATKIN_ROOT}/src/0_mindstorm_simulator/2_lego_world/models/mindstorm_map/map.sdf"
-AR_interface_dir="${AR_CATKIN_ROOT}/src/9_project_interface/include"
-AR_config_dir="${AR_CATKIN_ROOT}/src/9_project_interface/config"
 
 # RVIZ Launching
 alias AR_rviz="roslaunch project_interface rviz.launch"
 
 # RQT_multiplot Launch
 alias AR_plot_dt="roslaunch project_interface graph.launch"
+
+# Files
+AR_map_file="${AR_CATKIN_ROOT}/src/0_mindstorm_simulator/2_lego_world/models/mindstorm_map/map.sdf"
+AR_interface_dir="${AR_CATKIN_ROOT}/src/9_project_interface/include"
+AR_config_dir="${AR_CATKIN_ROOT}/src/9_project_interface/config"
+
 
 
 alias AR_run='rostopic pub /control/action/goal control/FollowPathActionGoal "header:

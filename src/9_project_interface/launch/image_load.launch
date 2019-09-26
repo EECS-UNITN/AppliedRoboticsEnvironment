@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Load Configuration -->
+  <include file="$(find project_interface)/launch/load_params.launch"/>
+
+  <!-- Load image from file -->
+  <node name="image_loader" pkg="image_elab" type="image_loader_node" respawn="true" output="screen"/>
+
+</launch>
+

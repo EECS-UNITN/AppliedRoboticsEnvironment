@@ -5,9 +5,8 @@
 #include <sstream>
 namespace student {
 
- void loadImage(cv::Mat& img_out, const std::string& config_folder){
-  //image_out = cv::imread(file_name, CV_LOAD_IMAGE_COLOR);
-  throw std::logic_error( "STUDENT FUNCTION NOT LOADED" );
+ void loadImage(cv::Mat& img_out, const std::string& config_folder){  
+   throw std::logic_error( "STUDENT FUNCTION NOT LOADED" );
  }
 
  void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder){
