@@ -49,7 +49,7 @@ double PathFollowing::computeControl(const Pose& fp, double x, double y, double 
 {
   
   // control constants
-  const double k = 10; 
+  const double k = 1.5; 
   const double l0 = 0.1;
   
   // Estract useful values
