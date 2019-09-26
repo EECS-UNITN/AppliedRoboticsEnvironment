@@ -10,6 +10,7 @@ alias AR_catkin_build="catkin build"
 alias AR_catkin_cd="cd ${AR_CATKIN_ROOT}"
 
 # Missions
+alias AR_rviz="roslaunch sim_common sim.launch"
 alias AR_simulator="roslaunch sim_common sim.launch"
 alias AR_simulator_gui="roslaunch sim_common sim.launch gui:=true"
 alias AR_pipeline="roslaunch project_interface node_pipeline.launch"
@@ -20,8 +21,24 @@ AR_interface_dir="${AR_CATKIN_ROOT}/src/9_project_interface/include"
 AR_config_dir="${AR_CATKIN_ROOT}/src/9_project_interface/config"
 
 # RVIZ Launching
-# alias AR_rviz="roslaunch fsd_common_meta rviz_trackdrive.launch"
+alias AR_rviz="roslaunch project_interface rviz.launch"
 
 # RQT_multiplot Launch
-# alias AR_plot_dt=
+alias AR_plot_dt="roslaunch project_interface graph.launch"
+
+
+alias AR_run='rostopic pub /control/action/goal control/FollowPathActionGoal "header:
+  seq: 0
+  stamp:
+    secs: 0
+    nsecs: 0
+  frame_id: ''
+goal_id:
+  stamp:
+    secs: 0
+    nsecs: 0
+  id: ''
+goal: {}" --once'
+
+
 
