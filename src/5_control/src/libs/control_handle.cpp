@@ -88,7 +88,7 @@ namespace control {
         queue_size_ = 1;
 
         srv_plan_topic_name_      = "/planning/compute_plan";
-        sub_robot_topic_name_     = "/ideal/odom";
+        sub_robot_topic_name_     = "/estimation/map"; //"/ideal/odom";
         as_topic_name_            = "/control/action";
         pub_control_topic_name_   = "/control/cmd_vel";
         pub_dt_topic_name_        = "/process_time/control";        
