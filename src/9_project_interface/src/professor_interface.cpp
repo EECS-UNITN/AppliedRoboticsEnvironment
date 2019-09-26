@@ -484,7 +484,7 @@ namespace professor {
 
     float xc = 0, yc = 1.5, r = 1.4;
     float ds = 0.05;
-    for (float theta = -M_PI/2, s = 0; theta<0; theta+=ds/r, s+=ds) {
+    for (float theta = -M_PI/2, s = 0; theta<(-M_PI/2 + 1.2); theta+=ds/r, s+=ds) {
       path.points.emplace_back(s, xc+r*std::cos(theta), yc+r*std::sin(theta), theta+M_PI/2, 1./r);
     }    
 
