@@ -13,6 +13,7 @@ namespace localization {
 
 struct RobotState{
   RobotState(){}
+  RobotState(const RobotState& s):stamp(s.stamp), x(s.x), y(s.y), theta(s.theta){}
   RobotState(const ros::Time& stamp, const double& x, 
                   const double& y, const double& theta): stamp(stamp), x(x), y(y), theta(theta){}
     

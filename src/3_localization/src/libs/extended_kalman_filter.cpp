@@ -100,9 +100,5 @@ void ExtendedKalmanFilter::updateGPS(const Vec3& z, const Matrix3& R)
 
 bool ExtendedKalmanFilter::isLocalized()
 {
-  if (!initialized) {
-    return false;
-  }
-  
-  return true;
+  return initialized;
 }
