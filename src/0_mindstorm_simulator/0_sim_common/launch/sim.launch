@@ -5,8 +5,8 @@
   <arg name="gui" default="false"/>
 
   <!-- Robot pose -->
-  <arg name="x" default="0.1"/>
-  <arg name="y" default="0.1"/>  
+  <arg name="x" default="0.2"/>
+  <arg name="y" default="0.2"/>  
   <arg name="yaw" default="0"/>
 
   <!-- Load Robot Description -->

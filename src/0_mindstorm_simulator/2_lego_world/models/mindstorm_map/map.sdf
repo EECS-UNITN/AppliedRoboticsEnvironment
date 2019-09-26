@@ -5,38 +5,38 @@
     <!-- Gate and camera section -->
     <include>
       <uri>model://gate</uri>
-      <pose>0.15 0.95 0 0 0 1.57</pose>
+      <pose>1.3 0.95 0 0 0 1.57</pose>
       <name>gate</name>
     </include>
 
     <!-- Victim section -->
     <include>
       <uri>model://victim_1</uri>
-      <pose>0.2 0.2 0 0 0 0</pose>
+      <pose>0.5 0.2 0 0 0 0</pose>
       <name>victim1</name>
     </include>
 
     <include>
       <uri>model://victim_2</uri>
-      <pose>0.5 0.2 0 0 0 0</pose>
+      <pose>0.9 0.2 0 0 0 0</pose>
       <name>victim2</name>
     </include>
 
     <include>
       <uri>model://victim_3</uri>
-      <pose>0.8 0.2 0 0 0 0</pose>
+      <pose>1.3 0.2 0 0 0 0</pose>
       <name>victim3</name>
     </include>
 
     <include>
       <uri>model://victim_4</uri>
-      <pose>1.1 0.2 0 0 0 0</pose>
+      <pose>1.3 0.45 0 0 0 0</pose>
       <name>victim4</name>
     </include>
 
     <include>
       <uri>model://victim_5</uri>
-      <pose>0.2 0.45 0 0 0 0</pose>
+      <pose>1.3 0.75 0 0 0 0</pose>
       <name>victim5</name>
     </include>
 
@@ -44,25 +44,25 @@
     <!-- Obstacle section -->    
     <include>
       <uri>model://hexagon_95</uri>
-      <pose>1.35 0.1 0 0 0 0</pose>
+      <pose>0.05 0.45 0 0 0 0</pose>
       <name>obstacle_1</name>
     </include>
 
     <include>
       <uri>model://pentagon_95</uri>
-      <pose>1.35 0.2 0 0 0 0</pose>
+      <pose>0.05 0.6 0 0 0 0</pose>
       <name>obstacle_2</name>
     </include>
 
     <include>
       <uri>model://rectangle_95</uri>
-      <pose>1.25 0.1 0 0 0 0</pose>
+      <pose>0.15 0.45 0 0 0 0</pose>
       <name>obstacle_3</name>
     </include>
 
     <include>
       <uri>model://triangle_95</uri>
-      <pose>1.25 0.2 0 0 0 0</pose>
+      <pose>0.15 0.6 0 0 0 0</pose>
       <name>obstacle_4</name>
     </include>
 
@@ -70,25 +70,25 @@
 
     <include>
       <uri>model://hexagon_142</uri>
-      <pose>1.3 0.4 0 0 0 0</pose>
+      <pose>0.3 0.45 0 0 0 0</pose>
       <name>obstacle_5</name>
     </include>
 
     <include>
       <uri>model://pentagon_142</uri>
-      <pose>1.3 0.6 0 0 0 0</pose>
+      <pose>0.3 0.6 0 0 0 0</pose>
       <name>obstacle_6</name>
     </include>
 
     <include>
       <uri>model://rectangle_142</uri>
-      <pose>1.1 0.4 0 0 0 0</pose>
+      <pose>0.5 0.45 0 0 0 0</pose>
       <name>obstacle_7</name>
     </include>
 
     <include>
       <uri>model://triangle_142</uri>
-      <pose>1.1 0.6 0 0 0 0</pose>
+      <pose>0.5 0.6 0 0 0 0</pose>
       <name>obstacle_8</name>
     </include>
 
@@ -96,25 +96,25 @@
 
     <include>
       <uri>model://hexagon_189</uri>
-      <pose>0.75 0.45 0 0 0 0</pose>
+      <pose>0.9 0.45 0 0 0 0</pose>
       <name>obstacle_9</name>
     </include>
 
     <include>
       <uri>model://pentagon_189</uri>
-      <pose>0.75 0.65 0 0 0 0</pose>
+      <pose>0.9 0.65 0 0 0 0</pose>
       <name>obstacle_10</name>
     </include>
 
     <include>
       <uri>model://rectangle_189</uri>
-      <pose>0.55 0.45 0 0 0 0</pose>
+      <pose>0.7 0.45 0 0 0 0</pose>
       <name>obstacle_11</name>
     </include>
 
     <include>
       <uri>model://triangle_189</uri>
-      <pose>0.55 0.65 0 0 0 0</pose>
+      <pose>0.7 0.65 0 0 0 0</pose>
       <name>obstacle_12</name>
     </include>   
 
