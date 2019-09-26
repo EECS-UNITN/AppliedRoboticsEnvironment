@@ -83,7 +83,7 @@ namespace control {
     void ControlHandle::loadParameters() {
         ROS_DEBUG_NAMED(kPringName, "Loading Params");
       
-        loadVariable<bool>(nh_,"/default_implementation/control", &default_implementation_);
+        //loadVariable<bool>(nh_,"/default_implementation/control", &default_implementation_);
         
         queue_size_ = 1;
 

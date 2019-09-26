@@ -32,7 +32,7 @@ private:
   ros::NodeHandle nh_;
   bool initialized_;
   int queue_size_;
-  bool default_implementation_;
+  //bool default_implementation_;
   std::string config_folder_;
   
   // ROS communication  
