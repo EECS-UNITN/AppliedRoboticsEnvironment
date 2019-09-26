@@ -9,45 +9,11 @@ In this course the student will be introduced to a complete methodology for desi
 
 ## Prerequisites/Dependencies
 * Linux 16.04
-* Gazebo >= 7.0  
-* ROS Kinetic  
+* Gazebo >= 7.16
+* ROS Kinetic
 * make >= 4.1
 * gcc/g++ >= 5.4
 
-*** work in progress Docker container ***
 
 ## Run the project
-* Create and init the catkin workspace
-```bash
-mkdir -p /home/workspace/catkin_ws/src
-cd /home/workspace/catkin_ws/src
-catkin_init_workspace
-```
-* Clone the repository
-```bash
-cd /home/workspace/catkin_ws/src
-git clone https://github.com/ValerioMa/AppliedRobotics.git
-```
-* Build the catkin package
-```bash
-cd /home/workspace/catkin_ws
-catkin_make
-```
-* Open 2 terminal and run the simulation
-On a first terminal run the physic engine (gazebo)
-```bash
-cd /home/workspace/catkin_ws
-source devel/setup.bash
-roslaunch sim_common sim.launch
-```
-Open the second terminal run the project pipeline:
-```bash
-cd /home/workspace/catkin_ws
-source devel/setup.bash
-roslaunch project_interface node_pipeline.launch
-```
-
-*** work in progress STUDENT API ***
-In this state the simulator uses the default implementation of the project_interface library and reises various exception. 
-To have the simulator running the student have to download another repository and implement the function. A working implementation for the default function can be downloaded from .... . 
-Using the configuration file in 9_prokect_interface/config/default_implementation.config the user can select if the system should load the default or the custom defined functions.
+........
