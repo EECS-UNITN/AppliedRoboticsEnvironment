@@ -30,11 +30,11 @@
 using namespace image_proc;
 
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "raw_image_listener");
+  ros::init(argc, argv, "unwarped_robot_image_listener");
   ros::NodeHandle nodeHandle("~");
 
-  std::string default_implementation_field = "/default_implementation/raw_clbk";
-  std::string camera_subscriber_topic_name = "/image/raw";  
+  std::string default_implementation_field = "/default_implementation/unwarped_robot_clbk";
+  std::string camera_subscriber_topic_name = "/image/unwarp_robot";  
   GenericHandle generic_handle;
   generic_handle.onInit(nodeHandle, default_implementation_field, camera_subscriber_topic_name);
 

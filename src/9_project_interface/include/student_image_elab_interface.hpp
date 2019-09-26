@@ -4,6 +4,7 @@
 #include "utils.hpp"
 
 namespace student {
+void loadImage(cv::Mat& image_out, const std::string& config_folder);
 
 void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder);
 

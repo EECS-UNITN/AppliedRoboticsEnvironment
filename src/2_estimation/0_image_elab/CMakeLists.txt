@@ -161,29 +161,35 @@ add_library(image_elab_nodelet
 ## The recommended prefix ensures that target names across packages don't collide
 
 add_executable(unwarp_node 
-          src/node/unwarp_node.cpp
-          )
-
+  src/node/unwarp_node.cpp
+)
 add_executable(rectify_node 
-					src/node/rectify_node.cpp
-					)
-
-add_executable(raw_img_listener_node 
-          src/node/raw_img_listener.cpp
-          )
-
+  src/node/rectify_node.cpp
+)
 add_executable(extrinsic_calib_node 
-          src/node/extrinsic_calib_node.cpp
-          )
-
+  src/node/extrinsic_calib_node.cpp
+)
 add_executable(obstacle_detector_node 
-          src/node/obstacle_detector_node.cpp
-          )
-
+  src/node/obstacle_detector_node.cpp
+)
 add_executable(robot_detector_node 
-          src/node/robot_detector_node.cpp
-          )
-
+  src/node/robot_detector_node.cpp
+)
+add_executable(raw_img_listener_node 
+  src/node/raw_img_listener.cpp
+)
+add_executable(rectify_img_listener_node
+  src/node/rectify_img_listener.cpp
+)
+add_executable(unwarp_ground_img_listener_node
+  src/node/unwarp_ground_img_listener.cpp
+)
+add_executable(unwarp_robot_img_listener_node
+  src/node/unwarp_robot_img_listener.cpp
+)
+add_executable(image_loader_node
+  src/node/image_loader_node.cpp
+)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -202,12 +208,12 @@ target_link_libraries(image_elab_LIBRARY
 )
 
 # NODE
+target_link_libraries(image_loader_node
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS} 
+)
 target_link_libraries(rectify_node
   image_elab_LIBRARY	
-  ${catkin_LIBRARIES} 
-)
-target_link_libraries(raw_img_listener_node
-  image_elab_LIBRARY 
   ${catkin_LIBRARIES} 
 )
 target_link_libraries(extrinsic_calib_node
@@ -224,6 +230,22 @@ target_link_libraries(obstacle_detector_node
 )
 target_link_libraries(robot_detector_node
   image_elab_LIBRARY
+  ${catkin_LIBRARIES} 
+)
+target_link_libraries(raw_img_listener_node
+  image_elab_LIBRARY 
+  ${catkin_LIBRARIES} 
+)
+target_link_libraries(rectify_img_listener_node
+  image_elab_LIBRARY 
+  ${catkin_LIBRARIES} 
+)
+target_link_libraries(unwarp_ground_img_listener_node
+  image_elab_LIBRARY 
+  ${catkin_LIBRARIES} 
+)
+target_link_libraries(unwarp_robot_img_listener_node
+  image_elab_LIBRARY 
   ${catkin_LIBRARIES} 
 )
 

@@ -14,6 +14,9 @@ alias AR_rviz="roslaunch sim_common sim.launch"
 alias AR_simulator="roslaunch sim_common sim.launch"
 alias AR_simulator_gui="roslaunch sim_common sim.launch gui:=true"
 alias AR_pipeline="roslaunch project_interface node_pipeline.launch"
+alias AR_pipeline_from_file="roslaunch project_interface image_load_pipeline.launch"
+
+alias AR_pipeline_video="node_pipeline.launch not_simulation:=true"  #video_device:=/dev/video0
 
 # Files
 AR_map_file="${AR_CATKIN_ROOT}/src/0_mindstorm_simulator/2_lego_world/models/mindstorm_map/map.sdf"
