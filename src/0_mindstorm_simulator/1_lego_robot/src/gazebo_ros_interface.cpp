@@ -75,16 +75,20 @@ void LegoModelPlugin::initialPoseCb(geometry_msgs::PoseWithCovarianceStampedCons
     const double& qz = pose->pose.pose.orientation.z;
     const double& qw = pose->pose.pose.orientation.w;
 
+    // gzerr << qx <<" " << qy <<" " << qz <<" " << qw <<" " << std::endl;
+
     x_car_ = pose->pose.pose.position.x;
     y_car_ = pose->pose.pose.position.y;
-    yaw_car_ = std::atan2(2.0*(qy*qz + qw*qx), qw*qw - qx*qx - qy*qy + qz*qz);
-    // const tf2::Quaternion q(pose->pose.pose.orientation.x, 
-    //         pose->pose.pose.orientation.y, 
-    //         pose->pose.pose.orientation.z, 
-    //         pose->pose.pose.orientation.w);
-    // const tf2::Matrix3x3 m(q);
-    // double roll, pitch;
-    // m.getRPY(roll, pitch, yaw_car_);
+    // yaw_car_ = std::atan2(2.0*(qy*qz + qw*qx), qw*qw - qx*qx - qy*qy + qz*qz);
+    // gzerr << qx <<" " << qy <<" " << qz <<" " << qw <<" " << std::endl;
+    // gzerr << yaw_car_  <<std::endl;
+    const tf2::Quaternion q(pose->pose.pose.orientation.x, 
+            pose->pose.pose.orientation.y, 
+            pose->pose.pose.orientation.z, 
+            pose->pose.pose.orientation.w);
+    const tf2::Matrix3x3 m(q);
+    double roll, pitch;
+    m.getRPY(roll, pitch, yaw_car_);
 
     v_car_ = 0;
     yaw_r_car_ = 0;
@@ -124,14 +128,14 @@ void LegoModelPlugin::Reset()
 void LegoModelPlugin::onUpdate() 
 {   
     static bool msg_sent = false; 
-    static bool fist_update = false;
-    if(!fist_update){
+    static bool initialized = false;
+    if(!initialized){
         gazebo::math::Pose pose;     
         pose = model_->GetWorldPose();
         x_car_     = pose.pos.x;
         y_car_     = pose.pos.y;
         yaw_car_   = pose.rot.GetYaw();
-        fist_update = true;
+        initialized = true;
     }
     std::lock_guard<std::mutex> lock(mtx_);
     common::Time curTime = world_->GetSimTime();
