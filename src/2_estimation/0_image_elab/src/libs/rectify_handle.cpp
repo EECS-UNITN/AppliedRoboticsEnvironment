@@ -76,6 +76,9 @@ void RectifyHandle::loadParameters() {
 
     ROS_INFO_STREAM_NAMED(kPringName, "cametra_matrix = \n " << camera_matrix_);
     ROS_INFO_STREAM_NAMED(kPringName, "dist_coeffs = \n"    << dist_coeffs_ );
+
+    last_img_stamp_ = ros::Time::now();
+    min_image_dt_ = 0.01; // discard image if timestamp is closer than 10 ms
 }
 
 void RectifyHandle::publishToTopics() {
@@ -112,6 +115,10 @@ void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
         throw std::logic_error( "LOADED CAMERA CALIB RESOLUTION DO NOT MACTCH INPUT FRAME RESOLUTIONCONFIG " );   
     }
 
+    if(std::fabs((last_img_stamp_ - msg->header.stamp).toSec()) < min_image_dt_){
+        return;
+    }
+    last_img_stamp_ = msg->header.stamp;
     // Convert to Opencs
     //cv_bridge::CvImagePtr cv_ptr; // use cv_bridge::toCvCopy with this 
     cv_bridge::CvImageConstPtr cv_ptr; 

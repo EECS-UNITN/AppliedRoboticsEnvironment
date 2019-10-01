@@ -39,6 +39,8 @@ private:
   ros::Subscriber sub_camera_;
   ros::Publisher  pub_rect_, pub_dt_;
 
+  ros::Time last_img_stamp_;
+  double min_image_dt_;
   // TOPICS  
   std::string camera_subscriber_topic_name_;
   std::string rec_publisher_topic_name_, pub_dt_topic_name_;
