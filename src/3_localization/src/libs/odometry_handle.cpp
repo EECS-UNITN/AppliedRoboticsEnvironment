@@ -62,7 +62,7 @@ namespace localization {
         ROS_DEBUG_NAMED(kPringName, "Init subscribers");
         assert (initialized_);
         
-        sub_twist_ = nh_.subscribe(sub_twist_topic_name_, 1 , &OdometryHandle::twistCb, this);
+        sub_twist_ = nh_.subscribe(sub_twist_topic_name_, 1 , &OdometryHandle::twistCb, this, ros::TransportHints().tcpNoDelay());
     }
 
     void OdometryHandle::twistCb(geometry_msgs::TwistWithCovarianceStampedPtr twist){    

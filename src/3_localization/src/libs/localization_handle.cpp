@@ -88,42 +88,39 @@ namespace localization {
             return;
         }
 
+        // Extract the measure and check if they are not outlayers
+        frame_id_ = robot_pose->header.frame_id;
+        const auto&  m_stamp = robot_pose->header.stamp;        
+        const double m_x = robot_pose->pose.position.x;
+        const double m_y = robot_pose->pose.position.y;
+        const tf::Quaternion m_q(robot_pose->pose.orientation.x, 
+            robot_pose->pose.orientation.y, 
+            robot_pose->pose.orientation.z, 
+            robot_pose->pose.orientation.w);
+        const tf::Matrix3x3 m_m(m_q);
+        double m_roll, m_pitch, m_yaw;
+        m_m.getRPY(m_roll, m_pitch, m_yaw);
 
-        const auto& gps_stamp = robot_pose->header.stamp;
-        bool first_step = false;
-        double x_i, y_i, yaw_i, m_x, m_y, m_yaw;
-        
-        if(ekf_.isLocalized()){
-            m_x = robot_pose->pose.position.x;
-            m_y = robot_pose->pose.position.y;
-            const tf::Quaternion m_q(robot_pose->pose.orientation.x, 
-                robot_pose->pose.orientation.y, 
-                robot_pose->pose.orientation.z, 
-                robot_pose->pose.orientation.w);
-            const tf::Matrix3x3 m_m(m_q);
-            double m_roll, m_pitch;
-            m_m.getRPY(m_roll, m_pitch, m_yaw);
+        // Raugh ceck on the measure! Must be inside the arena
+        if(!std::isfinite(m_x) || !std::isfinite(m_y) || !std::isfinite(m_yaw) 
+            || m_x < -arena_margin || m_x > (arena_w_ + arena_margin) 
+            || m_y < -arena_margin || m_y > (arena_h_ + arena_margin)){
+            ROS_WARN_STREAM("UPS! Discarding the measure (position out of the arena!)");
+            return;
+        }
 
-            // Raugh ceck on the measure! Must be inside the arena
-            if(!std::isfinite(m_x) || !std::isfinite(m_y) || !std::isfinite(m_yaw) 
-                || m_x < -arena_margin || m_x > (arena_w_ + arena_margin) 
-                || m_y < -arena_margin || m_y > (arena_h_ + arena_margin)){
-                ROS_WARN_STREAM("Discarding the measure (position out of the arena!) UPS!");
-                return;
-            }
-            
-            //EKF PREDICTION
-            RobotState removed_state;            
-            frame_id_ = robot_pose->header.frame_id;
-            bool found = false; 
-             
+                
+        bool found = false; 
+        RobotState removed_state;  // Last removed odom state!          
 
-            if(odom_list_.front().stamp < gps_stamp && odom_list_.back().stamp > gps_stamp){
+        if(ekf_.isLocalized()){            
+            //EKF PREDICTION                        
+            if(odom_list_.front().stamp <= m_stamp && odom_list_.back().stamp > m_stamp){
                 std::list<RobotState>::iterator odo_el;                       
                 while(odom_list_.size()>2 && !found){
                     odo_el = odom_list_.begin();
                     std::advance(odo_el,1);
-                    if(odo_el->stamp > gps_stamp){
+                    if(odo_el->stamp > m_stamp){
                         found = true;
                     }
                     // Predict
@@ -152,27 +149,27 @@ namespace localization {
                       
 
                     ekf_.predict(u, Q);
+                    
                     if(found){
                         removed_state = odom_list_.front();
                     }
-                    odom_list_.pop_front();
-                    
+
+                    odom_list_.pop_front();                     
                 }    
             }else{            
-                if(odom_list_.back().stamp < gps_stamp){
+                if(odom_list_.back().stamp < m_stamp){
                     ROS_WARN_STREAM("Localization handle gps msg is in the future ");
                     auto last_el = odom_list_.end();
                     last_el--;
-                    odom_list_.erase(odom_list_.begin(), last_el);                
+                    odom_list_.erase(odom_list_.begin(), last_el);               
                 }else{
                     ROS_WARN_STREAM("Localization handle no odometry msg with timestamp corresponding to gps msg");
+                    return;                 
                 }
+
                 ekf_.reset();
             }
-
-            assert(found);
-            first_step = true;
-
+            
             // CHECK IF PREDICTION AND MESURE DO AGREE
             const double delta_x = m_x - ekf_.x(0);
             const double delta_y = m_y - ekf_.x(1);
@@ -188,32 +185,12 @@ namespace localization {
                 ekf_.reset();
             }
 
-            // Interpolate x,y, theta
-            const double DT = (odom_list_.front().stamp - removed_state.stamp).toSec();
-            const double dt = (gps_stamp - removed_state.stamp).toSec(); 
-            const double scale = dt/DT;
-
-            const double dx = (odom_list_.front().x - removed_state.x)*scale;
-            const double dy = (odom_list_.front().y - removed_state.y)*scale;
-
-            double yaw_step = odom_list_.front().theta - removed_state.theta;
-            while(yaw_step < -M_PI ) yaw_step += 2*M_PI;
-            while(yaw_step >  M_PI ) yaw_step -= 2*M_PI;
-            
-            const double dyaw = yaw_step*scale;
-
-            x_i = removed_state.x + dx;        
-            y_i = removed_state.y + dy;
-            yaw_i = removed_state.theta + dyaw;
-
-        } // IF EKF LOCALIZE
-        
-        
-        
-
+        } // IF EKF LOCALIZED
+             
+        bool ekf_ok = ekf_.isLocalized();
         {
             // EKF UPDATE                
-            const double xy_cov = 0.02*0.02;
+            const double xy_cov = 0.01*0.01;
             const double th_cov = 0.05*0.05;
             Vec3 z;
             Matrix3 R;
@@ -227,7 +204,25 @@ namespace localization {
         }
         
 
-        if(first_step){
+        if(ekf_ok && found){
+            // Interpolate x,y, theta
+            const double DT = (odom_list_.front().stamp - removed_state.stamp).toSec();
+            const double dt = (m_stamp - removed_state.stamp).toSec(); 
+            const double scale = dt/DT;
+
+            const double dx = (odom_list_.front().x - removed_state.x)*scale;
+            const double dy = (odom_list_.front().y - removed_state.y)*scale;
+
+            double yaw_step = odom_list_.front().theta - removed_state.theta;
+            while(yaw_step < -M_PI ) yaw_step += 2*M_PI;
+            while(yaw_step >  M_PI ) yaw_step -= 2*M_PI;
+            
+            const double dyaw = yaw_step*scale;
+
+            const double x_i   = removed_state.x + dx;        
+            const double y_i   = removed_state.y + dy;
+            const double yaw_i = removed_state.theta + dyaw;
+
             // COMPUTE TRANSFORM         
             const double dth = yaw_i - ekf_.x(2); // theta odom - theta map
             Vec2 p_odo, p_map;
@@ -246,7 +241,7 @@ namespace localization {
     }
 
   void LocalizationHandle::odomCb(const nav_msgs::OdometryPtr odom){    
-    // STORE ODOM MSG
+    // STORE ODOM MSG    
     const double x = odom->pose.pose.position.x;
     const double y = odom->pose.pose.position.y;
     const tf::Quaternion q(odom->pose.pose.orientation.x, 
@@ -256,7 +251,7 @@ namespace localization {
     const tf::Matrix3x3 m(q);
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
-
+    
     if(odom_list_.empty() || odom->header.stamp > odom_list_.back().stamp){
         odom_list_.emplace_back(odom->header.stamp, x, y, yaw);
 
@@ -278,8 +273,6 @@ namespace localization {
             !std::isfinite(dth)){
             return;
         }
-
-        
 
         // Rototranslate odometry
         geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(yaw - dth);
