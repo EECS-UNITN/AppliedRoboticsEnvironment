@@ -11,6 +11,7 @@ alias AR_catkin_cd="cd ${AR_CATKIN_ROOT}"
 
 # Simulator
 alias AR_simulator="roslaunch sim_common sim.launch"
+alias AR_simulator_calibration="roslaunch lego_world calibration.launch"
 alias AR_simulator_gui="roslaunch sim_common sim.launch gui:=true"
 
 # Load image from file or videostream
