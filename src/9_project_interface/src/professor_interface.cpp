@@ -76,7 +76,7 @@ namespace professor {
   static std::string name;
   static std::atomic<bool> done;
   static int n;
-  static double show_scale = 2.0;
+  static double show_scale = 1.0;
 
   void mouseCallback(int event, int x, int y, int, void* p)
   {
@@ -116,7 +116,7 @@ namespace professor {
 
   bool extrinsicCalib(const cv::Mat& img_in, std::vector<cv::Point3f> object_points, const cv::Mat& camera_matrix, cv::Mat& rvec, cv::Mat& tvec, const std::string& config_folder){
 
-    std::string file_path = config_folder + "extrinsicCalib.csv";
+    std::string file_path = config_folder + "/extrinsicCalib.csv";
 
     std::vector<cv::Point2f> image_points;
 
