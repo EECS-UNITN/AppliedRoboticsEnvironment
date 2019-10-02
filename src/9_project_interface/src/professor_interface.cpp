@@ -286,24 +286,29 @@ namespace professor {
     // Process purple mask
     //contours_img = hsv_img.clone();
     cv::findContours(purple_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    //drawContours(contours_img, contours, -1, cv::Scalar(40,190,40), 1, cv::LINE_AA);
-    //std::cout << "N. contours: " << contours.size() << std::endl;
+    //drawContours(contours_img, contours, -1, cv::Scalar(40,190,40), 4, cv::LINE_AA);
+    // std::cout << "N. contours: " << contours.size() << std::endl;
 
     
     bool res = false;
 
-    //std::cout << "SIZE: " << contours.size() << std::endl;
-    if (contours.size() == 1){
-      approxPolyDP(contours[0], approx_curve, 3, true);
+    for( auto& contour : contours){
+      const double area = cv::contourArea(contour);
+      //std::cout << "AREA " << area << std::endl;
+      //std::cout << "SIZE: " << contours.size() << std::endl;
+      if (area > 500){
+        approxPolyDP(contour, approx_curve, 3, true);
 
-      //contours_approx = {approx_curve};
-      //drawContours(contours_img, contours_approx, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
+        // contours_approx = {approx_curve};
+        // drawContours(contours_img, contours_approx, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
 
 
-      for (const auto& pt: approx_curve) {
-        gate.emplace_back(pt.x/scale, pt.y/scale);
-      }
-      res = true;  
+        for (const auto& pt: approx_curve) {
+          gate.emplace_back(pt.x/scale, pt.y/scale);
+        }
+        res = true;
+        break;
+      }      
     }
 
 
@@ -359,12 +364,15 @@ namespace professor {
     cv::Mat hsv_img;
     cv::cvtColor(img_in, hsv_img, cv::COLOR_BGR2HSV);
 
-    bool res;
-    res = processObstacles(hsv_img, scale, obstacle_list);
-    res &= processGate(hsv_img, scale, gate);
-    res &= processVictims(hsv_img, scale, victim_list);
+    
+    const bool res1 = processObstacles(hsv_img, scale, obstacle_list);
+    if(!res1) std::cout << "processObstacles return false" << std::endl;
+    const bool res2 = processGate(hsv_img, scale, gate);
+    if(!res2) std::cout << "processGate return false" << std::endl;
+    const bool res3 = processVictims(hsv_img, scale, victim_list);
+    if(!res3) std::cout << "processVictims return false" << std::endl;
 
-    return res;
+    return res1 && res2 && res3;
   }
 
 
