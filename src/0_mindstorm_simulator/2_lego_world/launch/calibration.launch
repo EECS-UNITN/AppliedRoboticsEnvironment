@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
+  <remap from="/camera/rgb/image_raw" to="/image/raw"/>  
   <!-- World File -->
   <!--arg name="world_file" default="$(find my_robot)/worlds/empty.world"/-->
   <arg name="world_file" default="$(find lego_world)/worlds/calibration_arena.world"/>
