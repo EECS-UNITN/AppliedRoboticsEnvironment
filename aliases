@@ -20,6 +20,7 @@ alias AR_video_stream="roslaunch project_interface video_stream.launch" #video_d
 
 # Run project code
 alias AR_pipeline="roslaunch project_interface node_pipeline.launch"
+alias AR_pipeline_img_saver="roslaunch project_interface image_saver.launch"
 
 # RVIZ Launching
 alias AR_rviz="roslaunch project_interface rviz.launch"

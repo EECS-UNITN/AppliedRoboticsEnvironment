@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <!-- Load Configuration -->
+  <include file="$(find project_interface)/launch/load_params.launch"/>
+
+  <!-- Start image saver -->
+  <include file="$(find image_elab)/launch/node_image_save.launch"/>
+
+</launch>  

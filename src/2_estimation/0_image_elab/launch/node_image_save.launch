@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <node name="rectify_listener" pkg="image_elab" type="rectify_img_listener_node" respawn="false" output="screen"/>
+
+  <node name="unwarp_ground_listener" pkg="image_elab" type="unwarp_ground_img_listener_node" respawn="false" output="screen"/>
+
+  <node name="unwarp_robot_listener" pkg="image_elab" type="unwarp_robot_img_listener_node" respawn="false" output="screen"/>
+
+  <node name="raw_listener" pkg="image_elab" type="raw_img_listener_node" respawn="false" output="screen"/>
+  
+</launch>  
