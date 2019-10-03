@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-  <arg name="video_device" default="/dev/video1"/>  
+  <arg name="video_device" default="/dev/video0"/>  
 
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <remap from="/usb_cam/image_raw" to="/image/raw"/>
