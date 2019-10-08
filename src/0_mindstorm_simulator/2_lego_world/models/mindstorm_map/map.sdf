@@ -5,7 +5,7 @@
     <!-- Gate and camera section -->
     <include>
       <uri>model://gate</uri>
-      <pose>1.3 0.95 0 0 0 1.57</pose>
+      <pose>1.3 1.0 0 0 0 1.57</pose>
       <name>gate</name>
     </include>
 
@@ -124,25 +124,25 @@
     <!-- FIXED PART OF THE ARENA -->
     <include>
       <uri> model://long_black_stripe</uri>
-      <pose> 0.75 0.0 0 0 -0 0 </pose>
+      <pose> 0.78 0.0 0 0 -0 0 </pose>
       <name>long_stripe_down</name>
     </include>  
   
     <include>
       <uri> model://long_black_stripe</uri>
-      <pose> 0.75 1.0 0 0 -0 0 </pose>
+      <pose> 0.78 1.06 0 0 -0 0 </pose>
       <name>long_stripe_up</name>
     </include> 
 
     <include>
       <uri> model://short_black_stripe</uri>
-      <pose> 0.0 0.5 0 0 0 1.5707963268 </pose>
+      <pose> 0.0 0.53 0 0 0 1.5707963268 </pose>
       <name>short_stripe_left</name>
     </include>  
 
     <include>
       <uri> model://short_black_stripe</uri>
-      <pose> 1.5 0.5 0 0 0 1.5707963268 </pose>
+      <pose> 1.56 0.53 0 0 0 1.5707963268 </pose>
       <name>short_stripe_right</name>
     </include>
 
