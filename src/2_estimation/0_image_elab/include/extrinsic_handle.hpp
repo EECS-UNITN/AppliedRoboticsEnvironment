@@ -36,12 +36,13 @@ private:
   ros::Publisher  pub_dt_;
   ros::Publisher  pub_extr_;
   ros::Publisher  pub_ground_transf_, pub_robot_transf_;
+  ros::Publisher  pub_camera_pose_rviz_;
 
   // TOPICS  
   std::string rect_subscriber_topic_name_;
   std::string extr_publisher_topic_name_, pub_ground_topic_name_, pub_robot_topic_name_;
   std::string pub_dt_topic_name_;
-
+  std::string pub_camera_pose_rviz_topic_name_;
   // CALIBRATION MATRIX
   cv::Mat camera_matrix_;
   cv::Mat tvec_, rvec_;
