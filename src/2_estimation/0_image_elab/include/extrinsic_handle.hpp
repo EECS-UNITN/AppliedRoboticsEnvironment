@@ -50,7 +50,7 @@ private:
   bool calib_done_;
   double scale_;
 
-  std::vector<cv::Point3f> object_points_ground_, object_points_robot_;
+  std::vector<cv::Point3f> object_points_ground_, object_points_robot_;  
 
   // Callback
   void imageCb(const sensor_msgs::ImageConstPtr& image_msg);
