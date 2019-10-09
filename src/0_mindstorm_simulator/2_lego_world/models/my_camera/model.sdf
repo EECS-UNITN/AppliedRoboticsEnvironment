@@ -3,7 +3,7 @@
 <sdf version="1.5">
   <model name="my_camera">
     <static>true</static>
-    <pose>0 0 0.036 0 0 0</pose>
+    <pose>0 0 0.0 0 0 0</pose>
     <link name="link">
       <inertial>
         <mass>0.1</mass>

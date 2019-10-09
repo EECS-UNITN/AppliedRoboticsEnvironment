@@ -167,8 +167,6 @@ namespace image_proc {
             const int c = i%3;
             ground_transf_.at<double>(r, c) = transf.matrix[i];
         }
-        std::cout << "ground_transf" << std::endl;
-        std::cout << ground_transf_ << std::endl;
         has_ground_transf_ = true;
     }
 
