@@ -81,18 +81,25 @@ void unwarp(const cv::Mat& img_in, cv::Mat& img_out, const cv::Mat& transf,
 * @param[out] gate           polygon representing the gate (vertex in meters)
 * @param[in]  config_folder  A custom string from config file.
 */
-bool processMap(const cv::Mat& img_in, const double scale, std::vector<Polygon>& obstacle_list, std::vector<std::pair<int,Polygon>>& victim_list, Polygon& gate, const std::string& config_folder);
+bool processMap(const cv::Mat& img_in, const double scale, 
+                std::vector<Polygon>& obstacle_list, 
+                std::vector<std::pair<int,Polygon>>& victim_list, 
+                Polygon& gate, const std::string& config_folder);
 
 /*!
 * Process the image to detect the robot pose
 * @param[in]  image_in       input image
 * @param[in]  scale          1px/scale = X meters
-* @param[out] x              x position of the robot in the arena reference system
-* @param[out] y              y position of the robot in the arena reference system
+* @param[out] triangle       polygon defined from triangle corners
+* @param[out] x              x position of the robot (i.e. the baricenter of the triangle) 
+*                            in the arena reference system
+* @param[out] y              y position of the robot (i.e. the baricenter of the triangle) 
+*                            in the arena reference system
 * @param[out] theta          yaw of the robot in the arena reference system
 * @param[in]  config_folder  A custom string from config file.
 */
-bool findRobot(const cv::Mat& img_in, const double scale, Polygon& triangle, double& x, double& y, double& theta, const std::string& config_folder);
+bool findRobot(const cv::Mat& img_in, const double scale, Polygon& triangle, 
+              double& x, double& y, double& theta, const std::string& config_folder);
 
 
 //bool processGtMap(std::string file_name, std::vector<Polygon>& obstacle_list, std::vector<std::pair<int,Polygon>>& victim_list, Polygon& gate, Polygon& perimeter);

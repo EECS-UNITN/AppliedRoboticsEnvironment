@@ -14,6 +14,9 @@ alias AR_simulator="roslaunch sim_common sim.launch"
 alias AR_simulator_calibration="roslaunch lego_world calibration.launch"
 alias AR_simulator_gui="roslaunch sim_common sim.launch gui:=true"
 
+# Laboratory Arena 
+alias AR_arena_launch="roslaunch project_interface arena.launch"
+
 # Load image from file or videostream
 alias AR_image_loader="roslaunch project_interface image_load.launch"
 alias AR_video_stream="roslaunch project_interface video_stream.launch" #video_device:=/dev/video0

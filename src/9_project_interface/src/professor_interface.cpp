@@ -220,7 +220,8 @@ namespace professor {
   //-------------------------------------------------------------------------
   //          UNWARP TRANSFORM
   //-------------------------------------------------------------------------
-  void unwarp(const cv::Mat& img_in, cv::Mat& img_out, const cv::Mat& transf, const std::string& config_folder){
+  void unwarp(const cv::Mat& img_in, cv::Mat& img_out, const cv::Mat& transf, 
+              const std::string& config_folder){
     cv::warpPerspective(img_in, img_out, transf, img_in.size());
   }
 
