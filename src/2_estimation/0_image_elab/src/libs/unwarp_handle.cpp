@@ -129,19 +129,19 @@ namespace image_proc {
             if(default_implementation_){
                 ROS_DEBUG_NAMED(kPringName, "Call default function");
                 if(n_subscribers_ground_ > 0){
-                    professor::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_, config_folder_);
+                    professor::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, config_folder_);
                 }
                 if(n_subscribers_robot_ > 0){
-                    professor::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_, config_folder_);
+                    professor::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, config_folder_);
                 }
             }else{
                 // CALL STUDENT FUNCTION    
                 ROS_DEBUG_NAMED(kPringName, "Call student function");
                 if(n_subscribers_ground_ > 0){
-                    student::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, scale_ground_, config_folder_);
+                    student::unwarp(cv_ptr->image, out_img_ground->image, ground_transf_, config_folder_);
                 }
                 if(n_subscribers_robot_ > 0){
-                    student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, scale_robot_, config_folder_);
+                    student::unwarp(cv_ptr->image, out_img_robot->image, robot_transf_, config_folder_);
                 }
             }
         }catch(std::exception& ex){

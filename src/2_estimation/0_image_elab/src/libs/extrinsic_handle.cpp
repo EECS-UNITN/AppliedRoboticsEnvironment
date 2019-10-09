@@ -77,10 +77,25 @@ namespace image_proc {
 
 
         calib_done_ = false;
-        float w = arena_w*scale_, h = arena_h*scale_, z = robot_height;
-        object_points_ground_ = {{0.f,0.f,0.f},{w,0.f,0.f},{w,h,0.f},{0.f,h,0.f}};
-        object_points_robot_ = {{0.f,0.f,z},{w,0.f,z},{w,h,z},{0.f,h,z}};
+        float w = arena_w*scale_, h = arena_h*scale_, z = robot_height*scale_;
+        //object_points_ground_ = {{0.f,0.f,0.f},{w,0.f,0.f},{w,h,0.f},{0.f,h,0.f}};
+        //object_points_robot_  = {{0.f,0.f,z},{w,0.f,z},{w,h,z},{0.f,h,z}};
         
+        object_points_robot_ = {
+                                        {0.f, 0.f, static_cast<float>(robot_height)},
+                                        {static_cast<float>(arena_w), 0.f, static_cast<float>(robot_height)},
+                                        {static_cast<float>(arena_w), static_cast<float>(arena_h), static_cast<float>(robot_height)},
+                                        {0.f, static_cast<float>(arena_h), static_cast<float>(robot_height)}
+                                      };
+
+        object_points_ground_ = {
+                                        {0.f,0.f,0.f},
+                                        {static_cast<float>(arena_w),0.f,0.f},
+                                        {static_cast<float>(arena_w),static_cast<float>(arena_h),0.f},
+                                        {0.f,static_cast<float>(arena_h),0.f}
+                                      };
+
+        image_dest_pts_ = {{0.f,0.f},{w,0.f},{w,h},{0.f,h}};
         camera_matrix_ = (cv::Mat1d(3,3) << fx, 0, cx, 0, fy, cy, 0, 0, 1);
 
         ROS_INFO_STREAM_NAMED(kPringName, "cametra_matrix = \n " << camera_matrix_);
@@ -141,8 +156,8 @@ namespace image_proc {
                 res = professor::extrinsicCalib(cv_ptr->image, object_points_ground_, camera_matrix_, rvec_, tvec_, config_folder_);
                 
                 if (res){
-                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, ground_plane_, config_folder_);                    
-                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, robot_plane_, config_folder_);            
+                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, image_dest_pts_, ground_plane_, config_folder_);                    
+                    professor::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_,  image_dest_pts_, robot_plane_, config_folder_);            
                 }
                 
             }else{
@@ -150,8 +165,8 @@ namespace image_proc {
                 ROS_WARN_NAMED(kPringName, "Call student function");
                 res = student::extrinsicCalib(cv_ptr->image, object_points_ground_, camera_matrix_, rvec_, tvec_, config_folder_);            
                 if (res){
-                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, ground_plane_, config_folder_);
-                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_,  robot_plane_, config_folder_);
+                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_ground_, image_dest_pts_, ground_plane_, config_folder_);
+                    student::findPlaneTransform(camera_matrix_, rvec_, tvec_, object_points_robot_, image_dest_pts_,  robot_plane_, config_folder_);
                 }
             }
         }catch(std::exception& ex){
@@ -193,7 +208,7 @@ namespace image_proc {
           cv::Rodrigues(rvec_, Rt);
           cv::Mat R = Rt.t();
           cv::Mat camera_pt = -R * tvec_;
-          std::cout << "camera_pt" << camera_pt/scale_ << std::endl;
+          std::cout << "camera_pt" << camera_pt << std::endl;
           tf2::Matrix3x3 R_conversion(R.at<double>(0,0), R.at<double>(0,1), R.at<double>(0,2),
                                       R.at<double>(1,0), R.at<double>(1,1), R.at<double>(1,2),
                                       R.at<double>(2,0), R.at<double>(2,1), R.at<double>(2,2));
