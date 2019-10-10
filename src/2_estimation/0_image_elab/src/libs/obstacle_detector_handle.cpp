@@ -84,7 +84,7 @@ namespace image_proc {
         pub_gate_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_gate_topic_name_, 1, true);
         pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
 
-        pub_victims_number_ = nh_.advertise<visualization_msgs::MarkerArray>(pub_victims_number_topic_name_, 1, false);
+        pub_victims_number_ = nh_.advertise<visualization_msgs::MarkerArray>(pub_victims_number_topic_name_, 1, true);
     }
 
     void ObstacleDetectorHandle::subscribeToTopic() {
