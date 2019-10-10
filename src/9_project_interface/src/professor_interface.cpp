@@ -415,7 +415,7 @@ namespace professor {
         triangle.emplace_back(pt.x/scale, pt.y/scale);
       }
 
-      double cx, cy;
+      double cx = 0, cy = 0;
       for (auto item: triangle) 
       {
         cx += item.x;

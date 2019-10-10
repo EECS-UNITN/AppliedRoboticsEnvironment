@@ -12,7 +12,7 @@ namespace image_proc {
 
 class ObstacleDetectorHandle {
 
- public:
+public:
   // Constructor
   explicit ObstacleDetectorHandle();
     
