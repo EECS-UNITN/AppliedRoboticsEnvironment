@@ -5,12 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Detection1/PolygonArray1
-        - /Localization1
         - /Localization1/EKF1/Shape1
-        - /TF1/Frames1
-        - /CameraPose1
-        - /Images1
         - /Images1/UnwarpGroundPlane1
       Splitter Ratio: 0.5
     Tree Height: 853
@@ -60,7 +55,7 @@ Visualization Manager:
       Enabled: true
       Length: 0.5
       Name: MapFrame
-      Radius: 0.00999999978
+      Radius: 0.0399999991
       Reference Frame: <Fixed Frame>
       Value: true
     - Alpha: 1
@@ -132,7 +127,7 @@ Visualization Manager:
           Class: jsk_rviz_plugin/PolygonArray
           Color: 0; 0; 0
           Enabled: true
-          Name: PolygonArray
+          Name: ArenaPerimeter
           Topic: /detection/perimeter
           Unreliable: false
           Value: true
@@ -227,20 +222,6 @@ Visualization Manager:
       Topic: /planning/plan_rviz
       Unreliable: false
       Value: true
-    - Class: rviz/TF
-      Enabled: false
-      Frame Timeout: 15
-      Frames:
-        All Enabled: false
-      Marker Scale: 1
-      Name: TF
-      Show Arrows: true
-      Show Axes: true
-      Show Names: true
-      Tree:
-        {}
-      Update Interval: 0
-      Value: false
     - Alpha: 1
       Axes Length: 0.100000001
       Axes Radius: 0.0199999996
@@ -348,10 +329,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.449796438
+      Pitch: 1.03979588
       Target Frame: map
       Value: ThirdPersonFollower (rviz)
-      Yaw: 5.5333643
+      Yaw: 4.96834135
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 2.01115251
