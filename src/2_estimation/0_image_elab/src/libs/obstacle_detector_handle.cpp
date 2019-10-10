@@ -137,16 +137,18 @@ namespace image_proc {
         }catch(std::exception& ex){
           std::cerr << ex.what() << std::endl;
         }
+
+        // Publish computation time
         std_msgs::Float32 dt_msg;
         dt_msg.data = (ros::Time::now() - start_time).toSec();
         pub_dt_.publish(dt_msg);
-        
-        if(res){
-            
+
+        // PUBLISH INFORMATION
+        static int cnt = 0;
+
+        // Publish obstacles if any obstacle is detected
+        if(obstacle_list_.size() > 0){
             jsk_recognition_msgs::PolygonArray obstacles_array;
-
-            static int cnt = 0;
-
             obstacles_array.header.stamp = msg->header.stamp;
             obstacles_array.header.frame_id = frame_id_;
             obstacles_array.header.seq = cnt++;
@@ -160,7 +162,11 @@ namespace image_proc {
                 obstacles_array.likelihood.emplace_back(1.0);
             }
 
-
+            pub_obstacles_.publish(obstacles_array);
+        }
+        
+        // Publish detected victims
+        if(victim_list_.size() > 0){
             jsk_recognition_msgs::PolygonArray victims_array;
 
             victims_array.header.stamp = msg->header.stamp;
@@ -176,6 +182,11 @@ namespace image_proc {
                 victims_array.likelihood.emplace_back(1.0);
             }
 
+            pub_victims_.publish(victims_array);
+        }
+
+
+        if(gate_.size()>1){
             jsk_recognition_msgs::PolygonArray gate_array;
             gate_array.header.stamp = msg->header.stamp;
             gate_array.header.frame_id = frame_id_;
@@ -187,40 +198,39 @@ namespace image_proc {
             gate_array.polygons.push_back(poly);
             gate_array.labels.emplace_back(0);
             gate_array.likelihood.emplace_back(1.0);
-                 
-            geometry_msgs::PolygonStamped poly_p;            
-            geometry_msgs::Point32 pt;
-            pt.x = 0; pt.y = 0; pt.z = 0;
-            poly_p.polygon.points.push_back(pt);
-            pt.x = arena_w_; pt.y = 0; pt.z = 0;
-            poly_p.polygon.points.push_back(pt);
-            pt.x = arena_w_; pt.y = arena_h_; pt.z = 0;
-            poly_p.polygon.points.push_back(pt);
-            pt.x = 0; pt.y = arena_h_; pt.z = 0;
-            poly_p.polygon.points.push_back(pt);
-            
-            jsk_recognition_msgs::PolygonArray perimeter_array;
-            perimeter_array.header.stamp = msg->header.stamp;
-            perimeter_array.header.frame_id = frame_id_;
-            perimeter_array.header.seq = cnt++;  
-            poly_p.header = perimeter_array.header;
-            poly_p.header.seq = cnt++;    
-            perimeter_array.polygons.push_back(poly_p);
-            perimeter_array.labels.emplace_back(0);
-            perimeter_array.likelihood.emplace_back(1.0);
 
-            
-            
-            pub_perimeter_.publish(perimeter_array);
-            pub_obstacles_.publish(obstacles_array);
-            pub_victims_.publish(victims_array);
             pub_gate_.publish(gate_array);
+        }        
 
+        geometry_msgs::PolygonStamped poly_p;            
+        geometry_msgs::Point32 pt;
+        pt.x = 0; pt.y = 0; pt.z = 0;
+        poly_p.polygon.points.push_back(pt);
+        pt.x = arena_w_; pt.y = 0; pt.z = 0;
+        poly_p.polygon.points.push_back(pt);
+        pt.x = arena_w_; pt.y = arena_h_; pt.z = 0;
+        poly_p.polygon.points.push_back(pt);
+        pt.x = 0; pt.y = arena_h_; pt.z = 0;
+        poly_p.polygon.points.push_back(pt);
+        
+        jsk_recognition_msgs::PolygonArray perimeter_array;
+        perimeter_array.header.stamp = msg->header.stamp;
+        perimeter_array.header.frame_id = frame_id_;
+        perimeter_array.header.seq = cnt++;  
+        poly_p.header = perimeter_array.header;
+        poly_p.header.seq = cnt++;    
+        perimeter_array.polygons.push_back(poly_p);
+        perimeter_array.labels.emplace_back(0);
+        perimeter_array.likelihood.emplace_back(1.0);
+                
+        pub_perimeter_.publish(perimeter_array);
+
+        if(res){
             // Distable the subscribers  
             sub_image_.shutdown();
             sub_transf_.shutdown();
         }else{
-            ROS_WARN_NAMED(kPringName, "processMap returned false");
+            ROS_WARN_NAMED(kPringName, "processMap returned false, retrying...");
         }
     }
 
