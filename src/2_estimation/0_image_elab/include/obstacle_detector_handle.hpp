@@ -33,12 +33,11 @@ private:
   
   // ROS communication  
   ros::Subscriber sub_image_, sub_transf_;
-  ros::Publisher  pub_obstacles_, pub_gate_, pub_victims_, pub_dt_, pub_perimeter_;
-  
+  ros::Publisher  pub_obstacles_, pub_gate_, pub_victims_, pub_dt_, pub_perimeter_, pub_victims_number_;
   // TOPICS 
   std::string frame_id_;
   std::string sub_image_topic_name_, sub_transf_topic_name_;
-  std::string pub_obstacles_topic_name_, pub_gate_topic_name_, pub_victims_topic_name_, pub_dt_topic_name_, pub_perimeter_topic_name_;
+  std::string pub_obstacles_topic_name_, pub_gate_topic_name_, pub_victims_topic_name_, pub_dt_topic_name_, pub_perimeter_topic_name_, pub_victims_number_topic_name_;
   
   // CALIBRATION MATRIX  
   bool has_transform_;

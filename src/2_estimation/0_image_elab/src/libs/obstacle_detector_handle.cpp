@@ -13,6 +13,9 @@
 #include "jsk_recognition_msgs/PolygonArray.h"
 #include "std_msgs/Float32.h"
 
+#include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
+
 namespace enc = sensor_msgs::image_encodings;
 static const std::string kPringName = "obstacle_detector_handle.hpp";
 
@@ -67,7 +70,7 @@ namespace image_proc {
         pub_gate_topic_name_      = "/detection/gate";
         pub_perimeter_topic_name_ = "/detection/perimeter";
         pub_dt_topic_name_        = "/process_time/processMap";
-
+        pub_victims_number_topic_name_ = "/detection/victims_numbers";
         frame_id_ = "map";
     }
 
@@ -80,6 +83,8 @@ namespace image_proc {
         pub_victims_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_victims_topic_name_, 1, true);
         pub_gate_ = nh_.advertise<jsk_recognition_msgs::PolygonArray>(pub_gate_topic_name_, 1, true);
         pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
+
+        pub_victims_number_ = nh_.advertise<visualization_msgs::MarkerArray>(pub_victims_number_topic_name_, 1, false);
     }
 
     void ObstacleDetectorHandle::subscribeToTopic() {
@@ -168,10 +173,12 @@ namespace image_proc {
         // Publish detected victims
         if(victim_list_.size() > 0){
             jsk_recognition_msgs::PolygonArray victims_array;
+            visualization_msgs::MarkerArray marker_array;
 
             victims_array.header.stamp = msg->header.stamp;
             victims_array.header.frame_id = frame_id_;
             victims_array.header.seq = cnt++;
+            
             for (int i=0; i<victim_list_.size(); ++i) {
                 geometry_msgs::PolygonStamped poly;
                 poly.header = victims_array.header;
@@ -180,8 +187,44 @@ namespace image_proc {
                 victims_array.polygons.push_back(poly);
                 victims_array.labels.emplace_back(victim_list_[i].first);
                 victims_array.likelihood.emplace_back(1.0);
+
+                visualization_msgs::Marker marker;
+                marker.header = poly.header;
+                marker.id = cnt++;
+                marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+                marker.action = visualization_msgs::Marker::ADD;
+
+                // Find the polygon center
+                double x = 0;
+                double y = 0;
+                unsigned int cnt = 0;
+                for(const auto pt: victim_list_[i].second){
+                    x = x + pt.x;
+                    y = y + pt.y;
+                    cnt++;
+                }
+                marker.pose.position.x = x/static_cast<double>(cnt);
+                marker.pose.position.y = y/static_cast<double>(cnt);
+                marker.pose.position.z = 0.03;
+                marker.pose.orientation.x = 0.0;
+                marker.pose.orientation.y = 0.0;
+                marker.pose.orientation.z = 0.0;
+                marker.pose.orientation.w = 1.0;
+
+                marker.text = std::to_string(victim_list_[i].first);
+
+                marker.scale.x = 0.3;
+                marker.scale.y = 0.3;
+                marker.scale.z = 0.1;
+
+                marker.color.r = 0.0f;
+                marker.color.g = 0.0f;
+                marker.color.b = 0.0f;
+                marker.color.a = 1.0;
+                marker_array.markers.push_back(marker);
             }
 
+            pub_victims_number_.publish(marker_array);
             pub_victims_.publish(victims_array);
         }
 

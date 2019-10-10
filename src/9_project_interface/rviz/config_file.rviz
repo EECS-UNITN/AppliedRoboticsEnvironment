@@ -141,6 +141,14 @@ Visualization Manager:
           normal length: 0.100000001
           only border: true
           show normal: false
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /detection/victims_numbers
+          Name: VictimsNumber
+          Namespaces:
+            "": true
+          Queue Size: 100
+          Value: true
       Enabled: true
       Name: Detection
     - Class: rviz/Group
@@ -325,25 +333,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 5.11351967
+      Distance: 2.69856787
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.861853242
-        Y: 0.691455722
-        Z: 2.38418579e-07
+        X: 0.970166326
+        Y: 0.425061941
+        Z: -2.38418579e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.459796429
+      Pitch: 0.449796438
       Target Frame: map
       Value: ThirdPersonFollower (rviz)
-      Yaw: 5.1533556
+      Yaw: 5.5333643
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 2.01115251
