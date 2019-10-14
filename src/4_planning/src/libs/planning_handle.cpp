@@ -7,6 +7,9 @@
 #include "planning/WaypointList.h"
 #include "tf/transform_broadcaster.h"
 
+#include "visualization_msgs/Marker.h"
+#include "visualization_msgs/MarkerArray.h"
+
 #include <assert.h>
 #include <sstream>
 
@@ -81,7 +84,8 @@ namespace planning {
         assert (initialized_);
 
         pub_plan_ = nh_.advertise<planning::WaypointList>(pub_plan_topic_name_, 1, true);
-        pub_plan_rviz_ = nh_.advertise<nav_msgs::Path>(pub_plan_rviz_topic_name_, 1, true);
+        //pub_plan_rviz_ = nh_.advertise<nav_msgs::Path>(pub_plan_rviz_topic_name_, 1, true);
+        pub_plan_rviz_ = nh_.advertise<visualization_msgs::MarkerArray>(pub_plan_rviz_topic_name_, 1, true);        
         pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, true);
     }
 
@@ -170,19 +174,126 @@ namespace planning {
         return res;
     }
 
-    nav_msgs::Path createRVIZPath(const WaypointList& path){
-        nav_msgs::Path res;
-        res.header = path.header;
-        for (const auto& pt: path.wp) {
-            geometry_msgs::PoseStamped wp;
-            wp.header = path.header;
-            wp.pose.position.x = pt.x;
-            wp.pose.position.y = pt.y;
-            wp.pose.orientation = tf::createQuaternionMsgFromYaw(pt.theta);
-            res.poses.push_back(wp);
-        }
-        return res;   
+    visualization_msgs::Marker markerHeader(int id, int type, std::string ns, double rgba[4], double dim[3]){
+        visualization_msgs::Marker marker;
+        marker.header.frame_id = "/map";
+
+        switch(type){
+            case 0:
+                marker.type = visualization_msgs::Marker::LINE_STRIP;
+                marker.scale.x = dim[0];
+                break;
+            
+            case 1:
+                marker.type = visualization_msgs::Marker::SPHERE_LIST;
+                marker.scale.x = dim[0];
+                marker.scale.y = dim[1];
+                marker.scale.z = dim[2];
+                break;
+
+            case 2:
+                marker.type = visualization_msgs::Marker::CUBE_LIST;    
+                marker.scale.x = dim[0];
+                marker.scale.y = dim[1];
+                marker.scale.z = dim[2];
+                break;
+
+            case 3:
+                marker.type = visualization_msgs::Marker::LINE_LIST;    
+                marker.scale.x = dim[0];
+                break;
     }
+
+    marker.header.stamp = ros::Time::now();        
+    marker.action = visualization_msgs::Marker::ADD;
+    //visual_paths.markers[i].lifetime = ros::Duration(0.9);    
+    marker.ns = ns;
+    marker.color.r = rgba[0];
+    marker.color.g = rgba[1];
+    marker.color.b = rgba[2];
+    marker.color.a = rgba[3];        
+    marker.id = id;
+
+    return marker;
+} 
+
+
+    void getInterpolatedWp(const WaypointList& path,
+            visualization_msgs::Marker& markerCurve, 
+            visualization_msgs::Marker& markerTangent,
+            visualization_msgs::Marker& markerCurvature
+             ){
+
+        const double curvature_scale = 10;
+        const double tangent_discr = 0.2;
+        const double tangent_l = 0.1;
+
+        double rgba[4] = {4/255., 150/255., 216/255., 0.5};
+        double dim[3] = {0.005, 0.02, 0.02};
+        markerCurvature = markerHeader(998, 3,"interp_wp_curvature", rgba, dim);
+        rgba[0] = 0; rgba[1] = 0; rgba[2] = 1; rgba[3] = 0.75;
+        markerCurve   = markerHeader(999, 0,"interp_wp", rgba, dim);    
+        rgba[0] = 0; rgba[1] = 0; rgba[2] = 0; rgba[3] = 1;
+        dim[0] = 0.005;
+        markerTangent = markerHeader(997, 3,"interp_wp_tangent", rgba, dim);
+
+        bool tangent_init = false;
+        double s_last_tangent;
+        for (const auto& wp: path.wp){
+            const double x = wp.x;
+            const double y = wp.y;
+            geometry_msgs::Point p1, pk;
+            p1.x = x;
+            p1.y = y;
+            p1.z = 0.002;
+            markerCurve.points.push_back(p1);
+            
+            if(std::abs(wp.kappa) < 0.1){
+                pk.x = x;
+                pk.y = y;
+            }else{
+                pk.x = x + std::cos(wp.theta + M_PI/2.) / wp.kappa;
+                pk.y = y + std::sin(wp.theta + M_PI/2.) / wp.kappa;            
+            }
+            pk.z = 0.002;
+
+            markerCurvature.points.push_back(p1);
+            markerCurvature.points.push_back(pk);
+            if(!tangent_init || wp.s - s_last_tangent >  tangent_discr){
+                tangent_init = true;
+                s_last_tangent = wp.s;
+                geometry_msgs::Point p2;
+                p2.x = x + std::cos(wp.theta)*tangent_l;
+                p2.y = y + std::sin(wp.theta)*tangent_l;
+                p2.z = 0.002;              
+                markerTangent.points.push_back(p1);
+                markerTangent.points.push_back(p2);
+            }
+        }
+    }
+
+
+    visualization_msgs::MarkerArray createRVIZPath(const WaypointList& path){        
+        visualization_msgs::MarkerArray arr;
+        arr.markers.resize(3);
+        getInterpolatedWp(path, arr.markers[0], arr.markers[1], arr.markers[2]);
+        return arr;
+    }
+
+
+    // nav_msgs::Path createRVIZPath(const WaypointList& path){
+    //     nav_msgs::Path res;
+    //     res.header = path.header;
+    //     for (const auto& pt: path.wp) {
+    //         geometry_msgs::PoseStamped wp;
+    //         wp.header = path.header;
+    //         wp.pose.position.x = pt.x;
+    //         wp.pose.position.y = pt.y;
+    //         wp.pose.orientation = tf::createQuaternionMsgFromYaw(pt.theta);
+    //         res.poses.push_back(wp);
+    //     }
+    //     return res;   
+    // }
 
     bool PlanningHandle::computePlanSrv(ComputePlan::Request& req, ComputePlan::Response& res){
         if (!has_gate_ || !has_obstacles_ || !has_victims_ || !has_robot_) {
