@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(control)
 
+
+option(COMPILE_HW "enable the build of hardware interface " OFF)
+
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++11  -lm -lbluetooth)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -133,6 +136,7 @@ add_library(control_LIBRARY
   src/libs/path_following.cpp
 )
 
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -142,6 +146,7 @@ add_library(control_LIBRARY
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(control_node src/node/control_node.cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -163,7 +168,28 @@ target_link_libraries(control_node
  	${catkin_LIBRARIES}
 )
 
+
 add_dependencies(control_LIBRARY control_generate_messages_cpp)
+
+if(${COMPILE_HW})
+  add_library(lego_LIBRARY
+    src/libs/lego/client_bt.c
+    src/libs/lego/client_utils.c
+    src/libs/lego/pkt_serialization.c
+  )
+
+  add_executable(hardware_interface_node src/node/hardware_interface.cpp)
+  
+  target_link_libraries(lego_LIBRARY
+    m
+    bluetooth
+  )
+
+  target_link_libraries(hardware_interface_node
+    lego_LIBRARY
+    ${catkin_LIBRARIES}
+  )
+endif()
 
 #############
 ## Install ##
