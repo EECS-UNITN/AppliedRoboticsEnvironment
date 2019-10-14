@@ -5,7 +5,7 @@
 #include "planning/WaypointList.h"
 #include "tf/transform_broadcaster.h"
 #include "geometry_msgs/Twist.h"
-
+#include "visualization_msgs/Marker.h"
 #include "path_following.hpp"
 
 #include <assert.h>
@@ -92,7 +92,8 @@ namespace control {
         as_topic_name_            = "/control/action";
         pub_control_topic_name_   = "/control/cmd_vel";
         pub_dt_topic_name_        = "/process_time/control";        
-        pub_plan_rviz_topic_name_ = "/control/plan_rviz";
+        pub_plan_rviz_topic_name_   = "/control/plan_rviz";
+        pub_frenet_rviz_topic_name_ = "/control/frenet_rviz";
 
         v_ref_ = 0.1;
     }
@@ -104,6 +105,7 @@ namespace control {
         pub_plan_rviz_ = nh_.advertise<nav_msgs::Path>(pub_plan_rviz_topic_name_, 1, true);
         pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, true);
         pub_control_ = nh_.advertise<geometry_msgs::Twist>(pub_control_topic_name_, 1, false);
+        pub_frenet_rviz_ = nh_.advertise<visualization_msgs::Marker>(pub_frenet_rviz_topic_name_, 1, false);
     }
 
     void ControlHandle::subscribeToTopic() {
@@ -162,7 +164,7 @@ namespace control {
         PathFollowing pf;
         pf.setPath(path_);
         
-        ros::Rate r(20);
+        ros::Rate r(50);
         bool success = true;
         const auto start_time = ros::Time::now();
         geometry_msgs::Twist cmd_vel;
@@ -179,10 +181,10 @@ namespace control {
             }
 
             // CALL AL CONTROLLO
-            double s;
+            double fp_s, fp_x, fp_y;
 
-            auto start_control = ros::Time::now();
-            float rho = pf.computeControl(x_, y_, theta_, s);
+            const auto start_control = ros::Time::now();
+            const float rho = pf.computeControl( x_, y_, theta_, fp_s, fp_x, fp_y);
             std_msgs::Float32 dt_msg;
             dt_msg.data = (ros::Time::now()-start_control).toSec();
             pub_dt_.publish(dt_msg);
@@ -194,8 +196,32 @@ namespace control {
             cmd_vel.angular.z = - v_ref_*rho;
             pub_control_.publish(cmd_vel);
 
+            // Publish marker
+            visualization_msgs::Marker frenet_point;
+            frenet_point.header.frame_id = "map";
+            frenet_point.header.stamp = ros::Time();
+            frenet_point.ns = "control";
+            frenet_point.id = 0;
+            frenet_point.type = visualization_msgs::Marker::SPHERE;
+            frenet_point.action = visualization_msgs::Marker::ADD;
+            frenet_point.pose.position.x = fp_x;
+            frenet_point.pose.position.y = fp_y;
+            frenet_point.pose.position.z = 0.;
+            frenet_point.pose.orientation.x = 0.0;
+            frenet_point.pose.orientation.y = 0.0;
+            frenet_point.pose.orientation.z = 0.0;
+            frenet_point.pose.orientation.w = 1.0;
+            frenet_point.scale.x = 0.02;
+            frenet_point.scale.y = 0.02;
+            frenet_point.scale.z = 0.02;
+            frenet_point.color.a = 1.0;
+            frenet_point.color.r = 1.0;
+            frenet_point.color.g = 0.0;
+            frenet_point.color.b = 0.0;            
+            pub_frenet_rviz_.publish(frenet_point);
+
             // publish the feedback
-            feedback_.s_done = s;
+            feedback_.s_done = fp_s;
             as_->publishFeedback(feedback_);
             r.sleep();
         }

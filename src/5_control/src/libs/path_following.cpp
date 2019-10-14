@@ -20,15 +20,15 @@ size_t PathFollowing::getFrenetPoint(double x, double y, double theta, Pose& pos
   double s = points[idx].s;
   int imin = idx;
 
-  for (int i = idx-1; i>=0 && s-points[i].s<win_size; --i)
-  {
-    double cmin = points[i].distance(x, y);
-    if (cmin < dmin)
-    {
-      imin = i;
-      dmin = cmin;
-    }
-  }
+  // for (int i = idx-1; i>=0 && s-points[i].s<win_size; --i)
+  // {
+  //   double cmin = points[i].distance(x, y);
+  //   if (cmin < dmin)
+  //   {
+  //     imin = i;
+  //     dmin = cmin;
+  //   }
+  // }
 
   for (int i = idx+1; i<points.size() && points[i].s-s<win_size; ++i)
   {
@@ -48,7 +48,7 @@ size_t PathFollowing::getFrenetPoint(double x, double y, double theta, Pose& pos
 double PathFollowing::computeControl(const Pose& fp, double x, double y, double theta)
 {
   
-  // control constants
+  // control constants  
   const double k = 1.5; 
   const double l0 = 0.1;
   
@@ -71,11 +71,13 @@ double PathFollowing::computeControl(const Pose& fp, double x, double y, double 
             
   double tmp = rangeSymm(thetaTilde-delta);
   double rho = gamma - k*tmp;
+
+
   return rho;
 }
 
 
-double PathFollowing::computeControl(double x, double y, double theta, double& s)
+double PathFollowing::computeControl(double x, double y, double theta, double& fp_s, double& fp_x, double& fp_y)
 {
   Pose fp;
   if (idx < 0) 
@@ -87,7 +89,9 @@ double PathFollowing::computeControl(double x, double y, double theta, double& s
     idx = getFrenetPoint(x, y, theta, fp, 0.2, idx);
   }
 
-  s = fp.s;
+  fp_s = fp.s;
+  fp_x = fp.x;
+  fp_y = fp.y;
 
   if (idx == path.size()-1) eop = true;
 

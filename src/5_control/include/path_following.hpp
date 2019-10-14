@@ -12,7 +12,7 @@ class PathFollowing
 {
 public:
   void setPath(const Path& path) { this->path = path; idx = -1; eop = false; }
-  double computeControl(double x, double y, double theta, double& s);
+  double computeControl(double x, double y, double theta, double& fp_s, double& fp_x, double& fp_y);
   bool endOfPath() { return eop; }
 
 private:

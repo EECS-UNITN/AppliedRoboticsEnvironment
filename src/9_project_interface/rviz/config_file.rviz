@@ -5,6 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Localization1
+        - /Localization1/EKF1
         - /Localization1/EKF1/Shape1
         - /Images1/UnwarpGroundPlane1
       Splitter Ratio: 0.5
@@ -27,7 +29,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: UnwarpRobotPlane
+    SyncSource: Distorted
 Toolbars:
   toolButtonStyle: 2
 Visualization Manager:
@@ -189,10 +191,10 @@ Visualization Manager:
             Axes Length: 1
             Axes Radius: 0.100000001
             Color: 255; 25; 0
-            Head Length: 0.0500000007
-            Head Radius: 0.0500000007
+            Head Length: 0.0299999993
+            Head Radius: 0.0299999993
             Shaft Length: 0.100000001
-            Shaft Radius: 0.0199999996
+            Shaft Radius: 0.00999999978
             Value: Arrow
           Topic: /estimation/map
           Unreliable: false
@@ -276,6 +278,14 @@ Visualization Manager:
         interp_wp_tangent: true
       Queue Size: 100
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /control/frenet_rviz
+      Name: FrenetPoint
+      Namespaces:
+        control: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -301,25 +311,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 2.69856787
+      Distance: 1.22850573
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.970166326
-        Y: 0.425061941
-        Z: -2.38418579e-07
+        X: 0.233092546
+        Y: -0.0445123613
+        Z: 5.36441803e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 1.56979632
+      Pitch: 1.09979677
       Target Frame: map
       Value: ThirdPersonFollower (rviz)
-      Yaw: 4.22334146
+      Yaw: 3.91834235
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 2.01115251
