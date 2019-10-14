@@ -56,6 +56,8 @@ namespace localization {
         pub_map_odom_topic_name_ = "/estimation/map";
         pub_dt_topic_name_       = "/process_time/localization";
 
+        has_new_gps_ = false;
+
     }
 
     void LocalizationHandle::publishToTopics() {
@@ -80,9 +82,7 @@ namespace localization {
     void LocalizationHandle::gpsCb(const geometry_msgs::PoseStampedPtr robot_pose){
         ROS_DEBUG_NAMED(kPringName, "gpsCb");
         const double arena_margin = 0.15;
-        const double xy_max_err   = 0.1;
-        const double yaw_max_err  = M_PI/180*10;
-        
+                
         if(odom_list_.size() < 2){
             ROS_WARN_STREAM("Localization handle waiting more odom msg");
             return;
@@ -90,37 +90,46 @@ namespace localization {
 
         // Extract the measure and check if they are not outlayers
         frame_id_ = robot_pose->header.frame_id;
-        const auto&  m_stamp = robot_pose->header.stamp;        
-        const double m_x = robot_pose->pose.position.x;
-        const double m_y = robot_pose->pose.position.y;
-        const tf::Quaternion m_q(robot_pose->pose.orientation.x, 
+        gps_stamp_ = robot_pose->header.stamp;        
+        gps_x_ = robot_pose->pose.position.x;
+        gps_y_ = robot_pose->pose.position.y;
+        const tf::Quaternion gps_q(robot_pose->pose.orientation.x, 
             robot_pose->pose.orientation.y, 
             robot_pose->pose.orientation.z, 
             robot_pose->pose.orientation.w);
-        const tf::Matrix3x3 m_m(m_q);
-        double m_roll, m_pitch, m_yaw;
-        m_m.getRPY(m_roll, m_pitch, m_yaw);
+        const tf::Matrix3x3 gps_m(gps_q);
+        double gps_roll, gps_pitch;
+        gps_m.getRPY(gps_roll, gps_pitch, gps_yaw_);
 
         // Raugh ceck on the measure! Must be inside the arena
-        if(!std::isfinite(m_x) || !std::isfinite(m_y) || !std::isfinite(m_yaw) 
-            || m_x < -arena_margin || m_x > (arena_w_ + arena_margin) 
-            || m_y < -arena_margin || m_y > (arena_h_ + arena_margin)){
+        if(!std::isfinite(gps_x_) || !std::isfinite(gps_y_) || !std::isfinite(gps_yaw_) 
+            || gps_x_ < -arena_margin || gps_x_ > (arena_w_ + arena_margin) 
+            || gps_y_ < -arena_margin || gps_y_ > (arena_h_ + arena_margin)){
             ROS_WARN_STREAM("UPS! Discarding the measure (position out of the arena!)");
             return;
         }
 
-                
+        has_new_gps_ = true;        
+
+    }
+
+    void LocalizationHandle::updateFilter(){
+        const double xy_max_err   = 0.1;
+        const double yaw_max_err  = M_PI/180*10;
+
+        if(!has_new_gps_) return;
+        has_new_gps_ = false;
         bool found = false; 
         RobotState removed_state;  // Last removed odom state!          
 
         if(ekf_.isLocalized()){            
             //EKF PREDICTION                        
-            if(odom_list_.front().stamp <= m_stamp && odom_list_.back().stamp > m_stamp){
+            if(odom_list_.front().stamp <= gps_stamp_ && odom_list_.back().stamp > gps_stamp_){
                 std::list<RobotState>::iterator odo_el;                       
                 while(odom_list_.size()>2 && !found){
                     odo_el = odom_list_.begin();
                     std::advance(odo_el,1);
-                    if(odo_el->stamp > m_stamp){
+                    if(odo_el->stamp > gps_stamp_){
                         found = true;
                     }
                     // Predict
@@ -157,7 +166,7 @@ namespace localization {
                     odom_list_.pop_front();                     
                 }    
             }else{            
-                if(odom_list_.back().stamp < m_stamp){
+                if(odom_list_.back().stamp < gps_stamp_){
                     ROS_WARN_STREAM("Localization handle gps msg is in the future ");
                     auto last_el = odom_list_.end();
                     last_el--;
@@ -171,9 +180,9 @@ namespace localization {
             }
             
             // CHECK IF PREDICTION AND MESURE DO AGREE
-            const double delta_x = m_x - ekf_.x(0);
-            const double delta_y = m_y - ekf_.x(1);
-            double delta_a = m_yaw - ekf_.x(2);
+            const double delta_x = gps_x_ - ekf_.x(0);
+            const double delta_y = gps_y_ - ekf_.x(1);
+            double delta_a = gps_yaw_ - ekf_.x(2);
             
             while(delta_a < - M_PI) delta_a+=2*M_PI;        
             while(delta_a >   M_PI) delta_a-=2*M_PI;
@@ -194,7 +203,7 @@ namespace localization {
             const double th_cov = 0.05*0.05;
             Vec3 z;
             Matrix3 R;
-            z << m_x, m_y, m_yaw;
+            z << gps_x_, gps_y_, gps_yaw_;
 
             R << xy_cov,      0,      0, 
                       0, xy_cov,      0, 
@@ -207,7 +216,7 @@ namespace localization {
         if(ekf_ok && found){
             // Interpolate x,y, theta
             const double DT = (odom_list_.front().stamp - removed_state.stamp).toSec();
-            const double dt = (m_stamp - removed_state.stamp).toSec(); 
+            const double dt = (gps_stamp_ - removed_state.stamp).toSec(); 
             const double scale = dt/DT;
 
             const double dx = (odom_list_.front().x - removed_state.x)*scale;
@@ -259,6 +268,10 @@ namespace localization {
             odom_list_.pop_front();
         }
     }
+
+    // Try to update the filter
+    updateFilter();
+    
 
     // Publish last odom rotated to map
     if(has_gps_){

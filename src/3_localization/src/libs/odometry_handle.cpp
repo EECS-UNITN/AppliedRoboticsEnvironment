@@ -43,9 +43,10 @@ namespace localization {
         queue_size_ = 1;
         x_ = y_ = yaw_ = v_ = yaw_r_ = 0;
         speed_init_ = false;
-        sub_twist_topic_name_ = "/sensor/twist";        
+        sub_twist_topic_name_ = "/sensor/twist";
         pub_odom_topic_name_  = "/estimation/odom";  
 
+        integration_time_ = 0.005;
         frame_id_ = "odom";      
 
     }
@@ -62,28 +63,29 @@ namespace localization {
         ROS_DEBUG_NAMED(kPringName, "Init subscribers");
         assert (initialized_);
         
+        pub_timer_ = nh_.createTimer(ros::Duration(integration_time_), &OdometryHandle::timerCallback, this);
         sub_twist_ = nh_.subscribe(sub_twist_topic_name_, 1 , &OdometryHandle::twistCb, this, ros::TransportHints().tcpNoDelay());
     }
 
-    void OdometryHandle::twistCb(geometry_msgs::TwistWithCovarianceStampedPtr twist){    
+    void OdometryHandle::timerCallback(const ros::TimerEvent&){
         if(speed_init_){
-            const double dt = (twist->header.stamp - stamp_).toSec();
+            const double dt = integration_time_; //(ros::Time::now() - stamp_).toSec();
             const double ds  = v_*dt;
             const double dth = yaw_r_*dt;
 
-            x_ += ds*std::cos(yaw_ + dth/2.);
-            y_ += ds*std::sin(yaw_ + dth/2.);
+            x_   += ds*std::cos(yaw_ + dth/2.);
+            y_   += ds*std::sin(yaw_ + dth/2.);
             yaw_ += dth;
 
             tf2::Quaternion q;
             q.setRPY(0, 0, yaw_);
 
             nav_msgs::Odometry odom;
-            odom.header.stamp    = twist->header.stamp;
+            odom.header.stamp    = ros::Time::now(); //twist->header.stamp;
             odom.header.frame_id = frame_id_;
-            odom.child_frame_id  = twist->header.frame_id;
+            odom.child_frame_id  = last_twist_.header.frame_id;
 
-            odom.twist = twist->twist;
+            odom.twist = last_twist_.twist;
             odom.pose.pose.position.x = x_;
             odom.pose.pose.position.y = y_;
             odom.pose.pose.position.z = 0;            
@@ -94,10 +96,14 @@ namespace localization {
             pub_odom_.publish(odom);
 
         }
+    }
 
-        stamp_ = twist->header.stamp;
+    void OdometryHandle::twistCb(geometry_msgs::TwistWithCovarianceStampedPtr twist){    
+        stamp_ = ros::Time::now(); //twist->header.stamp;
         v_     = twist->twist.twist.linear.x;
-        yaw_r_ = twist->twist.twist.angular.z;      
+        yaw_r_ = twist->twist.twist.angular.z;   
+        child_frame_id_ = twist->header.frame_id;
+        last_twist_ = *twist;   
         speed_init_ = true;  
     }
 }

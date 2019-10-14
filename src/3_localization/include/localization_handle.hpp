@@ -34,7 +34,8 @@ private:
   void loadParameters();  
   void publishToTopics();
   void subscribeToTopic(); 
-  
+  void updateFilter();
+
   ExtendedKalmanFilter ekf_;
 
   // ROS node handle
@@ -45,7 +46,9 @@ private:
   // ROS communication
   ros::Subscriber sub_gps_, sub_odom_;
   ros::Publisher pub_map_odom_, pub_dt_;
-  bool has_gps_, has_odom_;
+  bool has_gps_, has_odom_, has_new_gps_;
+  ros::Time gps_stamp_;
+  double gps_x_, gps_y_, gps_yaw_;
   std::string frame_id_;
 
   // TOPICS  
