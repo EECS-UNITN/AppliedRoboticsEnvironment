@@ -6,8 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Localization1
-        - /Localization1/EKF1
         - /Localization1/EKF1/Shape1
+        - /Localization1/GPS_measure1
+        - /Localization1/GPS_measure1/Shape1
         - /Images1/UnwarpGroundPlane1
       Splitter Ratio: 0.5
     Tree Height: 853
@@ -150,21 +151,6 @@ Visualization Manager:
       Name: Detection
     - Class: rviz/Group
       Displays:
-        - Alpha: 1
-          Axes Length: 0.100000001
-          Axes Radius: 0.00999999978
-          Class: rviz/Pose
-          Color: 255; 25; 0
-          Enabled: true
-          Head Length: 0.0500000007
-          Head Radius: 0.0199999996
-          Name: GPS_measure
-          Shaft Length: 0.100000001
-          Shaft Radius: 0.00999999978
-          Shape: Axes
-          Topic: /estimation/pose
-          Unreliable: false
-          Value: true
         - Angle Tolerance: 0.100000001
           Class: rviz/Odometry
           Covariance:
@@ -197,6 +183,40 @@ Visualization Manager:
             Shaft Radius: 0.00999999978
             Value: Arrow
           Topic: /estimation/map
+          Unreliable: false
+          Value: true
+        - Angle Tolerance: 0.100000001
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.300000012
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 100
+          Name: GPS_measure
+          Position Tolerance: 0.100000001
+          Shape:
+            Alpha: 1
+            Axes Length: 0.100000001
+            Axes Radius: 0.00999999978
+            Color: 255; 25; 0
+            Head Length: 0.300000012
+            Head Radius: 0.100000001
+            Shaft Length: 1
+            Shaft Radius: 0.0500000007
+            Value: Axes
+          Topic: /estimation/pose_rviz
           Unreliable: false
           Value: true
       Enabled: true
@@ -273,9 +293,7 @@ Visualization Manager:
       Marker Topic: /planning/plan_rviz
       Name: PlannedPath
       Namespaces:
-        interp_wp: true
-        interp_wp_curvature: true
-        interp_wp_tangent: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -283,7 +301,7 @@ Visualization Manager:
       Marker Topic: /control/frenet_rviz
       Name: FrenetPoint
       Namespaces:
-        control: true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -311,7 +329,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 1.22850573
+      Distance: 4.78622866
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -326,10 +344,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 1.09979677
+      Pitch: 0.579796791
       Target Frame: map
       Value: ThirdPersonFollower (rviz)
-      Yaw: 3.91834235
+      Yaw: 2.45834231
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 2.01115251

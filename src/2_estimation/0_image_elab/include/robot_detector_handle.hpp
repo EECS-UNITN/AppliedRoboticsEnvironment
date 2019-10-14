@@ -35,12 +35,12 @@ private:
   // ROS communication  
   ros::Subscriber sub_image_, sub_transf_;
   ros::Publisher  pub_robot_;
-  ros::Publisher  pub_gps_loc_, pub_dt_;
+  ros::Publisher  pub_gps_odom_, pub_gps_loc_, pub_dt_;
   
   // TOPICS  
   std::string frame_id_;
   std::string sub_image_topic_name_, sub_transf_topic_name_;
-  std::string pub_robot_topic_name_, pub_gps_loc_topic_name_, pub_dt_topic_name_;
+  std::string pub_gps_odom_topic_name_, pub_robot_topic_name_, pub_gps_loc_topic_name_, pub_dt_topic_name_;
 
   // CALIBRATION MATRIX  
   bool has_transform_;

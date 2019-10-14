@@ -12,6 +12,7 @@
 
 #include "geometry_msgs/PolygonStamped.h"
 #include "geometry_msgs/PoseStamped.h"
+#include "nav_msgs/Odometry.h"
 #include "tf/transform_broadcaster.h"
 #include "std_msgs/Float32.h"
 
@@ -64,7 +65,8 @@ namespace image_proc {
         sub_image_topic_name_  = "/image/unwarp_robot";
         
         pub_robot_topic_name_   = "/detection/robot";
-        pub_gps_loc_topic_name_ = "/estimation/pose";
+        pub_gps_loc_topic_name_  = "/estimation/pose";
+        pub_gps_odom_topic_name_ = "/estimation/pose_rviz";
         pub_dt_topic_name_      = "/process_time/findRobot";
 
         frame_id_ = "map";
@@ -76,6 +78,7 @@ namespace image_proc {
 
         pub_robot_ = nh_.advertise<geometry_msgs::PolygonStamped>(pub_robot_topic_name_, 1, false);
         pub_gps_loc_ = nh_.advertise<geometry_msgs::PoseStamped>(pub_gps_loc_topic_name_, 1, false);
+        pub_gps_odom_ = nh_.advertise<nav_msgs::Odometry>(pub_gps_odom_topic_name_, 1, false);
         pub_dt_ = nh_.advertise<std_msgs::Float32>(pub_dt_topic_name_, 1, false);
     }
 
@@ -140,15 +143,16 @@ namespace image_proc {
 
             geometry_msgs::PolygonStamped triangle_msg;
             geometry_msgs::PoseStamped robot_pose_msg;
+            nav_msgs::Odometry robot_odom_msg;
 
             triangle_msg.header.stamp = msg->header.stamp;
             triangle_msg.header.frame_id = frame_id_;
             triangle_msg.polygon = createPolygon(triangle_);
-
-    
     
             robot_pose_msg.header.stamp = msg->header.stamp;
             robot_pose_msg.header.frame_id = frame_id_;
+
+            robot_odom_msg.header = robot_pose_msg.header;
 
             //set the position
             //since all odometry is 6DOF we'll need a quaternion created from yaw
@@ -159,8 +163,12 @@ namespace image_proc {
             robot_pose_msg.pose.position.z = 0.0;
             robot_pose_msg.pose.orientation = odom_quat; 
                        
+
+            robot_odom_msg.pose.pose = robot_pose_msg.pose;
+
             pub_robot_.publish(triangle_msg);
             pub_gps_loc_.publish(robot_pose_msg);
+            pub_gps_odom_.publish(robot_odom_msg);
         }else{
             ROS_WARN_NAMED(kPringName, "findRobot returned false");
         }
