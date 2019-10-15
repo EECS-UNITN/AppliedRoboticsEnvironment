@@ -232,9 +232,9 @@ namespace professor {
   bool processObstacles(const cv::Mat& hsv_img, const double scale, std::vector<Polygon>& obstacle_list){
     
     // Find red regions: h values around 0 (positive and negative angle: [0,15] U [160,179])
-    cv::Mat red_mask_low, red_mask_high, red_mask;
-    cv::inRange(hsv_img, cv::Scalar(0, 10, 10), cv::Scalar(15, 255, 255), red_mask_low);
-    cv::inRange(hsv_img, cv::Scalar(175, 10, 10), cv::Scalar(179, 255, 255), red_mask_high);
+    cv::Mat red_mask_low, red_mask_high, red_mask;     
+    cv::inRange(hsv_img, cv::Scalar(0, 102, 86), cv::Scalar(40, 255, 255), red_mask_low);
+    cv::inRange(hsv_img, cv::Scalar(164, 102, 86), cv::Scalar(180, 255, 255), red_mask_high);
     cv::addWeighted(red_mask_low, 1.0, red_mask_high, 1.0, 0.0, red_mask); 
 
     // cv::Mat img_small;
@@ -275,7 +275,8 @@ namespace professor {
     
     // Find purple regions
     cv::Mat purple_mask;
-    cv::inRange(hsv_img, cv::Scalar(130, 10, 10), cv::Scalar(165, 255, 255), purple_mask);
+    cv::inRange(hsv_img, cv::Scalar(45, 50, 26), cv::Scalar(100, 255, 255), purple_mask);    
+    //cv::inRange(hsv_img, cv::Scalar(130, 10, 10), cv::Scalar(165, 255, 255), purple_mask);
     
     
     std::vector<std::vector<cv::Point>> contours, contours_approx;
@@ -296,7 +297,9 @@ namespace professor {
       //std::cout << "AREA " << area << std::endl;
       //std::cout << "SIZE: " << contours.size() << std::endl;
       if (area > 500){
-        approxPolyDP(contour, approx_curve, 3, true);
+        approxPolyDP(contour, approx_curve, 30, true);
+
+        if(approx_curve.size()!=4) continue;
 
         // contours_approx = {approx_curve};
         // drawContours(contours_img, contours_approx, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
@@ -321,7 +324,8 @@ namespace professor {
     
     // Find green regions
     cv::Mat green_mask;
-    cv::inRange(hsv_img, cv::Scalar(45, 50, 50), cv::Scalar(75, 255, 255), green_mask);
+     
+    cv::inRange(hsv_img, cv::Scalar(45, 50, 26), cv::Scalar(100, 255, 255), green_mask);
 
 
     std::vector<std::vector<cv::Point>> contours, contours_approx;
@@ -333,16 +337,23 @@ namespace professor {
     cv::findContours(green_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     //drawContours(contours_img, contours, -1, cv::Scalar(40,190,40), 1, cv::LINE_AA);
     //std::cout << "N. contours: " << contours.size() << std::endl;
+    int victim_id = 0;
     for (int i=0; i<contours.size(); ++i)
     {
+
+      const double area = cv::contourArea(contours[i]);
+
+      if(area < 500) continue;
+
       //std::cout << (i+1) << ") Contour size: " << contours[i].size() << std::endl;
-      approxPolyDP(contours[i], approx_curve, 1, true);
+      approxPolyDP(contours[i], approx_curve, 10, true);
+      if(approx_curve.size() < 6) continue;
 
       Polygon scaled_contour;
       for (const auto& pt: approx_curve) {
         scaled_contour.emplace_back(pt.x/scale, pt.y/scale);
       }
-      victim_list.push_back({i+1, scaled_contour});
+      victim_list.push_back({victim_id++, scaled_contour});
       //contours_approx = {approx_curve};
       //drawContours(contours_img, contours_approx, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
       //std::cout << "   Approximated contour size: " << approx_curve.size() << std::endl;
@@ -381,30 +392,41 @@ namespace professor {
   bool processRobot(const cv::Mat& hsv_img, const double scale, Polygon& triangle, double& x, double& y, double& theta){
 
     cv::Mat blue_mask;    
-    cv::inRange(hsv_img, cv::Scalar(80, 120, 150), cv::Scalar(120, 255, 255), blue_mask);
+     
+    cv::inRange(hsv_img, cv::Scalar(90, 50, 50), cv::Scalar(140, 255, 255), blue_mask);
 
     // Process blue mask
     std::vector<std::vector<cv::Point>> contours, contours_approx;
     std::vector<cv::Point> approx_curve;
     cv::findContours(blue_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-    //cv::Mat contours_img;
-    //contours_img = hsv_img.clone();
+    // cv::imshow("filterrrr", blue_mask);
+    // cv::waitKey(1);
 
-    //drawContours(contours_img, contours, -1, cv::Scalar(0,0,0), 4, cv::LINE_AA);
-    //std::cout << "N. contours: " << contours.size() << std::endl;
+    // cv::Mat contours_img;
+    // contours_img = hsv_img.clone();
 
+    // drawContours(contours_img, contours, -1, cv::Scalar(0,0,0), 4, cv::LINE_AA);
+    // std::cout << "N. contours: " << contours.size() << std::endl;
+
+       
     bool found = false;
     for (int i=0; i<contours.size(); ++i)
     {
       //std::cout << (i+1) << ") Contour size: " << contours[i].size() << std::endl;
-      cv::approxPolyDP(contours[i], approx_curve, 30, true);
+      
+      cv::approxPolyDP(contours[i], approx_curve, 10, true);
+      contours_approx = {approx_curve};
+
+      // cv::drawContours(contours_img, contours_approx, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
+
+      double area = cv::contourArea(approx_curve);
+      
       if (approx_curve.size() != 3) continue;
-      //double area = cv::contourArea(approx_curve);
-      //if (area<4000 || area>7000) continue;
-      //std::cout << "Area: " << area << std::endl;
-      //contours_approx = {approx_curve};
-      //cv::drawContours(contours_img, contours_approx, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
+      
+      if (area < 300 || area>3000) continue;
+      
+      
       found = true;
       break;
     }
@@ -461,8 +483,8 @@ namespace professor {
       //std::cout << xc_m << " " << yc_m << " " << theta*180/M_PI << std::endl;
     }
 
-    //cv::imshow("Original", contours_img);
-    //cv::waitKey(1);
+    // cv::imshow("Original", contours_img);
+    // cv::waitKey(1);
 
     return found;
   }
@@ -472,21 +494,20 @@ namespace professor {
     
     // Convert color space from BGR to HSV
     cv::Mat hsv_img;
-    cv::cvtColor(img_in, hsv_img, cv::COLOR_BGR2HSV);
-
+    cv::cvtColor(img_in, hsv_img, cv::COLOR_BGR2HSV);    
     return processRobot(hsv_img, scale, triangle, x, y, theta);
   }
 
 
   bool planPath(const Polygon& borders, const std::vector<Polygon>& obstacle_list, const std::vector<std::pair<int,Polygon>>& victim_list, const Polygon& gate, const float x, const float y, const float theta, Path& path){
-    // float x0 = 0.2;
-    // float y0 = 0.5;
-    // float L  = 1.1;
-    // float ds = 0.05;
+    float x0 = 0.2;
+    float y0 = 0.5;
+    float L  = 1.1;
+    float ds = 0.05;
     
-    // for (float s = 0; s<L+L/2; s+=ds) {
-    //   path.points.emplace_back(s, x0+s, y0, 0., 0.f);
-    // }
+    for (float s = 0; s<L+L/2; s+=ds) {
+      path.points.emplace_back(s, x0+s, y0, 0., 0.f);
+    }
 
 
     float xc = 0, yc = 1.5, r = 1.4;
@@ -494,8 +515,4 @@ namespace professor {
     for (float theta = -M_PI/2, s = 0; theta<(-M_PI/2 + 1.2); theta+=ds/r, s+=ds) {
       path.points.emplace_back(s, xc+r*std::cos(theta), yc+r*std::sin(theta), theta+M_PI/2, 1./r);
     }    
-
-    return true;
-  }
-
 }

@@ -155,7 +155,7 @@ namespace image_proc {
         sensor_msgs::ImagePtr u_ground = out_img_ground->toImageMsg();
         pub_unwarp_ground_.publish(u_ground);
         sensor_msgs::ImagePtr u_robot = out_img_robot->toImageMsg();
-        pub_unwarp_robot_.publish(u_robot);
+        pub_unwarp_robot_.publish(u_robot);        
     }
 
     void UnwarpHandle::groundCb(const image_elab::PlaneTransform& transf){

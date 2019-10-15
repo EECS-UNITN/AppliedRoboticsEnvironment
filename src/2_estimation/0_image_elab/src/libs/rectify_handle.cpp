@@ -110,6 +110,14 @@ void RectifyHandle::connectCb() {
 }
 
 void RectifyHandle::imageCb(const sensor_msgs::ImageConstPtr& msg){
+    const static int to_skip = 3;
+    static int cnt = 0;
+    if(cnt < to_skip){
+        cnt++;
+        return;
+    }
+    cnt = 0;
+
     // Check dimension consistency with calibration params
     if(!(msg->height == expected_img_h_  && msg->width == expected_img_w_)){
         throw std::logic_error( "LOADED CAMERA CALIB RESOLUTION DO NOT MACTCH INPUT FRAME RESOLUTIONCONFIG " );   

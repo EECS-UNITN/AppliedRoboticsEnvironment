@@ -94,8 +94,8 @@ void ExtendedKalmanFilter::updateGPS(const Vec3& z, const Matrix3& R)
   const Matrix3 I = Matrix3::Identity();
 
   y(2) = rangeSymm(y(2));
-  x = x + (K * y);  // new state
-  P = (I - K * H) * P; // new covariance  
+  x = x + (K * y);  // new state  
+  P = (I - K * H) * P; // new covariance    
 }
 
 bool ExtendedKalmanFilter::isLocalized()

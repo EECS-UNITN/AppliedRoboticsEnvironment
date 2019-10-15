@@ -49,8 +49,8 @@ double PathFollowing::computeControl(const Pose& fp, double x, double y, double 
 {
   
   // control constants  
-  const double k = 1.5; 
-  const double l0 = 0.1;
+  const double k  = 2/3.; 
+  const double l0 = 0.06;
   
   // Estract useful values
   double delta_x  = fp.x - x;
@@ -70,7 +70,7 @@ double PathFollowing::computeControl(const Pose& fp, double x, double y, double 
   double gamma = c*std::cos(thetaTilde)/(1-c*l) + std::sin(thetaTilde)*Ddelta_dl;
             
   double tmp = rangeSymm(thetaTilde-delta);
-  double rho = gamma - k*tmp;
+  double rho = gamma - k*tmp; //gamma - k*tmp;
 
 
   return rho;

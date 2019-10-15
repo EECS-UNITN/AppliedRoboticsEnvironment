@@ -12,6 +12,8 @@
     <param name="camera_frame_id" value="usb_cam" />
     <param name="io_method" value="mmap"/>
   </node>
+
  
+  <node name="hw_interface" pkg="control" type="hardware_interface_node" required="true" respawn="false" output="screen" args="--mac 00:16:53:17:54:C3"/>  
 </launch>
 

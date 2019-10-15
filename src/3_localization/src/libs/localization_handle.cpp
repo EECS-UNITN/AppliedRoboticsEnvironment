@@ -142,13 +142,13 @@ namespace localization {
                     while(dth < -M_PI) dth+=2*M_PI;
                     
 
-                    const double ds_std_scale  = 0.1;
-                    const double dth_std_scale = 0.1;
+                    const double ds_std_scale  = 0.2;
+                    const double dth_std_scale = 0.2;
                     const double ds_std  = ds_std_scale  * ds;
                     const double dth_std = dth_std_scale * dth;
+                    const double ds_cov  = ds_std*ds_std + 0.001 * 0.0001;
+                    const double dth_cov = dth_std*dth_std + 0.0001 * 0.0001;
 
-                    const double ds_cov  = ds_std*ds_std;
-                    const double dth_cov = dth_std*dth_std;
                     Vec2 u;
                     Matrix2 Q;
                     u << ds, dth;
@@ -199,8 +199,8 @@ namespace localization {
         bool ekf_ok = ekf_.isLocalized();
         {
             // EKF UPDATE                
-            const double xy_cov = 0.01*0.01;
-            const double th_cov = 0.05*0.05;
+            const double xy_cov = 0.005*0.005;
+            const double th_cov = 0.1*0.1;
             Vec3 z;
             Matrix3 R;
             z << gps_x_, gps_y_, gps_yaw_;
@@ -240,8 +240,8 @@ namespace localization {
 
             const double cth = std::cos(dth);
             const double sth = std::sin(dth);
-            R_ << cth, -sth,
-                  sth,  cth;   
+            R_ << cth,   sth,
+                  -sth,  cth;   
 
             t_ = p_map - R_*p_odo;
 
@@ -265,6 +265,34 @@ namespace localization {
         odom_list_.emplace_back(odom->header.stamp, x, y, yaw);
 
         while(odom_list_.size() > 200){
+            auto odo_el = odom_list_.begin();
+            std::advance(odo_el,1);
+
+            // Predict
+            const RobotState& rhs(odom_list_.front());
+            const RobotState& lhs(*odo_el);
+            const double ds = std::hypot(lhs.x - rhs.x, lhs.y - rhs.y);
+            double dth = lhs.theta - rhs.theta;
+
+            while(dth > M_PI)  dth-=2*M_PI;
+            while(dth < -M_PI) dth+=2*M_PI;
+            
+            const double ds_std_scale  = 0.2;
+            const double dth_std_scale = 0.2;
+            const double ds_std  = ds_std_scale  * ds;
+            const double dth_std = dth_std_scale * dth;
+            const double ds_cov  = ds_std*ds_std + 0.001 * 0.0001;
+            const double dth_cov = dth_std*dth_std + 0.0001 * 0.0001;
+            
+            Vec2 u;
+            Matrix2 Q;
+            u << ds, dth;
+
+            Q << ds_cov,       0,
+                      0, dth_cov;
+              
+
+            ekf_.predict(u, Q);
             odom_list_.pop_front();
         }
     }
@@ -272,7 +300,6 @@ namespace localization {
     // Try to update the filter
     updateFilter();
     
-
     // Publish last odom rotated to map
     if(has_gps_){
         //
@@ -281,7 +308,7 @@ namespace localization {
 
         p_map = R_ * p_odo + t_;
 
-        const double dth = std::atan2(R_(1,0), R_(0,0));
+        const double dth = std::atan2(R_(0,1), R_(0,0));
         if(!std::isfinite(p_map(0)) || !std::isfinite(p_map(1)) || 
             !std::isfinite(dth)){
             return;
