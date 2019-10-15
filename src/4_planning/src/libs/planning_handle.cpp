@@ -296,6 +296,7 @@ namespace planning {
     // }
 
     bool PlanningHandle::computePlanSrv(ComputePlan::Request& req, ComputePlan::Response& res){
+        path_.points.clear();
         if (!has_gate_ || !has_obstacles_ || !has_victims_ || !has_robot_) {
             res.status = -1; 
         }
