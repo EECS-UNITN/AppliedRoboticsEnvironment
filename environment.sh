@@ -47,3 +47,10 @@ then
 else
   printf "\t*\e[33m Seems that you already source this environment.\e[0m\n"  
 fi
+
+printf "\t*\e[32m chrpath converting rpath to runpath\e[0m\n"  
+# Convert rpath to runpath
+chrpath -c $AR_CATKIN_ROOT/devel/lib/libimage_elab_LIBRARY.so&> /dev/null
+chrpath -c $AR_CATKIN_ROOT/devel/lib/libimage_elab_nodelet.so&> /dev/null
+chrpath -c $AR_CATKIN_ROOT/devel/lib/image_elab/*&> /dev/null
+chrpath -c $AR_CATKIN_ROOT/devel/lib/planning/*&> /dev/null

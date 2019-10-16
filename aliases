@@ -16,6 +16,7 @@ alias AR_simulator_gui="roslaunch sim_common sim.launch gui:=true"
 
 # Laboratory Arena 
 alias AR_arena_launch="roslaunch project_interface arena.launch"
+alias AR_arena_remote="roslaunch project_interface teleop.launch"
 
 # Load image from file or videostream
 alias AR_image_loader="roslaunch project_interface image_load.launch"
@@ -36,8 +37,9 @@ AR_map_file="${AR_CATKIN_ROOT}/src/0_mindstorm_simulator/2_lego_world/models/min
 AR_interface_dir="${AR_CATKIN_ROOT}/src/9_project_interface/include"
 AR_config_dir="${AR_CATKIN_ROOT}/src/9_project_interface/config"
 
-
-
+# Plan
+alias AR_plan='rosservice call /planning/compute_plan "{}"'
+# Plan and move
 alias AR_run='rostopic pub /control/action/goal control/FollowPathActionGoal "header:
   seq: 0
   stamp:
