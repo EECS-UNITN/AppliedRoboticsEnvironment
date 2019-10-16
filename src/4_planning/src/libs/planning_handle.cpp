@@ -305,11 +305,11 @@ namespace planning {
             try{
                 if(default_implementation_){
                     ROS_DEBUG_NAMED(kPringName, "Call default function");
-                    ok = professor::planPath(borders_, obstacle_list_, victim_list_, gate_, x_, y_, theta_, path_);
+                    ok = professor::planPath(borders_, obstacle_list_, victim_list_, gate_, x_, y_, theta_, path_, config_folder_);
                 }else{
                     // CALL STUDENT FUNCTION    
                     ROS_DEBUG_NAMED(kPringName, "Call student function");
-                    ok = student::planPath(borders_, obstacle_list_, victim_list_, gate_, x_, y_, theta_, path_);
+                    ok = student::planPath(borders_, obstacle_list_, victim_list_, gate_, x_, y_, theta_, path_, config_folder_);
                 }
             }catch(std::exception& ex){
                 std::cerr << ex.what() << std::endl;
