@@ -16,7 +16,7 @@ alias AR_simulator_gui="roslaunch sim_common sim.launch gui:=true"
 
 # Laboratory Arena 
 alias AR_arena_launch="roslaunch project_interface arena.launch"
-alias AR_arena_remote="roslaunch project_interface teleop.launch"
+alias AR_joy_controller="roslaunch project_interface teleop.launch"
 
 # Load image from file or videostream
 alias AR_image_loader="roslaunch project_interface image_load.launch"
